@@ -18,7 +18,7 @@
         <h3 id="tit_sub" class="box-title">Esperando Selección...</h3>
 
         <div class="box-tools pull-right">
-            <button id="collapse" onclick="collapse(this)" type="button" class="btn btn-box-tool"
+            <button id="collapse" onclick="collapse(this)" type="button" class="btn btn-box-tool hidden"
                 data-widget="collapse"><i class="fa fa-plus"></i>
             </button>
         </div>
@@ -30,7 +30,7 @@
 
         </ul>
         <br>
-        <button class="btn btn-primary" style="float:right">Agregar</button>
+        <button class="btn btn-primary" style="float:right" onclick="agregar_tarea()">Agregar</button>
     </div>
     <!-- /.box-body -->
 </div>
@@ -42,15 +42,15 @@ $('select#tareas').select2().on('change', function() {
     var data = $(this).select2('data')[0];
     if (data.id == 0) return;
     $('#tit_sub').html(data.text);
-    get_subtareas(data.id);
+    get_subtareas([data.id]);
 });
 
-function get_subtareas(id) {
+function get_subtareas(ids) {
     $.ajax({
         type: 'POST',
         url: 'tareas/Tarea/getSubtareas',
         data: {
-            id
+            ids
         },
         dataType: 'json',
         success: function(data) {
@@ -58,7 +58,7 @@ function get_subtareas(id) {
             for (let i = 0; i < data.length; i++) {
                 const element = data[i];
                 $('#subtareas').append(
-                    '<li><span class="handle ui-sortable-handle"><i class="fa fa-ellipsis-v"></i> <i class="fa fa-ellipsis-v"></i></span><input type="checkbox" value="" checked><span class="text">' +
+                    '<li data-json=\''+JSON.stringify(element)+'\'><span class="handle ui-sortable-handle"><i class="fa fa-ellipsis-v"></i> <i class="fa fa-ellipsis-v"></i></span><input type="checkbox" value="" checked><span class="text">' +
                     element.nombre + '  | ' + element.descripcion +
                     '</span><div class="tools"><i class="fa fa-edit"></i><i class="fa fa-trash-o"></i></div></li>'
                 );
@@ -71,4 +71,12 @@ function get_subtareas(id) {
 
     });
 }
+
+function agregar_tarea(data){
+    $('#subtareas li').each(function(i){
+         const e = $(this).data('json');
+        $('#tareas_intancias tbody').append('<tr data-json=\''+JSON.stringify(e)+'\'><td>'+(i+1)+'</td><td>'+e.nombre+'</td><td>'+e.descripcion+'</td><td class="text-center">'+e.duracion_std+'</td><td class="text-right"><i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer;" title="Eliminar" onclick="$(this).closest(\'tr\').remove();"></i></td></tr>');
+    });
+}
+
 </script>

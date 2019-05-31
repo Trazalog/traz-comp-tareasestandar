@@ -19,11 +19,17 @@ class Tarea extends CI_Controller
 
     public function getSubtareas()
     {
-       echo json_encode($this->Tareas->getSubtareas($this->input->post('id')));
+       echo json_encode($this->Tareas->getSubtareas($this->input->post('ids')));
     }
 
     public function getTareasPlantilla()
     {
         echo json_encode($this->Tareas->getTareasPlantilla($this->input->post('id')));
+    }
+
+    public function setInstanciasTareas()
+    {
+        $ids= $this->input->post('ids');
+        echo $this->Tareas->setIntanciasTareas($ids);
     }
 }

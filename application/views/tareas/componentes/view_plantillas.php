@@ -5,7 +5,7 @@
         <?php
 
         foreach ($plantillas as $o) {
-            echo '<option value="' . $o['plan_id'] . '">' . $o['nombre'] . ': ' . $o['descripcion'] . '</option>';
+            echo '<option data-json=\''.json_encode($o).'\' value="' . $o['plan_id'] . '">' . $o['nombre'] . ': ' . $o['descripcion'] . '</option>';
         }
 
         ?>
@@ -18,7 +18,7 @@
         <h3 id="tit_sub2" class="box-title">Esperando Selección...</h3>
 
         <div class="box-tools pull-right">
-            <button id="collapse2" onclick="collapse(this)" type="button" class="btn btn-box-tool"
+            <button id="collapse2" onclick="collapse(this)" type="button" class="btn btn-box-tool hidden"
                 data-widget="collapse"><i class="fa fa-plus"></i>
             </button>
         </div>
@@ -30,14 +30,12 @@
 
         </ul>
         <br>
-        <button class="btn btn-primary" style="float:right">Agregar</button>
+        <button class="btn btn-primary" style="float:right" onclick="agregar_plantilla()">Agregar</button>
     </div>
     <!-- /.box-body -->
 </div>
 
 <script>
-var row =
-    '<li><span class="handle ui-sortable-handle"><i class="fa fa-ellipsis-v"></i><i class="fa fa-ellipsis-v"></i></span><input type="checkbox" value=""><span class="text">Design a nice theme</span></li>';
 $('select#plantilla').select2().on('change', function() {
     var data = $(this).select2('data')[0];
     if (data.id == 0) return;
@@ -58,7 +56,8 @@ function get_tareas_plantilla(id) {
             for (let i = 0; i < data.length; i++) {
                 const element = data[i];
                 $('#tareas_plantilla').append(
-                    '<li><span class="handle ui-sortable-handle"><i class="fa fa-ellipsis-v"></i> <i class="fa fa-ellipsis-v"></i></span><input type="checkbox" value="" checked><span class="text">' +
+                    '<li data-id="' + element.tare_id +
+                    '"><span class="handle ui-sortable-handle"><i class="fa fa-ellipsis-v"></i> <i class="fa fa-ellipsis-v"></i></span><input type="checkbox" value="" checked><span class="text">' +
                     element.nombre + '  | ' + element.descripcion +
                     '</span><div class="tools"><i class="fa fa-edit"></i><i class="fa fa-trash-o"></i></div></li>'
                 );
@@ -69,6 +68,33 @@ function get_tareas_plantilla(id) {
             alert('Error');
         }
 
+    });
+}
+
+function agregar_plantilla() {
+    var ids = [];
+    $('#tareas_plantilla li').each(function() {
+        ids.push($(this).data('id'));
+    });
+    $.ajax({
+        type: 'POST',
+        url: 'tareas/Tarea/getSubtareas',
+        data: {
+            ids
+        },
+        dataType: 'json',
+        success: function(data) {
+            for (let i = 0; i < data.length; i++) {
+                const e = data[i];
+                $('#tareas_intancias tbody').append('<tr data-json=\''+JSON.stringify(e)+'\'><td>' + (i + 1) + '</td><td>' + e.nombre + '</td><td>' + e
+                    .descripcion + '</td><td class="text-center">' + e.duracion_std +
+                    '</td><td class="text-right"><i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer;" title="Eliminar" onclick="$(this).closest(\'tr\').remove();"></i></td></tr>'
+                    );
+            }
+        },
+        error: function(error) {
+            alert('Error');
+        }
     });
 }
 </script>

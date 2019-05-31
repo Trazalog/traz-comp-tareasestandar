@@ -9,6 +9,12 @@ class Tareas extends CI_Model
         parent::__construct();
     }
 
+    public function setIntanciasTareas($ids)
+    {
+        $subtareas = $this->getSubtareas($ids);
+        
+    }
+
     public function getTareasPlantilla($id)
     {
         $this->db->where('plan_id', $id);
@@ -22,10 +28,10 @@ class Tareas extends CI_Model
         $this->db->where('eliminado',0);
         return $this->db->get('tst_plantillas')->result_array();
     }
-    public function getSubtareas($id)
-    {
+    public function getSubtareas($ids)
+    {   
         $this->db->where('eliminado',0);
-        $this->db->where('tare_id',$id);
+        $this->db->where_in('tare_id',$ids);
         return $this->db->get('tst_subtareas')->result_array();
     }
 
