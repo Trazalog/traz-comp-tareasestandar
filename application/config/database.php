@@ -75,9 +75,9 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
+	'hostname' => '192.168.0.15',
+	'username' => 'glados',
+	'password' => 'glados',
 	'database' => 'traz-prod-trazasoft',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
