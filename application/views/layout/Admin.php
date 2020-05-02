@@ -53,6 +53,10 @@
     margin-right: 3px
 }
 
+.mr-25{
+    margin-top:25px
+}
+
 
 </style>
 
@@ -423,40 +427,46 @@
     <script src="lib/dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="lib/dist/js/demo.js"></script>
+
+    <script src="<?php echo base_url(lib)?>props\forms.js"></script>
+  <script src="<?php echo base_url(lib)?>props\tabla.js"></script>
+  <script src="<?php echo base_url(lib)?>props\notificaciones.js"></script>
+  <script src="<?php echo base_url(lib)?>props\navegacion.js"></script>
+  <script src="<?php echo base_url(lib)?>props\jquery.inputmask.min.js"></script>
     <!-- Page script -->
     <script>
-    var link = '';
+  
     linkTo('<?php echo DEF_VIEW ?>');
-    $('.menu .link').on('click', function() {
-        link = $(this).data('link');
-        linkTo();
-    });
+    // $('.menu .link').on('click', function() {
+    //     link = $(this).data('link');
+    //     linkTo();
+    // });
 
-    function linkTo(uri = '') {
-        if (link == '' && uri == '') return;
-        $('#content').empty();
-        $('#content').load('<?php echo base_url()?>' + (uri == '' ? link : uri));
-    }
+    // function linkTo(uri = '') {
+    //     if (link == '' && uri == '') return;
+    //     $('#content').empty();
+    //     $('#content').load('<?php #echo base_url()?>' + (uri == '' ? link : uri));
+    // }
 
-    function collapse(e) {
-        e = $(e).closest('.box');
+    // function collapse(e) {
+    //     e = $(e).closest('.box');
 
-        if (e.hasClass('collapsed-box')) {
-            $(e).removeClass('collapsed-box');
-        } else {
-            $(e).addClass('collapsed-box');
-        }
-    }
+    //     if (e.hasClass('collapsed-box')) {
+    //         $(e).removeClass('collapsed-box');
+    //     } else {
+    //         $(e).addClass('collapsed-box');
+    //     }
+    // }
 
-    function collapse_open(e) {
-        e = $(e).closest('.box');
-        $(e).removeClass('collapsed-box');
-    }
+    // function collapse_open(e) {
+    //     e = $(e).closest('.box');
+    //     $(e).removeClass('collapsed-box');
+    // }
 
-    function collapse_close(e) {
-        e = $(e).closest('.box');
-        $(e).addClass('collapsed-box');
-    }
+    // function collapse_close(e) {
+    //     e = $(e).closest('.box');
+    //     $(e).addClass('collapsed-box');
+    // }
 
 
     // /* Abre cuadro cargando ajax */

@@ -85,3 +85,6 @@ defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automat
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
 define('DEF_VIEW', 'Tarea');
+define('REST_TST', 'http://34.66.255.127:8280/services/TareasSTD/');
+define('lib', 'lib/');
+

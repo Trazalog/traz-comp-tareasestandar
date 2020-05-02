@@ -50,3 +50,4 @@
        <!-- <script src="<?php base_url() ?>lib/dist/js/pages/dashboard.js"></script> -->
        <!-- AdminLTE for demo purposes -->
        <!-- <script src="<?php base_url() ?>lib/dist/js/demo.js"></script> -->
+

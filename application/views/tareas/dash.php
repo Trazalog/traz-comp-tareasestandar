@@ -1,14 +1,14 @@
 <div class="box box-primary">
-    <div class="box-header">
-        <h3 class="box-title">Lista de Tareas</h3><br><br>
-        <button class="btn btn-primary" onclick="$('#nuevo').modal('show')"><i class="fa fa-plus mr-2"></i>Nueva Tarea</button>
-    </div>
     <div class="box-body">
+        <button class="btn btn-primary" onclick="$('#nuevo').modal('show')"><i class="fa fa-plus mr-2"></i>Nueva
+            Tarea</button><br><br>
 
-        <?php $this->load->view('tareas/tabla') ?>
+        <?php $this->load->view('tareas/tabla')?>
+
 
     </div>
 </div>
+
 
 <!-- The Modal -->
 <div class="modal modal-fade" id="nuevo">
@@ -22,14 +22,99 @@
 
             <!-- Modal body -->
             <div class="modal-body">
-                <?php $this->load->view('tareas/form') ?>
+                <?php $this->load->view('tareas/form')?>
             </div>
 
             <!-- Modal footer -->
             <div class="modal-footer">
                 <button type="button" class="btn" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary btn-accion" onclick="guardarTarea(this)"><i class="fa fa-save mr-2"></i>Guardar</button>
+                <button type="button" class="btn btn-primary btn-accion" onclick="guardarTarea()"><i
+                        class="fa fa-save mr-2"></i>Guardar</button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- The Modal -->
+<div class="modal modal-fade" id="editar">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><i class="fa fa-edit text-primary mr-2"></i>Editar Tarea</h4>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <?php $this->load->view('tareas/form', ['id' => 'frm-tarea-e'])?>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary btn-accion" onclick="guardarTarea(tare_id)"><i
+                        class="fa fa-save mr-2"></i>Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+var tare_id;
+
+function agregarSubtareas(e) {
+    var data = getJson($(e).closest('tr'));
+    tare_id = data.tare_id;
+    reload('#subtareas', tare_id);
+    $('#nueva_subtarea').modal('show');
+}
+
+function editarTarea(e) {
+    var data = getJson($(e).closest('tr'));
+    tare_id = data.tare_id;
+    fillForm(data, '#frm-tarea-e');
+    $('#editar').modal('show');
+}
+
+function eliminarTarea(e) {
+    var data = getJson($(e).closest('tr'));
+    $.ajax({
+        type: 'DELETE',
+        url: 'index.php/Tarea/eliminar/' + data.tare_id,
+        success: function(result) {
+            alert('Hecho');
+            reload('#tareas');
+        },
+        error: function(result) {
+            alert('Error')
+        }
+    });
+}
+
+function guardarTarea(id = false) {
+    if (id) {
+        var data = getForm('#frm-tarea-e');
+    } else {
+        var data = getForm('#frm-tarea');
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: 'index.php/Tarea/guardar' + (id ? '/' + id : ''),
+        data: {
+            data
+        },
+        success: function(result) {
+            $('#nuevo').modal('hide');
+            $('#editar').modal('hide');
+            reload('#tareas');
+            alert('Hecho');
+        },
+        error: function(result) {
+            alert('Error')
+        }
+    });
+}
+</script>
