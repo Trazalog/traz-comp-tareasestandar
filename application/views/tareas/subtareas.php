@@ -60,6 +60,7 @@ function guardarSubtarea() {
             data
         },
         success: function(result) {
+            $('#frm-subtarea')[0].reset();
             reload('#subtareas', tare_id);
             alert('Hecho');
         },

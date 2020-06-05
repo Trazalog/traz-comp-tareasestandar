@@ -20,7 +20,7 @@ class Tarea extends CI_Controller
         $data['plantillas'] = $this->Tareas->obtenerPlantillas()['data'];
         $this->load->view('tareas/dash', $data);
         $this->load->view('tareas/subtareas');
-        $this->load->view('tareas/plantillas');
+        
     }
 
     public function tabla()
@@ -67,7 +67,7 @@ class Tarea extends CI_Controller
         echo json_encode($rsp);
     }
 
-    public function guardarPlantilla()
+    public function guardarPlantilla($id = false)
     {
         $data = $this->input->post('data');
         $rsp = $this->Tareas->guardarPlantilla($data);
@@ -84,6 +84,27 @@ class Tarea extends CI_Controller
     {
         $data['plantillas'] = $this->Tareas->obtenerPlantillas()['data'];
         $this->load->view('tareas/tabla_plantillas', $data);
+    }
+
+    public function tablaTareasPlantilla($id)
+    {
+        $data['id'] = $id;
+        $data['tareas_plantilla'] = $this->Tareas->obtenerTareasPlantilla($id)['data'];
+        $this->load->view('tareas/tabla_tareas_plantilla',$data);
+    }
+
+    public function asociarTareaPlantilla()
+    {
+        $data = $this->input->post();
+        $res = $this->Tareas->asociarTareaPlantilla($data);
+        echo json_encode($res);
+    }
+
+    public function eliminarTareaPlantilla()
+    {
+        $data = $this->input->post();
+        $res = $this->Tareas->eliminarTareaPlantilla($data);
+        echo json_encode($res);
     }
 
 }

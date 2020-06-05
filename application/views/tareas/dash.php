@@ -1,12 +1,29 @@
-<div class="box box-primary">
-    <div class="box-body">
-        <button class="btn btn-primary" onclick="$('#nuevo').modal('show')"><i class="fa fa-plus mr-2"></i>Nueva
-            Tarea</button><br><br>
 
-        <?php $this->load->view('tareas/tabla')?>
-
-
+<style>
+.nav-tabs > li{
+    font-size: 15px;    
+}
+</style>
+<div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i
+                    class="fa fa-arrow-circle-right mr-2"></i>Tareas</a></li>
+        <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false"><i
+                    class="fa fa-arrow-circle-right mr-2"></i>Plantillas</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
+            <!-- <button class="btn btn-success" onclick="$('#nuevo').modal('show')"><i class="fa fa-plus mr-2"></i>Nueva
+                Tarea</button><br><br> -->
+            <?php $this->load->view('tareas/tabla')?>
+        </div>
+        <!-- /.tab-pane -->
+        <div class="tab-pane" id="tab_2">
+            <?php $this->load->view('tareas/plantillas')?>
+        </div>
+        <!-- /.tab-pane -->
     </div>
+    <!-- /.tab-content -->
 </div>
 
 
@@ -28,7 +45,7 @@
             <!-- Modal footer -->
             <div class="modal-footer">
                 <button type="button" class="btn" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary btn-accion" onclick="guardarTarea()"><i
+                <button type="button" class="btn btn-success btn-accion" onclick="guardarTarea()"><i
                         class="fa fa-save mr-2"></i>Guardar</button>
             </div>
         </div>
@@ -53,7 +70,7 @@
             <!-- Modal footer -->
             <div class="modal-footer">
                 <button type="button" class="btn" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary btn-accion" onclick="guardarTarea(tare_id)"><i
+                <button type="button" class="btn btn-success btn-accion" onclick="guardarTarea(tare_id)"><i
                         class="fa fa-save mr-2"></i>Guardar</button>
             </div>
         </div>
@@ -109,8 +126,11 @@ function guardarTarea(id = false) {
         success: function(result) {
             $('#nuevo').modal('hide');
             $('#editar').modal('hide');
+            $('#frm-tarea')[0].reset();
+            $('#frm-tarea-e')[0].reset();
             reload('#tareas');
             alert('Hecho');
+            actualizarTareasSelect();
         },
         error: function(result) {
             alert('Error')

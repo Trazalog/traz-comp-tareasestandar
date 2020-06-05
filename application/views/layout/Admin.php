@@ -31,33 +31,23 @@
        folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="lib/dist/css/skins/_all-skins.min.css">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
-
     <!-- Google Font -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 
 <style>
-
-.mr-1{
+.mr-1 {
     margin-right: 1px
 }
 
-.mr-2{
+.mr-2 {
     margin-right: 3px
 }
 
-.mr-25{
-    margin-top:25px
+.mr-25 {
+    margin-top: 25px
 }
-
-
 </style>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -358,7 +348,7 @@
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
-            <section class="content-header">
+            <!-- <section class="content-header">
                 <h1>
                     Advanced Form Elements
                     <small>Preview</small>
@@ -368,7 +358,7 @@
                     <li><a href="#">Forms</a></li>
                     <li class="active">Advanced Elements</li>
                 </ol>
-            </section>
+            </section> -->
 
             <!-- Main content -->
             <section id="content" class="content">
@@ -429,59 +419,30 @@
     <script src="lib/dist/js/demo.js"></script>
 
     <script src="<?php echo base_url(lib)?>props\forms.js"></script>
-  <script src="<?php echo base_url(lib)?>props\tabla.js"></script>
-  <script src="<?php echo base_url(lib)?>props\notificaciones.js"></script>
-  <script src="<?php echo base_url(lib)?>props\navegacion.js"></script>
-  <script src="<?php echo base_url(lib)?>props\jquery.inputmask.min.js"></script>
+    <script src="<?php echo base_url(lib)?>props\tabla.js"></script>
+    <script src="<?php echo base_url(lib)?>props\notificaciones.js"></script>
+    <script src="<?php echo base_url(lib)?>props\navegacion.js"></script>
+    <script src="<?php echo base_url(lib)?>props\jquery.inputmask.min.js"></script>
     <!-- Page script -->
     <script>
-  
     linkTo('<?php echo DEF_VIEW ?>');
-    // $('.menu .link').on('click', function() {
-    //     link = $(this).data('link');
-    //     linkTo();
-    // });
 
-    // function linkTo(uri = '') {
-    //     if (link == '' && uri == '') return;
-    //     $('#content').empty();
-    //     $('#content').load('<?php #echo base_url()?>' + (uri == '' ? link : uri));
-    // }
-
-    // function collapse(e) {
-    //     e = $(e).closest('.box');
-
-    //     if (e.hasClass('collapsed-box')) {
-    //         $(e).removeClass('collapsed-box');
-    //     } else {
-    //         $(e).addClass('collapsed-box');
-    //     }
-    // }
-
-    // function collapse_open(e) {
-    //     e = $(e).closest('.box');
-    //     $(e).removeClass('collapsed-box');
-    // }
-
-    // function collapse_close(e) {
-    //     e = $(e).closest('.box');
-    //     $(e).addClass('collapsed-box');
-    // }
+    function hecho(){
+        alert('Hecho');
+    }
+    function error() {
+        alert('Error');
+    }
 
 
-    // /* Abre cuadro cargando ajax */
-    // function WaitingOpen(texto) {
-    //     if (texto == '' || texto == null) {
-    //         $('#waitingText').html('Cargando ...');
-    //     } else {
-    //         $('#waitingText').html(texto);
-    //     }
-    //     $('#waiting').fadeIn('slow');
-    // }
-    // /* Cierra cuadro cargando ajax */
-    // function WaitingClose() {
-    //     $('#waiting').fadeOut('slow');
-    // }
+    <?php
+    if (isAndroid()) {
+        ?>
+        $('#content').css('padding-left', 0);
+        $('#content').css('padding-right', 0); <?php
+    } ?>
+
+
     </script>
 </body>
 

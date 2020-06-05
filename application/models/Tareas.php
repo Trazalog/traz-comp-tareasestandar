@@ -55,9 +55,42 @@ class Tareas extends CI_Model
 
     public function guardarPlantilla($data)
     {   
-        $data['empr_id'] = strval(empresa());
-        $post['post_plantilla'] = $data;
-        $rsp = $this->rest->callAPI('POST', REST_TST."plantillas", $post);
+        if(isset($data['plan_id'])){
+            $post['post_plantilla'] = $data;
+            $rsp = $this->rest->callAPI('PUT', REST_TST."plantillas", $post);
+        }
+        else{
+            $data['empr_id'] = strval(empresa());
+            $post['post_plantilla'] = $data;
+            $rsp = $this->rest->callAPI('POST', REST_TST."plantillas", $post);
+        }
+        return $rsp;
+    }
+
+    public function obtenerTareasPlantilla($id)
+    {   
+        $rsp = $this->rest->callAPI('GET',REST_TST."plantillas/tareas/$id");
+        if ($rsp['status']) {
+            $aux = json_decode($rsp['data']);
+            if(isset($aux->tareas->tarea))
+            $rsp['data'] = json_decode($rsp['data'])->tareas->tarea;
+            else $rsp['data'] = [];
+        }
+
+        return $rsp;
+    }
+
+    public function asociarTareaPlantilla($data)
+    {
+        $post['post_plantillas_tareas'] = $data;
+        $rsp = $this->rest->callAPI('POST', REST_TST."plantillas/tareas", $post);
+        return $rsp;
+    }
+
+    public function eliminarTareaPlantilla($data)
+    {
+        $post['delete_plantillas_tareas'] = $data;
+        $rsp = $this->rest->callAPI('DELETE', REST_TST."plantillas/tareas", $post);
         return $rsp;
     }
 

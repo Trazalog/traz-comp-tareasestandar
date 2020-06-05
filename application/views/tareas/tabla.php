@@ -1,24 +1,28 @@
 <div class="reload" data-link='<?php echo base_url('Tarea/tabla') ?>'>
-    <table id="tareas" class="table table-hover table-striped" >
+    <table id="tareas" class="table table-hover table-striped">
         <thead>
-            <!-- <th>Nombre Tarea</th> -->
-            <th width="15%" class="acciones">Acciones</th>
-            <th>Lista de Tareas</th>
-            <th width="15%">Duración STD</th>
+            <th style="font-size:18px">Lista de Tareas</th>
+            <th class="text-center" <?php echo isAndroid()?'width="5%"':'width="15%"' ?>><button class="btn btn-success" onclick="$('#nuevo').modal('show')"><i class="fa fa-plus"></i> <?php echo isAndroid()?'':'Agregar'?></button></th>
         </thead>
         <tbody>
             <?php
+             $aux['Agregar Subtarea']['accion'] = 'agregarSubtareas(this)';
+             $aux['Agregar Subtarea']['icon'] = 'fa-plus';
+             $aux['Editar']['accion'] = 'editarTarea(this)';
+             $aux['Editar']['icon'] = 'fa-edit';
+             $aux['Eliminar']['accion'] = 'eliminarTarea(this)';
+             $aux['Eliminar']['icon'] = 'fa-trash';
+             $aux =  opcionesTabla($aux);
+
             foreach ($tareas as $key => $o) {
                 
                 echo "<tr id='$o->tare_id' data-json='".json_encode($o)."'>";
                 echo "<td>";
-                echo "<button class='btn btn-link mr-2' onclick='agregarSubtareas(this)' title='Agregar Subtarea'><i class='fa fa-plus'></i></button>";
-                echo "<button class='btn btn-link mr-2' onclick='editarTarea(this)' title='Editar Tarea'><i class='fa fa-pencil'></i></button>";
-                echo "<button class='btn btn-link' onclick='eliminarTarea(this)' title='Eliminar Tarea'><i class='fa fa-trash'></i></button>";
+                echo "<b>Tarea: </b>$o->nombre<br>";
+                echo "<b>Descripción: </b>".substr($o->descripcion,0,200)."...<br>";
+                echo "<b>Duración STD: </b>$o->duracion";
                 echo "</td>";
-                echo "<td><b>Tarea: $o->nombre</b><br>";
-                echo "<b>Descripción: </b>$o->descripcion</td>";
-                echo "<td>$o->duracion</td>";
+                echo "<td class='text-center'>$aux</td>";
                 echo '</tr>';
 
             }
@@ -26,7 +30,3 @@
         </tbody>
     </table>
 </div>
-
-<script>
-DataTable('table#tareas');
-</script>
