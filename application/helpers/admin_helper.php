@@ -1,5 +1,10 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
+function bolita($texto, $color = 'gray', $detalle = null)
+    {
+        return "<span data-toggle='tooltip' title='$detalle' class='badge bg-$color estado'>$texto </span>";
+    }
+
 if (!function_exists('dropdown')) {
 
     function opcionesTabla($items)

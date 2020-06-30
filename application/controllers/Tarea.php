@@ -9,6 +9,13 @@ class Tarea extends CI_Controller
         $this->load->model('Tareas');
     }
 
+    public function planificar()
+    {
+        $data['tareas'] = $this->Tareas->obtener()['data'];
+        $data['plantillas'] = $this->Tareas->obtenerPlantillas()['data'];
+        $this->load->view('tareas/planificacion', $data);
+    }
+
     public function crear()
     {
         $this->load->view('crear');

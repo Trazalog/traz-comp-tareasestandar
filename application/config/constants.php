@@ -84,7 +84,10 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
-define('DEF_VIEW', 'Tarea');
+define('DEF_VIEW', 'Tarea/planificar');
 define('REST_TST', 'http://10.142.0.3:8280/services/TareasSTD/');
 define('lib', 'lib/');
 
+
+define('PEDIDO_PLANIFICADOR', true);
+define('PEDIDO_EJECUTADOR', true);

@@ -384,6 +384,7 @@
             reserved.
         </footer>
 
+        <?php $this->load->view('layout/modal_generico') ?>
 
     </div>
     <!-- ./wrapper -->
