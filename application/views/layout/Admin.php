@@ -31,6 +31,11 @@
        folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="lib/dist/css/skins/_all-skins.min.css">
 
+       <!-- FullCalendar -->
+   <link href='lib/fullcalendar/core/main.css' rel='stylesheet' />
+   <link href='lib/fullcalendar/daygrid/main.css' rel='stylesheet' />
+   <link href='lib/fullcalendar/list/main.css' rel='stylesheet' />
+
     <!-- Google Font -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
