@@ -1,0 +1,21 @@
+{
+    "usuarios":{
+        "usuario":[
+            {
+                "user_id":"1",
+                "nombre":"Anastasia",
+                "apellido":"Diaz"
+            },
+            {
+                "user_id":"2",
+                "nombre":"Kimberli",
+                "apellido":"Ruterford"
+            },
+            {
+                "user_id":"3",
+                "nombre":"Roberto",
+                "apellido":"Bueno"
+            }
+        ]
+    }
+}

@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-6">
-        <div class="box box-success">
+        <div class="box">
             <div class="form-group-input">
                 <div class="input-group margin">
                     <label>Nueva Tarea:</label>
@@ -12,28 +12,31 @@
                     </div>
                 </div>
             </div>
-            <table id="tareas-planificadas" class="table table-striped table-hover">
-                <thead>
-                    <th>Tareas Planificadas</th>
-                    <td width="5%"></td>
-                </thead>
-                <tbody>
+            <div class="table-responsive" style="height: 400px;">
+                <table id="tareas-planificadas" class="table table-striped table-hover table-fixed">
+                    <thead>
+                        <th>Tareas Planificadas</th>
+                        <th style="display:none;"></th>
+                        <td width="50%"></td>
+                    </thead>
+                    <tbody>
 
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="2" class="text-center">
-                            <h4>No hay Tareas Planificadas</h4>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2" class="text-center">
+                                <h4>No hay Tareas Planificadas</h4>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="box box-success">
+        <div class="box">
             <div class="box-body">
-                <div class="form-input-group">
+                <div class="form-group">
                     <label>Seleccionar Plantilla:</label>
                     <select id="plantilla" placeholder="Seleccionar Plantilla" class="form-control">
                         <option value="0">- Seleccionar Plantilla -</option>
@@ -44,16 +47,16 @@
                         ?>
                     </select>
                 </div>
-            </div>
-            <div class="box-body">
-                <table class="table table-striped table-hover" id="tareas">
-                    <thead>
-                        <th>Lista de Tareas</th>
-                        <th width="10%">Duración</th>
-                        <th width="5%"></th>
-                    </thead>
-                    <tbody>
-                        <?php
+
+                <div class="table-responsive" style="height: 400px;">
+                    <table class="table table-striped table-hover table-fixed" id="tareas">
+                        <thead>
+                            <th>Lista de Tareas</th>
+                            <th width="10%">Duración</th>
+                            <th width="5%"></th>
+                        </thead>
+                        <tbody>
+                            <?php
                             foreach ($tareas as $o) {
                                 echo "<tr id='$o->tare_id' class='data-json' data-json='".json_encode($o)."'>";
                                 echo "<td><a href='#' onclick='obtenerSubtareas($o->tare_id)'>$o->nombre</a></td>";
@@ -62,23 +65,24 @@
                                 echo "</tr>";
                             }
                         ?>
-                    </tbody>
-                    <tfoot style="display:none;">
-                        <tr>
-                            <td class="text-center" colspan="2"><a href="#"
-                                    onclick="$('#plantilla').val(0).trigger('change');">Mostrar Todas</a></td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </tbody>
+                        <tfoot style="display:none;">
+                            <tr>
+                                <td class="text-center" colspan="2"><a href="#"
+                                        onclick="$('#plantilla').val(0).trigger('change');">Mostrar Todas</a></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
             <div class="box-footer">
-                <button onclick="agregarTareas()" class="btn btn-success" id="btn-agregar" style="display:none;">Agregar
+                <button onclick="agregarTareas()" class="btn btn-success" id="btn-agregar">Agregar
                     Todas</button>
             </div>
         </div>
     </div>
 </div>
-<div class="box box-primary">
+<div class="box">
     <div class="box-header">
         <button class="btn btn-success" onclick="planificarTareas()"><i class="fa fa-check mr-2"></i>Planificar
             Tareas</button>
@@ -113,18 +117,36 @@ function obtenerSubtareas(tarea) {
 
 }
 
-
 function agregarTarea(tarea) {
     if (tarea.nombre) {
         const t = '#tareas-planificadas';
+        const accion =
+            `<accion style="display:none">
+            <button class="btn btn-link btn-xs btn-planificar" onclick="planificar(this)"><i class="fa fa-calendar text-success mr-1"></i></button>
+            <button class="btn btn-link btn-xs btn-asignar" onclick="s_tarea = this;$('#mdl-usuarios').modal('show')"><i class="fa fa-user text-success mr-1"></i></button>
+            <button class="btn btn-xs btn-link" title="Rec.Trabajo" onclick="s_tarea=this; $('#mdl-pere').modal('show')"><i class="fa fa-cogs"></i></button>
+            <button class="btn btn-xs btn-link" title="Rec. Materiales" onclick="s_tarea=this;$('#mdl-pema').modal('show')"><i class="fa fa-check-square-o"></i></button>
+            <button class="btn btn-xs btn-link" title="Formulario Tarea"><i class="fa fa-file-text"></i></button>
+            </accion>
+            <button class="btn btn-link btn-xs" onclick="conf(et,this)"><i class='fa fa-times text-danger'></i></button>`;
+
         $(t).append(
-            `<tr data-json='${JSON.stringify(tarea)}'>
-            <td>${tarea.nombre}</td>
-            <td><i class='fa fa-times text-danger' onclick="$(this).closest('tr').remove(); if($('${t} > tbody').find('tr').length==0)$('${t}').find('tfoot').show();"></i></td>
+            `<tr id="${tarea.tare_id?tarea.tare_id:''}" class="tarea data-json" data-json='${JSON.stringify({nombre:tarea.nombre, tare_id:(tarea.tare_id?tarea.tare_id:'')})}' data-tapl-id="0">
+            <td><h5>${tarea.nombre}</h5></td>
+            <td class="text-right">${accion}</td>
             </tr>`
         );
         $(t).find('tfoot').hide();
+        s_tarea = $('#tareas-planificadas > tbody > tr:last');
+        guardarTarea();
     }
+}
+var selectCalendario = false;
+
+function planificar(e) {
+    selectCalendario = true;
+    s_tarea = e;
+    foco('.box-calendario');
 }
 
 function agregarTareas() {
@@ -151,4 +173,9 @@ $('#plantilla').change(function() {
         }
     }
 });
+
+var et = function eliminarTarea(e) {
+    $(e).closest('tr').remove();
+    if ($(e).find('tbody').find('tr').length == 0) $(e).find('tfoot').show();
+}
 </script>

@@ -85,9 +85,17 @@ defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automat
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
 define('DEF_VIEW', 'Tarea/planificar');
-define('REST_TST', 'http://10.142.0.3:8280/services/TareasSTD/');
+#define('DEF_VIEW', 'Tarea/tabla');
+define('REST_TST', 'http://10.142.0.7:8280/services/TareasSTD/');
 define('lib', 'lib/');
+define('LIB', 'lib/');
 
 
 define('PEDIDO_PLANIFICADOR', true);
 define('PEDIDO_EJECUTADOR', true);
+
+define('CAL', 'traz-comp-calendar/');
+#define('TST', 'traz-comp-tareasestandar/');
+define('TST', '');
+
+define('MOCK', 'http://localhost:8080');

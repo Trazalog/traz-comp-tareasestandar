@@ -30,11 +30,16 @@
     <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="lib/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="lib\datetimepicker\css\bootstrap-datetimepicker.min.css">
 
-       <!-- FullCalendar -->
-   <link href='lib/fullcalendar/core/main.css' rel='stylesheet' />
-   <link href='lib/fullcalendar/daygrid/main.css' rel='stylesheet' />
-   <link href='lib/fullcalendar/list/main.css' rel='stylesheet' />
+    <link rel="stylesheet" href="<?php echo base_url(LIB) ?>swal/dist/sweetalert2.min.css">
+
+    
+
+    <!-- FullCalendar -->
+    <!-- <link href='lib/fullcalendar/core/main.css' rel='stylesheet' />
+    <link href='lib/fullcalendar/daygrid/main.css' rel='stylesheet' />
+    <link href='lib/fullcalendar/list/main.css' rel='stylesheet' /> -->
 
     <!-- Google Font -->
     <link rel="stylesheet"
@@ -50,8 +55,17 @@
     margin-right: 3px
 }
 
+.mr-3 {
+    margin-right: 6px
+}
+
+.mr-5 {
+    margin-right: 10px
+}
+
 .mr-25 {
     margin-top: 25px
+    
 }
 </style>
 
@@ -422,20 +436,28 @@
     <!-- AdminLTE App -->
     <script src="lib/dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
-    <script src="lib/dist/js/demo.js"></script>
+    <!-- <script src="lib/dist/js/demo.js"></script> -->
 
     <script src="<?php echo base_url(lib)?>props\forms.js"></script>
     <script src="<?php echo base_url(lib)?>props\tabla.js"></script>
     <script src="<?php echo base_url(lib)?>props\notificaciones.js"></script>
     <script src="<?php echo base_url(lib)?>props\navegacion.js"></script>
     <script src="<?php echo base_url(lib)?>props\jquery.inputmask.min.js"></script>
+    <script src="<?php echo base_url(lib)?>props\date.format.js"></script>
+    <script src="<?php echo base_url(lib)?>props\json.js"></script>
+
+    <script src="<?php echo base_url(lib) ?>datetimepicker\js\bootstrap-datetimepicker.min.js"></script>
+
+    <!-- SWAL ALERT -->
+    <script src="<?php echo base_url(LIB) ?>swal/dist/sweetalert2.min.js"></script>
     <!-- Page script -->
     <script>
     linkTo('<?php echo DEF_VIEW ?>');
 
-    function hecho(){
+    function hecho() {
         alert('Hecho');
     }
+
     function error() {
         alert('Error');
     }
@@ -447,8 +469,6 @@
         $('#content').css('padding-left', 0);
         $('#content').css('padding-right', 0); <?php
     } ?>
-
-
     </script>
 </body>
 

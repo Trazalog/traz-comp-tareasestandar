@@ -5,7 +5,7 @@ if (!function_exists('getJson')) {
     {
         $url = base_url('json/') . $file . '.json';
 
-        $rsp = json_decode(file_get_contents($url));
+        $rsp = file_get_contents($url);
 
         if ($show) {
             echo var_dump($rsp);
@@ -65,5 +65,13 @@ if (!function_exists('getJson')) {
         return true;
 
         else return false;
+    }
+
+    function format($fecha)
+    {
+        if(!$fecha || !strlen($fecha)) return '';
+        
+        $aux = explode('-', $fecha);
+        return $aux['2'].'-'.$aux['1'].'-'.$aux['0'];
     }
 }

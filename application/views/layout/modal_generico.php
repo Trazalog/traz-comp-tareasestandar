@@ -19,3 +19,8 @@
         </div>
     </div>
 </div>
+
+<!-- The Modal -->
+<div class="modal modal-fade" id="mdl-back">
+ 
+</div>

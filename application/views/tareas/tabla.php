@@ -16,7 +16,7 @@
 
             foreach ($tareas as $key => $o) {
                 
-                echo "<tr id='$o->tare_id' data-json='".json_encode($o)."'>";
+                echo "<tr id='$o->tare_id' class='data-json' data-json='".json_encode($o)."'>";
                 echo "<td>";
                 echo "<b>Tarea: </b>$o->nombre<br>";
                 echo "<b>Descripción: </b>".substr($o->descripcion,0,200)."...<br>";

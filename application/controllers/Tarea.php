@@ -7,13 +7,53 @@ class Tarea extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Tareas');
+        $this->load->model('Sectores');
     }
 
     public function planificar()
     {
         $data['tareas'] = $this->Tareas->obtener()['data'];
         $data['plantillas'] = $this->Tareas->obtenerPlantillas()['data'];
+        $data['usuarios'] = $this->obtenerUsuarios()->usuarios->usuario;
+        $data['sectores'] = $this->Sectores->obtener()['data'];
         $this->load->view('tareas/planificacion', $data);
+    }
+
+    public function guardarPlanificada()
+    {
+        $data = $this->input->post();
+        $res = $this->Tareas->guardarPlanificada($data);
+        echo json_encode($res);
+    }
+
+    public function obtenerUsuarios()
+    {
+        return json_decode(
+            '{
+                "usuarios":{
+                    "usuario":[
+                        {
+                            "user_id":"1",
+                            "nombre":"Anastasia",
+                            "apellido":"Diaz",
+                            "img":"lib/dist/img/user2-160x160.jpg"
+                        },
+                        {
+                            "user_id":"2",
+                            "nombre":"Kimberli",
+                            "apellido":"Ruterford",
+                            "img":"lib/dist/img/user2-160x160.jpg"
+                        },
+                        {
+                            "user_id":"3",
+                            "nombre":"Roberto",
+                            "apellido":"Bueno",
+                            "img":"lib/dist/img/user2-160x160.jpg"
+                        }
+                    ]
+                }
+            }'
+        );
     }
 
     public function crear()
