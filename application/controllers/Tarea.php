@@ -12,10 +12,13 @@ class Tarea extends CI_Controller
 
     public function planificar()
     {
+        $data['origen'] = array('orta_id' => 2, 'origen' => 'ORDEN_TRABAJO');
         $data['tareas'] = $this->Tareas->obtener()['data'];
         $data['plantillas'] = $this->Tareas->obtenerPlantillas()['data'];
         $data['usuarios'] = $this->obtenerUsuarios()->usuarios->usuario;
         $data['sectores'] = $this->Sectores->obtener()['data'];
+
+        $data['tareas_planificadas'] =  $this->Tareas->obtenerPlanificadas($data['origen']['origen'], $data['origen']['orta_id'])['data'];
         $this->load->view('tareas/planificacion', $data);
     }
 
@@ -24,6 +27,12 @@ class Tarea extends CI_Controller
         $data = $this->input->post();
         $res = $this->Tareas->guardarPlanificada($data);
         echo json_encode($res);
+    }
+
+    public function eliminarPlanificada($id)
+    {
+       $rsp = $this->Tareas->eliminarPlanificada($id);
+       echo json_encode($rsp);
     }
 
     public function obtenerUsuarios()

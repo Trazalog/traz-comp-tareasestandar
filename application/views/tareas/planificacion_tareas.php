@@ -16,7 +16,7 @@
                 <table id="tareas-planificadas" class="table table-striped table-hover table-fixed">
                     <thead>
                         <th>Tareas Planificadas</th>
-                        <th style="display:none;"></th>
+                        <!-- <th style="display:none;"></th> -->
                         <td width="50%"></td>
                     </thead>
                     <tbody>
@@ -116,29 +116,46 @@ function obtenerSubtareas(tarea) {
     }
 
 }
+var accion =
+    `<accion style="display:none">
+    <button class="btn btn-link btn-xs btn-planificar" onclick="planificar(this)"><i class="fa fa-calendar text-success mr-1"></i></button>
+    <button class="btn btn-link btn-xs btn-asignar" onclick="s_tarea = this;$('#mdl-usuarios').modal('show')"><i class="fa fa-user text-success mr-1"></i></button>
+    <button class="btn btn-xs btn-link" title="Rec.Trabajo" onclick="s_tarea=this; editarEquipos(); $('#mdl-pere').modal('show')"><i class="fa fa-cogs"></i></button>
+    <button class="btn btn-xs btn-link" title="Rec. Materiales" onclick="s_tarea=this;$('#mdl-pema').modal('show')"><i class="fa fa-check-square-o"></i></button>
+    <button class="btn btn-xs btn-link" title="Formulario Tarea"><i class="fa fa-file-text"></i></button>
+    </accion>
+    <button class="btn btn-link btn-xs" onclick="conf(et,this)"><i class='fa fa-times text-danger'></i></button>`;
+
+$('#tareas-calendario').find('.acciones').html(accion);
+$('#tareas-calendario > tbody > tr').each(function() {
+    var data = getJson(this);
+    if (data.hasOwnProperty('fecha') && data.fecha != '3000-12-31+00:00' && data.fecha != '0031-01-01+00:00') {
+        $(this).find('.btn-planificar').append(bolita(data.fecha, 'blue'));
+    }
+
+    var user = getJson($('#' + data.user_id));
+    if (user) {
+
+        $(this).find('.btn-asignar').append(bolita(user.nombre.charAt(0).toUpperCase() + user.apellido.charAt(0)
+            .toUpperCase(),
+            'orange'));
+    }
+});
+$('accion').show();
+
 
 function agregarTarea(tarea) {
     if (tarea.nombre) {
         const t = '#tareas-planificadas';
-        const accion =
-            `<accion style="display:none">
-            <button class="btn btn-link btn-xs btn-planificar" onclick="planificar(this)"><i class="fa fa-calendar text-success mr-1"></i></button>
-            <button class="btn btn-link btn-xs btn-asignar" onclick="s_tarea = this;$('#mdl-usuarios').modal('show')"><i class="fa fa-user text-success mr-1"></i></button>
-            <button class="btn btn-xs btn-link" title="Rec.Trabajo" onclick="s_tarea=this; $('#mdl-pere').modal('show')"><i class="fa fa-cogs"></i></button>
-            <button class="btn btn-xs btn-link" title="Rec. Materiales" onclick="s_tarea=this;$('#mdl-pema').modal('show')"><i class="fa fa-check-square-o"></i></button>
-            <button class="btn btn-xs btn-link" title="Formulario Tarea"><i class="fa fa-file-text"></i></button>
-            </accion>
-            <button class="btn btn-link btn-xs" onclick="conf(et,this)"><i class='fa fa-times text-danger'></i></button>`;
-
+        const id = nextVal();
         $(t).append(
-            `<tr id="${tarea.tare_id?tarea.tare_id:''}" class="tarea data-json" data-json='${JSON.stringify({nombre:tarea.nombre, tare_id:(tarea.tare_id?tarea.tare_id:'')})}' data-tapl-id="0">
+            `<tr id="${id}" class="tarea data-json" data-json='${JSON.stringify({nombre:tarea.nombre, tare_id:(tarea.tare_id?tarea.tare_id:'0')})}'>
             <td><h5>${tarea.nombre}</h5></td>
             <td class="text-right">${accion}</td>
             </tr>`
         );
         $(t).find('tfoot').hide();
-        s_tarea = $('#tareas-planificadas > tbody > tr:last');
-        guardarTarea();
+        guardarTarea($('#' + id));
     }
 }
 var selectCalendario = false;
@@ -150,6 +167,8 @@ function planificar(e) {
 }
 
 function agregarTareas() {
+    setWaitCount($('#tareas > tbody').find('tr:visible').length);
+    wo();
     $('#tareas').find('tr:visible').each(function() {
         var json = getJson(this);
         if (json) agregarTarea(json);
@@ -175,7 +194,27 @@ $('#plantilla').change(function() {
 });
 
 var et = function eliminarTarea(e) {
+    const id = getJson2(e).tapl_id;
     $(e).closest('tr').remove();
     if ($(e).find('tbody').find('tr').length == 0) $(e).find('tfoot').show();
+
+    $.ajax({
+        type: 'DELETE',
+        dataType: 'JSON',
+        url: '<?php TST ?>Tarea/eliminarPlanificada/' + id,
+        success: function(res) {
+            if (!res.status) falla();
+        },
+        error: function(res) {
+            error();
+        },
+        complete: function() {
+
+        }
+    });
+}
+
+function nextVal() {
+    return Date.now();
 }
 </script>

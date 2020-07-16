@@ -14,6 +14,8 @@
     background-color: #FFFFFF;
 }
 </style>
+
+<input id="origen" class="hidden data-json" data-json='<?php echo json_encode($origen) ?>'>
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true" onclick="copiarTareas()"><i
@@ -35,8 +37,6 @@
 </div>
 
 <script>
-copiarTareas()
-
 function copiarTareas(ban = false) {
     if (ban) {
         $('#tareas-planificadas').html($('#tareas-calendario').html());

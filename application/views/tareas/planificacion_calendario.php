@@ -16,7 +16,7 @@
                                 <option value="0">- Seleccionar -</option>
                                 <?php
                                     foreach ($sectores as $o) {
-                                        echo "<option value='$o->sect_id' data-json='".json_encode($o->equipos)."'>$o->nombre</option>";
+                                        echo "<option value='$o->sect_id' data-json='".json_encode($o->equipos)."'>$o->descripcion</option>";
                                     }
                                 ?>
                             </select>
@@ -40,6 +40,26 @@
             <div class="box-body">
                 <div class="table-responsive" style="height: 600px;">
                     <table class="table table-striped table-hover table-fixed" id="tareas-calendario">
+                        <thead>
+                            <th>Tareas Planificadas</th>
+                            <td width="50%"></td>
+                        </thead>
+                        <tbody>
+                            <?php
+                                if($tareas_planificadas){
+
+                                    foreach ($tareas_planificadas as $o) {
+                                        
+                                        echo "<tr class='data-json' data-json='".json_encode($o)."'>";
+                                        echo "<td><h5>$o->nombre</h5></td>";
+                                        echo "<td class='text-right acciones'></td>";
+                                        echo "</tr>";
+                                        
+                                    }
+                                }
+                            
+                            ?>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -57,11 +77,10 @@ function clickCalendario(info) {
     const hora = " 00:00";
     var fecha = dateFormat(info.dateStr);
     if (selectCalendario) {
-        $(s_tarea).closest('.tarea').attr('data-fecha', fecha);
-        $(s_tarea).closest('.tarea').attr('data-hora', hora);
+        setAttr(s_tarea, 'fecha', fecha);
         $(s_tarea).find('span').remove();
         $(s_tarea).append(bolita(fecha + hora, 'blue'));
-        guardarTarea($(s_tarea).closest('.tarea'));
+        guardarTarea(s_tarea);
 
         //Actualizar Vista
         foco();
@@ -69,21 +88,11 @@ function clickCalendario(info) {
     }
 }
 
-$('#sector').change(function() {
-    $('#equipo').empty();
-    var equipos = getJson($(this).find('option:selected'));
-    $('#equipo').append(`<option value="0">- Seleccionar -</option>`)
-    equipos.forEach(function(e) {
-        $('#equipo').append(`<option value="${e.equi_id}">${e.nombre}</option>`)
-    })
-})
 
-$('#equipo').change(function() {
-    console.log('Filtrar Calendarios');
-});
+function guardarTarea(id) {
 
-function guardarTarea() {
-    var tarea = getJson2(s_tarea);
+    var tarea = getJson2(id);
+    tarea.origen =  getJson2($('#origen'));
 
     $.ajax({
         type: 'POST',
@@ -91,18 +100,20 @@ function guardarTarea() {
         url: 'Tarea/guardarPlanificada',
         data: tarea,
         success: function(res) {
-            console.log('RSPAJAX:');
-
             console.log(res);
-
-            $(t).attr('data-tapl-id', res.data.tarea.tapl_id),
-                hecho();
+            if (res.status) {
+                setAttr(id, 'tapl_id', res.data.respuesta.tapl_id);
+                // hecho();
+            } else {
+                falla();
+            }
         },
         error: function(res) {
-
+            error();
         },
         complete: function() {
-
+            s_tarea = false;
+            wc();
         }
     });
 

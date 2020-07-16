@@ -70,6 +70,7 @@
 </style>
 
 <body class="hold-transition skin-blue sidebar-mini">
+    <?php $this->load->view('layout/wait') ?>
     <div class="wrapper">
 
         <header class="main-header">
@@ -458,6 +459,10 @@
         alert('Hecho');
     }
 
+    function falla() {
+        alert('Falla');
+    }
+
     function error() {
         alert('Error');
     }
@@ -470,6 +475,8 @@
         $('#content').css('padding-right', 0); <?php
     } ?>
     </script>
+
+  
 </body>
 
 </html>

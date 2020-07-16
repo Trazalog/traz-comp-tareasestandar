@@ -33,11 +33,11 @@
 <script>
 $('table#usuarios > tbody').find('.data-json').on('click', function() {
     var user = getJson(this);
-    setAttr(this, 'user_id', user.user_id);
+    setAttr(s_tarea, 'user_id', user.user_id);
     $(s_tarea).find('span').remove();
     $(s_tarea).append(bolita(user.nombre.charAt(0).toUpperCase() + user.apellido.charAt(0).toUpperCase(),
         'orange'));
-    guardarTarea();
+    guardarTarea(s_tarea);
     $('#mdl-usuarios').modal('hide');
 });
 </script>

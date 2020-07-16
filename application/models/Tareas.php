@@ -148,30 +148,110 @@ class Tareas extends CI_Model
 
     public function guardarPlanificada($data)
     {
-       $data = $this->map($data);
+        $post['_post_tarea_planificar'] = $this->map($data);
+        $rsp = $this->rest->callAPI('POST', REST_TST . "tarea/planificar", $post);
+        if ($rsp['status']) {
+            $rsp['data'] = json_decode($rsp['data']);
 
-        if (!isset($data['tapl_id'])) {
-            $post['post_tarea_planificar'] = $data;
-            $rsp = $this->rest->callAPI('POST', REST_TST . "tarea/planificar", $post);
-            if($rsp['status']){
-                $rsp['data'] = json_decode($rsp['data']);
-            }
-        } else {
-            $post['put_tarea_planificar'] = $data;
-            $rsp = $this->rest->callAPI('PUT', REST_TST . "tarea/planificar", $post);
+            $data['origen']['tapl_id'] = $rsp['data']->respuesta->tapl_id;
+            $this->asignarOrigen($data['origen']);
+            #Guardar Recursos Trabajo
+            if(isset($data['equipos'])) 
+                $this->asignarRecursos($data['tapl_id'], $data['equipos']);
+        }
+
+        return $rsp;
+    }
+
+    public function asignarOrigen($data){
+
+        $post['_post_tarea_origen'] = $data;
+        $url = REST_TST . 'tarea/origen';
+        $rsp = $this->rest->callApi('POST', $url, $post);
+        return $rsp;
+    }
+
+    public function map($data)
+    {
+        $aux = array();
+        $aux['nombre'] = $data['nombre'];
+        $aux['fecha'] = isset($data['fecha']) ? format($data['fecha']) : '3000-12-31';
+        $aux['info_id'] = isset($data['info_id']) ? $data['info_id'] : '0';
+        $aux['tare_id'] = isset($data['tare_id']) ? $data['tare_id'] : '0';
+        $aux['case_id'] = isset($data['case_id']) ? $data['case_id'] : '0';
+        $aux['user_id'] = isset($data['user_id']) ? $data['user_id'] : '0';
+        $aux['tapl_id'] = isset($data['tapl_id']) ? $data['tapl_id'] : "";
+
+        return $aux;
+    }
+
+    public function eliminarPlanificada($id)
+    {
+        $delete['delete_tarea_planificar']['tapl_id'] = $id;
+        $url = REST_TST . 'tarea/planificar';
+        $rsp = $this->rest->callApi('DELETE', $url, $delete);
+        return $rsp;
+    }
+
+    public function asignarRecursos($tapl_id, $equipos)
+    {
+        $rb[] = $this->eliminarRecursos($tapl_id);
+
+        $rec = '_post_tarea_recursos';
+        foreach ($equipos as $o) {
+            $data[$rec . '_batch_req'][$rec][] = array(
+                'tapl_id' => $tapl_id,
+                'recu_id' => $o['recu_id']
+            );
+        }
+
+        $rb[] = $data;
+
+        $rsp = requestBox(REST_TST, $rb);
+
+        return $rsp;
+    }
+
+    public function eliminarRecursos($tapl_id)
+    {
+        $rec = '_delete_tarea_recursos';
+
+        $data[$rec] = array(
+            "tapl_id" => $tapl_id
+        );
+
+        return $data;
+    }
+
+    public function obtenerPlanificadas($origen, $orta_id)
+    {
+        $url = REST_TST . "tareas/planificar/$origen/$orta_id";
+        $rsp = $this->rest->callApi('GET', $url);
+        if($rsp['status']){
+            $rsp['data'] = $this->mapRespuesta(json_decode($rsp['data'])->tareas->tarea);
         }
         return $rsp;
     }
 
-    function map($tarea){
+    public function mapRespuesta($data)
+    {
+        foreach ($data as $key => $o) {
+            
+            $rec = isset($o->recursos->recurso)?$o->recursos->recurso:false;
+            if(!$rec) continue;
+            unset($data[$key]->recursos);
 
-        $data['tapl_id'] = isset($data['tabl_id'])?$data['tabl_id']:"0";
-        $data['nombre'] = $tarea['nombre'];
-        $data['tare_id'] = $tarea['tare_id'];
-        $data['fecha'] = format($data['fecha']);
+            foreach ($rec as $ro) {
+                
+                if($ro->tipo == "TRABAJO"){
+                    
+                    $data[$key]->equipos[] = array('recu_id' => $ro->recu_id, 'codigo' => $ro->codigo);
 
-        return $tarea;
+                }
+            }
 
+        }
+        return $data;
     }
 
 }
