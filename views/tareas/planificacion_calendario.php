@@ -97,7 +97,7 @@ function guardarTarea(id) {
     $.ajax({
         type: 'POST',
         dataType: 'JSON',
-        url: 'Tarea/guardarPlanificada',
+        url: '<?php echo TST ?>Tarea/guardarPlanificada',
         data: tarea,
         success: function(res) {
             console.log(res);
