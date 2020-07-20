@@ -52,7 +52,7 @@ function agregarItem() {
         `<tr class="data-json" data-json='${JSON.stringify(pedido)}'><td>${art.descripcion}</td><td class="text-center">${pedido.cantidad}</td><td><button class="btn btn-link" onclick="$(this).closest('tr').remove()"><i class="fa fa-trash text-danger"></i></button></td></tr>`
     );
     $('#pedido')[0].reset();
-    $('#pl_equipo').select2("val", "");
+    $('#pl_equipo').select2("val", "").trigger('change');
 }
 
 function guardarPedido() {
