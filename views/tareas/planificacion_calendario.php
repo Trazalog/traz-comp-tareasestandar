@@ -36,8 +36,8 @@
         </div>
     </div>
     <div class="col-md-6">
-        <div class="box">
-            <div class="box-body">
+        <div class="box" id="pnl-tareas">
+            <div class="box-body" >
                 <div class="table-responsive" style="height: 600px;">
                     <table class="table table-striped table-hover table-fixed" id="tareas-calendario">
                         <thead>
@@ -91,6 +91,7 @@ function clickCalendario(info) {
 
 function guardarTarea(id) {
 
+    wbox('#pnl-tareas');
     var tarea = getJson2(id);
     tarea.origen =  getJson2($('#origen'));
 
@@ -113,7 +114,7 @@ function guardarTarea(id) {
         },
         complete: function() {
             s_tarea = false;
-            wc();
+            wbox();
         }
     });
 

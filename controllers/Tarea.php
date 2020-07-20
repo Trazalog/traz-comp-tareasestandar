@@ -10,15 +10,15 @@ class Tarea extends CI_Controller
         $this->load->model('Sectores');
     }
 
-    public function planificar()
+    public function planificar($origen, $orta_id)
     {
-        $data['origen'] = array('orta_id' => 2, 'origen' => 'ORDEN_TRABAJO');
+        $data['origen'] = array('orta_id' => $orta_id, 'origen' => $origen);
         $data['tareas'] = $this->Tareas->obtener()['data'];
         $data['plantillas'] = $this->Tareas->obtenerPlantillas()['data'];
         $data['usuarios'] = $this->obtenerUsuarios()->usuarios->usuario;
         $data['sectores'] = $this->Sectores->obtener()['data'];
 
-        $data['tareas_planificadas'] =  $this->Tareas->obtenerPlanificadas($data['origen']['origen'], $data['origen']['orta_id'])['data'];
+        $data['tareas_planificadas'] =  $this->Tareas->obtenerPlanificadas($origen, $orta_id)['data'];
         $this->load->view('tareas/planificacion', $data);
     }
 

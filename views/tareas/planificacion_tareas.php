@@ -196,7 +196,7 @@ var et = function eliminarTarea(e) {
     $.ajax({
         type: 'DELETE',
         dataType: 'JSON',
-        url: '<?php TST ?>Tarea/eliminarPlanificada/' + id,
+        url: '<?php echo TST ?>Tarea/eliminarPlanificada/' + id,
         success: function(res) {
             if (!res.status) falla();
         },
