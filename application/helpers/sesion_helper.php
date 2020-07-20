@@ -4,7 +4,7 @@ if(!function_exists('empresa')){
 
     function empresa()
     {
-        return 100;
+        return 1;
     }
 
 }

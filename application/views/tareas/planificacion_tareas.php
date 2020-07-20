@@ -82,12 +82,7 @@
         </div>
     </div>
 </div>
-<div class="box">
-    <div class="box-header">
-        <button class="btn btn-success" onclick="planificarTareas()"><i class="fa fa-check mr-2"></i>Planificar
-            Tareas</button>
-    </div>
-</div>
+
 
 <script>
 function planificarTareas() {
@@ -121,7 +116,7 @@ var accion =
     <button class="btn btn-link btn-xs btn-planificar" onclick="planificar(this)"><i class="fa fa-calendar text-success mr-1"></i></button>
     <button class="btn btn-link btn-xs btn-asignar" onclick="s_tarea = this;$('#mdl-usuarios').modal('show')"><i class="fa fa-user text-success mr-1"></i></button>
     <button class="btn btn-xs btn-link" title="Rec.Trabajo" onclick="s_tarea=this; editarEquipos(); $('#mdl-pere').modal('show')"><i class="fa fa-cogs"></i></button>
-    <button class="btn btn-xs btn-link" title="Rec. Materiales" onclick="s_tarea=this;$('#mdl-pema').modal('show')"><i class="fa fa-check-square-o"></i></button>
+    <button class="btn btn-xs btn-link" title="Rec. Materiales" onclick="s_tarea=this; verDetallePedido();"><i class="fa fa-check-square-o"></i></button>
     <button class="btn btn-xs btn-link" title="Formulario Tarea"><i class="fa fa-file-text"></i></button>
     </accion>
     <button class="btn btn-link btn-xs" onclick="conf(et,this)"><i class='fa fa-times text-danger'></i></button>`;

@@ -42,7 +42,7 @@
                     <table class="table table-striped table-hover table-fixed" id="tareas-calendario">
                         <thead>
                             <th>Tareas Planificadas</th>
-                            <td width="50%"></td>
+                            <th width="50%"></th>
                         </thead>
                         <tbody>
                             <?php

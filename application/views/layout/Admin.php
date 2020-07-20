@@ -446,6 +446,7 @@
     <script src="<?php echo base_url(lib)?>props\jquery.inputmask.min.js"></script>
     <script src="<?php echo base_url(lib)?>props\date.format.js"></script>
     <script src="<?php echo base_url(lib)?>props\json.js"></script>
+    <script src="<?php echo base_url(lib)?>props\busqueda_avanzada.js"></script>
 
     <script src="<?php echo base_url(lib) ?>datetimepicker\js\bootstrap-datetimepicker.min.js"></script>
 
