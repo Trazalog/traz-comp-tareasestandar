@@ -1,9 +1,9 @@
-
 <style>
-.nav-tabs > li{
-    font-size: 15px;    
+.nav-tabs>li {
+    font-size: 15px;
 }
 </style>
+
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i
@@ -13,8 +13,6 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_1">
-            <!-- <button class="btn btn-success" onclick="$('#nuevo').modal('show')"><i class="fa fa-plus mr-2"></i>Nueva
-                Tarea</button><br><br> -->
             <?php $this->load->view('tareas/tabla')?>
         </div>
         <!-- /.tab-pane -->
@@ -25,8 +23,6 @@
     </div>
     <!-- /.tab-content -->
 </div>
-
-
 <!-- The Modal -->
 <div class="modal modal-fade" id="nuevo">
     <div class="modal-dialog">

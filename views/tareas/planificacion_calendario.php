@@ -36,9 +36,9 @@
         </div>
     </div>
     <div class="col-md-6">
-        <div class="box" id="pnl-tareas">
+        <div class="box" id="bolsa-tareas">
             <div class="box-body" >
-                <div class="table-responsive" style="height: 600px;">
+                <div class="table-responsive" style="height: 540px;">
                     <table class="table table-striped table-hover table-fixed" id="tareas-calendario">
                         <thead>
                             <th>Tareas Planificadas</th>
@@ -73,6 +73,7 @@
 var s_tarea = null;
 
 function clickCalendario(info) {
+    wbox('#bolsa-tareas');
     //HARDCODE
     const hora = " 00:00";
     var fecha = dateFormat(info.dateStr);
@@ -91,7 +92,7 @@ function clickCalendario(info) {
 
 function guardarTarea(id) {
 
-    wbox('#pnl-tareas');
+ 
     var tarea = getJson2(id);
     tarea.origen =  getJson2($('#origen'));
 

@@ -140,6 +140,7 @@ $('accion').show();
 
 
 function agregarTarea(tarea) {
+    wbox('#pnl-tareas');
     if (tarea.nombre) {
         const t = '#tareas-planificadas';
         const id = nextVal();
@@ -162,7 +163,7 @@ function planificar(e) {
 }
 
 function agregarTareas() {
-    setWaitCount($('#tareas > tbody').find('tr:visible').length);
+    //setWaitCount($('#tareas > tbody').find('tr:visible').length);
     wo();
     $('#tareas').find('tr:visible').each(function() {
         var json = getJson(this);
