@@ -32,6 +32,7 @@
 
 <script>
 $('table#usuarios > tbody').find('.data-json').on('click', function() {
+    wbox('#bolsa-tareas');
     var user = getJson(this);
     setAttr(s_tarea, 'user_id', user.user_id);
     $(s_tarea).find('span').remove();
