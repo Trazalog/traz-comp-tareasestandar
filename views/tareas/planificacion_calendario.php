@@ -57,7 +57,6 @@
                                         
                                     }
                                 }
-                            
                             ?>
                         </tbody>
                     </table>
@@ -70,6 +69,8 @@
 
 
 <script>
+
+
 var s_tarea = null;
 
 function clickCalendario(info) {

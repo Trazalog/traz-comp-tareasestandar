@@ -13,6 +13,14 @@
     top: 0;
     background-color: #FFFFFF;
 }
+
+.tDnD_whileDrag td {
+    background-color: #eee;
+    /*-webkit-box-shadow: 11px 5px 12px 2px #333, 0 1px 0 #ccc inset, 0 -1px 0 #ccc inset;*/
+    -webkit-box-shadow: 6px 3px 5px #555, 0 1px 0 #ccc inset, 0 -1px 0 #ccc inset;
+    /*-moz-box-shadow: 6px 4px 5px 1px #555, 0 1px 0 #ccc inset, 0 -1px 0 #ccc inset;*/
+    /*-box-shadow: 6px 4px 5px 1px #555, 0 1px 0 #ccc inset, 0 -1px 0 #ccc inset;*/
+}
 </style>
 <div class="box" id="pnl-tareas">
     <input id="origen" class="hidden data-json" data-json='<?php echo json_encode($origen) ?>'>
@@ -40,10 +48,11 @@
 <script>
 function copiarTareas(ban = false) {
     if (ban) {
-        $('#tareas-planificadas').html($('#tareas-calendario').html());
+        $('#tareas-planificadas').html($('#tareas-calendario').html()).tableDnD();
         $('accion').hide();
+        $('#tareas-planificadas');
     } else {
-        $('#tareas-calendario').html($('#tareas-planificadas').html());
+        $('#tareas-calendario').html($('#tareas-planificadas').html()).tableDnD();
         $('accion').show();
     }
 }
