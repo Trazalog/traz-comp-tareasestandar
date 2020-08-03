@@ -83,7 +83,7 @@ function actualizarTareasSelect() {
             var html  = '<option value="" disabled selected>- Seleccionar -</option>';
             if(res.status & res.data){
                 res.data.forEach(function(e){
-                    $html = $html + `<option value="${e.tare_id}">${e.nombre}</option>`;
+                    html =  html + `<option value="${e.tare_id}">${e.nombre}</option>`;
                 });
             }
             $('select#tareas').html(html);
