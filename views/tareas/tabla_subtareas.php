@@ -1,4 +1,4 @@
-<div class="reload" data-link="<?php echo base_url("Tarea/tablaSubtareas/".(isset($tare_id)?$tare_id:'')) ?>">
+<div class="reload" data-link="<?php echo base_url(TST."Tarea/tablaSubtareas/".(isset($tare_id)?$tare_id:'')) ?>">
     <table id="subtareas" class="table table-striped table-hover">
         <thead>
             <th width="5%">N°</th>

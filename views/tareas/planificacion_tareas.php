@@ -95,7 +95,7 @@ function obtenerSubtareas(tarea) {
     if (tarea) {
         $.ajax({
             type: 'GET',
-            url: 'Tarea/tablaSubtareas/' + tarea,
+            url: '<?php echo base_url(TST) ?>Tarea/tablaSubtareas/' + tarea,
             success: function(res) {
                 $('#mdl-generico').find('h4').html('Listado Subtareas')
                 $('#mdl-generico').find('.modal-body').html(res);

@@ -18,7 +18,7 @@ function guardarPlantilla(id = false) {
     if (id) data.plan_id = id;
     $.ajax({
         type: 'POST',
-        url: '<?php echo base_url()?>Tarea/guardarPlantilla',
+        url: '<?php echo base_url(TST) ?>Tarea/guardarPlantilla',
         data: {
             data
         },
@@ -39,7 +39,7 @@ function eliminarPlantilla(e) {
     $.ajax({
         type: 'DELETE',
         dataType: 'JSON',
-        url: '<?php echo base_url()?>Tarea/eliminarPlantilla/' + id,
+        url: '<?php echo base_url(TST)?>Tarea/eliminarPlantilla/' + id,
         success: function(result) {
             $('#plantillas').find('tr#' + id).remove();
             alert('Hecho');
@@ -59,7 +59,7 @@ function getTareasPlantilla(e) {
     selectPlan = data.plan_id;
     $.ajax({
         type: 'GET',
-        url: '<?php echo base_url() ?>Tarea/tablaTareasPlantilla/' + data.plan_id,
+        url: '<?php echo base_url(TST) ?>Tarea/tablaTareasPlantilla/' + data.plan_id,
         success: function(res) {
             $('#tareas_asociadas .tabla').html(res);
             $('#tareas_asociadas').modal('show');
@@ -78,12 +78,12 @@ function actualizarTareasSelect() {
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
-        url: '<?php echo base_url() ?>Tarea/obtener',
+        url: '<?php echo base_url(TST) ?>Tarea/obtener',
         success: function(res) {
             var html  = '<option value="" disabled selected>- Seleccionar -</option>';
             if(res.status & res.data){
                 res.data.forEach(function(e){
-                    $html + = `<option value="${e.tare_id}">${e.nombre}</option>`;
+                    $html = $html + `<option value="${e.tare_id}">${e.nombre}</option>`;
                 });
             }
             $('select#tareas').html(html);
@@ -109,7 +109,7 @@ function asociarTareaPlantilla() {
     $.ajax({
         type: 'POST',
         dataType: 'JSON',
-        url: '<?php echo base_url() ?>Tarea/asociarTareaPlantilla',
+        url: '<?php echo base_url(TST) ?>Tarea/asociarTareaPlantilla',
         data: {
             plan_id,
             tare_id

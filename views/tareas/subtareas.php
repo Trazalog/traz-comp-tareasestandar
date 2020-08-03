@@ -55,7 +55,7 @@ function guardarSubtarea() {
     data.tare_id = tare_id;
     $.ajax({
         type: 'POST',
-        url: '<?php echo base_url() ?>Tarea/guardarSubtarea',
+        url: '<?php echo base_url(TST) ?>Tarea/guardarSubtarea',
         data: {
             data
         },
@@ -76,7 +76,7 @@ function eliminarSubtarea(e) {
     const id = $(e).closest('.data-json').attr('id');
     $.ajax({
         type: 'DELETE',
-        url: '<?php echo base_url() ?>Tarea/eliminarSubtarea/' + id,
+        url: '<?php echo base_url(TST) ?>Tarea/eliminarSubtarea/' + id,
         success: function(result) {
             $('tr#' + id).remove();
             alert('Hecho')

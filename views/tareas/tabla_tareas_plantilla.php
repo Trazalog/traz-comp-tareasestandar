@@ -1,4 +1,4 @@
-<div class="reload" data-link="<?php echo base_url("Tarea/tablaTareasPlantilla/$id") ?>">
+<div class="reload" data-link="<?php echo base_url(TST."Tarea/tablaTareasPlantilla/$id") ?>">
     <table id="tareas_plantillas" class="table table-striped table-hover">
         <thead>
             <th style="font-size:18px">Tareas Plantilla</th>
@@ -29,7 +29,7 @@ function eliminarTareaPlantilla(e) {
     $.ajax({
         type: 'POST',
         dataType: 'JSON',
-        url: '<?php echo base_url() ?>Tarea/eliminarTareaPlantilla',
+        url: '<?php echo base_url(TST) ?>Tarea/eliminarTareaPlantilla',
         data: {plan_id, tare_id},
         success: function(res) {
             $(e).closest('tr').remove();

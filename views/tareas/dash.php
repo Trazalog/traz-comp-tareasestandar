@@ -96,7 +96,7 @@ function eliminarTarea(e) {
     var data = getJson($(e).closest('tr'));
     $.ajax({
         type: 'DELETE',
-        url: 'index.php/Tarea/eliminar/' + data.tare_id,
+        url: '<?php echo base_url(TST) ?>Tarea/eliminar/' + data.tare_id,
         success: function(result) {
             alert('Hecho');
             reload('#tareas');
@@ -116,7 +116,7 @@ function guardarTarea(id = false) {
 
     $.ajax({
         type: 'POST',
-        url: 'index.php/Tarea/guardar' + (id ? '/' + id : ''),
+        url: '<?php echo base_url(TST) ?>Tarea/guardar' + (id ? '/' + id : ''),
         data: {
             data
         },

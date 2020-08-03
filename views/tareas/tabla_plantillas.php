@@ -1,4 +1,4 @@
-<div class="reload" data-link="<?php echo base_url("Tarea/tablaPlantillas") ?>">
+<div class="reload" data-link="<?php echo base_url(TST."Tarea/tablaPlantillas") ?>">
    <table id="plantillas" class="table table-striped table-hover" >
        <thead>
            <th style="font-size:18px">Lista de Plantillas</th>
