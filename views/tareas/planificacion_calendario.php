@@ -90,10 +90,15 @@ function clickCalendario(info) {
     }
 }
 
+function guardarTodasTareas(){
+    $('#tareas-calendario').find('.tarea').each(function(){
+        console.log(this.id);
+        guardarTarea('#'+this.id);
+    })
+}
 
 function guardarTarea(id) {
 
- 
     var tarea = getJson2(id);
     tarea.origen =  getJson2($('#origen'));
 

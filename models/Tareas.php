@@ -148,34 +148,55 @@ class Tareas extends CI_Model
 
     public function guardarPlanificada($data)
     {
+        $res = $this->lanzarProceso($data);
+        if($res){
+            $data['case_id'] = (string) $res->payload->caseId;
+        }
+
         $post['_post_tarea_planificar'] = $this->map($data);
         $rsp = $this->rest->callAPI('POST', REST_TST . "tarea/planificar", $post);
         if ($rsp['status']) {
             $rsp['data'] = json_decode($rsp['data']);
-
             $data['origen']['tapl_id'] = $rsp['data']->respuesta->tapl_id;
             $this->asignarOrigen($data['origen']);
             #Guardar Recursos Trabajo
-            if(isset($data['equipos'])) 
+            if (isset($data['equipos'])) {
                 $this->asignarRecursos($data['tapl_id'], $data['equipos']);
+            }
         }
 
         return $rsp;
     }
 
-    public function asignarOrigen($data){
+    public function lanzarProceso($tarea)
+    {
+        #Validacion de Lanzar Proceso
+        if (isset($tarea['fecha']) && ($tarea['fecha'] != '3000-12-31+00:00') && isset($tarea['nombre']) && isset($tarea['user_id']) && isset($tarea['tapl_id'])) {
+            $contract['nombre_proceso'] = 'TST01';
+            $contract['session'] = $this->session->has_userdata('bpm_token') ? $this->session->userdata('bpm_token') : '';
+            $contract['payload']['nombreTarea'] = $tarea['nombre'];
+            $contract['payload']['userNick'] = $tarea['user_id'];
+            $contract['payload']['taplId'] = $tarea['tapl_id'];
+            $res = wso2(REST_API_BPM, 'POST', $contract);
+            return $res['data'];
+        }
+    }
 
-        $post['_post_tarea_origen'] = $data;
-        $url = REST_TST . 'tarea/origen';
-        $rsp = $this->rest->callApi('POST', $url, $post);
-        return $rsp;
+    public function asignarOrigen($data)
+    {
+        if($data['orta_id'] != "0"){
+            $post['_post_tarea_origen'] = $data;
+            $url = REST_TST . 'tarea/origen';
+            $rsp = $this->rest->callApi('POST', $url, $post);
+            return $rsp;
+        }
     }
 
     public function map($data)
     {
         $aux = array();
         $aux['nombre'] = $data['nombre'];
-        $aux['fecha'] = isset($data['fecha']) ? format($data['fecha']) : '3000-12-31';
+        $aux['fecha'] = (isset($data['fecha']) && $data['fecha'] != "0031-01-01+00:00") ? format($data['fecha']) : '3000-12-31';
         $aux['info_id'] = isset($data['info_id']) ? $data['info_id'] : '0';
         $aux['tare_id'] = isset($data['tare_id']) ? $data['tare_id'] : '0';
         $aux['case_id'] = isset($data['case_id']) ? $data['case_id'] : '0';
@@ -201,7 +222,7 @@ class Tareas extends CI_Model
         foreach ($equipos as $o) {
             $data[$rec . '_batch_req'][$rec][] = array(
                 'tapl_id' => $tapl_id,
-                'recu_id' => $o['recu_id']
+                'recu_id' => $o['recu_id'],
             );
         }
 
@@ -217,7 +238,7 @@ class Tareas extends CI_Model
         $rec = '_delete_tarea_recursos';
 
         $data[$rec] = array(
-            "tapl_id" => $tapl_id
+            "tapl_id" => $tapl_id,
         );
 
         return $data;
@@ -227,7 +248,7 @@ class Tareas extends CI_Model
     {
         $url = REST_TST . "tareas/planificar/$origen/$orta_id";
         $rsp = $this->rest->callApi('GET', $url);
-        if($rsp['status']){
+        if ($rsp['status']) {
             $rsp['data'] = $this->mapRespuesta(json_decode($rsp['data'])->tareas->tarea);
         }
         return $rsp;
@@ -236,15 +257,18 @@ class Tareas extends CI_Model
     public function mapRespuesta($data)
     {
         foreach ($data as $key => $o) {
-            
-            $rec = isset($o->recursos->recurso)?$o->recursos->recurso:false;
-            if(!$rec) continue;
+
+            $rec = isset($o->recursos->recurso) ? $o->recursos->recurso : false;
+            if (!$rec) {
+                continue;
+            }
+
             unset($data[$key]->recursos);
 
             foreach ($rec as $ro) {
-                
-                if($ro->tipo == "TRABAJO"){
-                    
+
+                if ($ro->tipo == "TRABAJO") {
+
                     $data[$key]->equipos[] = array('recu_id' => $ro->recu_id, 'codigo' => $ro->codigo);
 
                 }
@@ -252,6 +276,12 @@ class Tareas extends CI_Model
 
         }
         return $data;
+    }
+
+    public function obtenerXCaseId($caseId)
+    {
+        $url = REST_TST."tareas/planificadas/case/$caseId";
+        return wso2($url);
     }
 
 }

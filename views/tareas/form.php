@@ -15,13 +15,13 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label>Duración Standar:</label>
-                <input id="duracion" name="duracion" class="form-control mask" type="text">
+                <input id="duracion" name="duracion" class="form-control" type="text">
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label>Formulario Asociado:</label>
-                <select id="form_id" name="form_id" class="form-control">
+                <select id="form_id" name="form_id" class="form-control"  style='width: 100%;' >
                     <option value="0" selected> - Seleccionar Item -</option>
                 </select>
             </div>
@@ -29,7 +29,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label>Receta Asociada:</label>
-                <select id="rece_id" name="rece_id" class="form-control">
+                <select id="rece_id" name="rece_id" class="form-control" style='width: 100%;'>
                     <option value="0" selected> - Seleccionar Item -</option>
                 </select>
             </div>
@@ -37,9 +37,9 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label>Proceso Asociado:</label>
-                <select id="proc_id" name="proc_id" class="form-control">
-                    <option value="0" selected> - Seleccionar Item -</option>
-                </select>
+                <?php
+                    echo selectFromCore('proc_id','Selecccionar Proceso', 'procesos');
+                ?>
             </div>
         </div>
     </div>

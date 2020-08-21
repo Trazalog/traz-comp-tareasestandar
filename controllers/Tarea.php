@@ -42,19 +42,19 @@ class Tarea extends CI_Controller
                 "usuarios":{
                     "usuario":[
                         {
-                            "user_id":"1",
+                            "user_id":"ad.min",
                             "nombre":"Anastasia",
                             "apellido":"Diaz",
                             "img":"lib/dist/img/user2-160x160.jpg"
                         },
                         {
-                            "user_id":"2",
+                            "user_id":"ad.min",
                             "nombre":"Kimberli",
                             "apellido":"Ruterford",
                             "img":"lib/dist/img/user2-160x160.jpg"
                         },
                         {
-                            "user_id":"3",
+                            "user_id":"ad.min",
                             "nombre":"Roberto",
                             "apellido":"Bueno",
                             "img":"lib/dist/img/user2-160x160.jpg"
