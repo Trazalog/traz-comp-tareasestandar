@@ -151,6 +151,8 @@ class Tareas extends CI_Model
         $res = $this->lanzarProceso($data);
         if($res){
             $data['case_id'] = (string) $res->payload->caseId;
+            $this->load->model(FRM.'Forms');
+            $this->Forms->guardar($data['form_id']);
         }
 
         $post['_post_tarea_planificar'] = $this->map($data);
@@ -164,15 +166,16 @@ class Tareas extends CI_Model
                 $this->asignarRecursos($data['tapl_id'], $data['equipos']);
             }
         }
-
-        return $rsp;
+        unset($data['origen']);
+        return $data;
     }
 
     public function lanzarProceso($tarea)
     {
         #Validacion de Lanzar Proceso
-        if (isset($tarea['fecha']) && ($tarea['fecha'] != '3000-12-31+00:00') && isset($tarea['nombre']) && isset($tarea['user_id']) && isset($tarea['tapl_id'])) {
-            $contract['nombre_proceso'] = 'TST01';
+        if (!isset($data['case_id']) && isset($tarea['fecha']) && ($tarea['fecha'] != '3000-12-31+00:00') && isset($tarea['nombre']) && isset($tarea['user_id']) && isset($tarea['tapl_id'])) {
+            
+            $contract['nombre_proceso'] = 'TST01';# HARCODE
             $contract['session'] = $this->session->has_userdata('bpm_token') ? $this->session->userdata('bpm_token') : '';
             $contract['payload']['nombreTarea'] = $tarea['nombre'];
             $contract['payload']['userNick'] = $tarea['user_id'];

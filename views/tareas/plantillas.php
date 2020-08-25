@@ -16,6 +16,7 @@ function editarPlantilla(e) {
 function guardarPlantilla(id = false) {
     const data = getForm('#frm-plantilla');
     if (id) data.plan_id = id;
+    wo();
     $.ajax({
         type: 'POST',
         url: '<?php echo base_url(TST) ?>Tarea/guardarPlantilla',
@@ -30,12 +31,16 @@ function guardarPlantilla(id = false) {
         },
         error: function(result) {
             alert('Error')
+        },
+        complete:function(){
+            wc();
         }
     });
 }
 
 function eliminarPlantilla(e) {
     const id = $(e).closest('.data-json').attr('id');
+    wo()
     $.ajax({
         type: 'DELETE',
         dataType: 'JSON',
@@ -46,6 +51,9 @@ function eliminarPlantilla(e) {
         },
         error: function(result) {
             alert('Error')
+        },
+        complete:function(){
+            wc();
         }
     });
 }
@@ -57,6 +65,7 @@ function getTareasPlantilla(e) {
     var data = getJson($(e).closest('.data-json'));
     $('plantilla').html(data.nombre);
     selectPlan = data.plan_id;
+    wo()
     $.ajax({
         type: 'GET',
         url: '<?php echo base_url(TST) ?>Tarea/tablaTareasPlantilla/' + data.plan_id,
@@ -68,24 +77,27 @@ function getTareasPlantilla(e) {
         error: function(res) {
             error();
         },
-        complete: function() {
-
+        complete:function(){
+            wc();
         }
     });
 }
 
 function actualizarTareasSelect() {
+    wo();
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
         url: '<?php echo base_url(TST) ?>Tarea/obtener',
         success: function(res) {
+            console.log(res);
             var html  = '<option value="" disabled selected>- Seleccionar -</option>';
-            if(res.status & res.data){
+            if(res.status && res.data){
                 res.data.forEach(function(e){
                     html =  html + `<option value="${e.tare_id}">${e.nombre}</option>`;
                 });
             }
+            console.log(html);
             $('select#tareas').html(html);
 
             $('#tareas_plantillas tbody tr').each(function() {
@@ -97,8 +109,8 @@ function actualizarTareasSelect() {
         error: function(res) {
             error();
         },
-        complete: function() {
-
+        complete:function(){
+            wc();
         }
     });
 }
@@ -106,6 +118,7 @@ function actualizarTareasSelect() {
 function asociarTareaPlantilla() {
     var plan_id = selectPlan;
     var tare_id = $('select#tareas').val();
+    wo()
     $.ajax({
         type: 'POST',
         dataType: 'JSON',
@@ -122,8 +135,8 @@ function asociarTareaPlantilla() {
         error: function(res) {
             error();
         },
-        complete: function() {
-
+        complete:function(){
+            wc();
         }
     });
 }

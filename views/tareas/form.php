@@ -21,9 +21,9 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label>Formulario Asociado:</label>
-                <select id="form_id" name="form_id" class="form-control"  style='width: 100%;' >
-                    <option value="0" selected> - Seleccionar Item -</option>
-                </select>
+                <?php
+                    echo selectFromFont('form_id','Seleccionar Formulario', FRM_DS.'/formularios/1',['value'=>'form_id', 'descripcion'=>'nombre']);
+                ?>
             </div>
         </div>
         <div class="col-md-6">

@@ -53,6 +53,7 @@
 function guardarSubtarea() {
     var data = getForm('#frm-subtarea');
     data.tare_id = tare_id;
+    wo()
     $.ajax({
         type: 'POST',
         url: '<?php echo base_url(TST) ?>Tarea/guardarSubtarea',
@@ -66,6 +67,9 @@ function guardarSubtarea() {
         },
         error: function(result) {
             alert('Error')
+        },
+        complete:function(){
+            wc();
         }
     });
 }
@@ -74,6 +78,7 @@ function eliminarSubtarea(e) {
 
     if (!confirm('¿Desea eliminar este elemento?')) return;
     const id = $(e).closest('.data-json').attr('id');
+    wo();
     $.ajax({
         type: 'DELETE',
         url: '<?php echo base_url(TST) ?>Tarea/eliminarSubtarea/' + id,
@@ -83,6 +88,9 @@ function eliminarSubtarea(e) {
         },
         error: function(result) {
             alert('Error')
+        },
+        complete:function(){
+            wc();
         }
     });
 }

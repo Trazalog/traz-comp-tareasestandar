@@ -140,12 +140,12 @@ $('accion').show();
 
 
 function agregarTarea(tarea) {
-    //wbox('#pnl-tareas');
     if (tarea.nombre) {
+        tarea.tare_id = (tarea.tare_id?tarea.tare_id:'0');
         const t = '#tareas-planificadas';
         const id = nextVal();
         $(t).append(
-            `<tr id="${id}" class="tarea data-json" data-json='${JSON.stringify({nombre:tarea.nombre, tare_id:(tarea.tare_id?tarea.tare_id:'0')})}'>
+            `<tr id="${id}" class="tarea data-json" data-json='${JSON.stringify(tarea)}'>
             <td><h5>${tarea.nombre}</h5></td>
             <td class="text-right">${accion}</td>
             </tr>`

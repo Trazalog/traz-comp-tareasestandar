@@ -22,6 +22,12 @@ class Tarea extends CI_Controller
         $this->load->view('tareas/planificacion', $data);
     }
 
+    public function obtener()
+    {
+        $data  = $this->Tareas->obtener();
+        echo json_encode($data);
+    }
+
     public function guardarPlanificada()
     {
         $data = $this->input->post();

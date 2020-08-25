@@ -109,12 +109,12 @@ function guardarTarea(id) {
         data: tarea,
         success: function(res) {
             console.log(res);
-            if (res.status) {
-                setAttr(id, 'tapl_id', res.data.respuesta.tapl_id);
+           // if (res.status) {
+                setJson(id, res);
                 // hecho();
-            } else {
-                falla();
-            }
+          //  } else {
+              //  falla();
+           // }
         },
         error: function(res) {
             error();
