@@ -151,14 +151,17 @@ class Tareas extends CI_Model
         $res = $this->lanzarProceso($data);
         if($res){
             $data['case_id'] = (string) $res->payload->caseId;
-            $this->load->model(FRM.'Forms');
-            $this->Forms->guardar($data['form_id']);
+            if($data['form_id']){
+                $this->load->model(FRM.'Forms');
+                $data['info_id'] = intval($this->Forms->guardar($data['form_id']));
+            }
         }
-
+        
         $post['_post_tarea_planificar'] = $this->map($data);
         $rsp = $this->rest->callAPI('POST', REST_TST . "tarea/planificar", $post);
         if ($rsp['status']) {
             $rsp['data'] = json_decode($rsp['data']);
+            $data['tapl_id'] = $rsp['data']->respuesta->tapl_id;
             $data['origen']['tapl_id'] = $rsp['data']->respuesta->tapl_id;
             $this->asignarOrigen($data['origen']);
             #Guardar Recursos Trabajo
@@ -172,10 +175,13 @@ class Tareas extends CI_Model
 
     public function lanzarProceso($tarea)
     {
+        if(isset($tarea['proc_id']) && $tarea['proc_id'] == "") return; 
+
+        if(isset($tarea['case_id']) && $tarea['case_id'] != "0" && $tarea['case_id'] != "") return;
+
         #Validacion de Lanzar Proceso
-        if (!isset($data['case_id']) && isset($tarea['fecha']) && ($tarea['fecha'] != '3000-12-31+00:00') && isset($tarea['nombre']) && isset($tarea['user_id']) && isset($tarea['tapl_id'])) {
-            
-            $contract['nombre_proceso'] = 'TST01';# HARCODE
+        if (isset($tarea['fecha']) && ($tarea['fecha'] != '3000-12-31+00:00') && isset($tarea['nombre']) && isset($tarea['user_id']) && isset($tarea['tapl_id'])) {     
+            $contract['nombre_proceso'] = $tarea['proc_id'];
             $contract['session'] = $this->session->has_userdata('bpm_token') ? $this->session->userdata('bpm_token') : '';
             $contract['payload']['nombreTarea'] = $tarea['nombre'];
             $contract['payload']['userNick'] = $tarea['user_id'];
@@ -200,11 +206,13 @@ class Tareas extends CI_Model
         $aux = array();
         $aux['nombre'] = $data['nombre'];
         $aux['fecha'] = (isset($data['fecha']) && $data['fecha'] != "0031-01-01+00:00") ? format($data['fecha']) : '3000-12-31';
-        $aux['info_id'] = isset($data['info_id']) ? $data['info_id'] : '0';
-        $aux['tare_id'] = isset($data['tare_id']) ? $data['tare_id'] : '0';
-        $aux['case_id'] = isset($data['case_id']) ? $data['case_id'] : '0';
-        $aux['user_id'] = isset($data['user_id']) ? $data['user_id'] : '0';
-        $aux['tapl_id'] = isset($data['tapl_id']) ? $data['tapl_id'] : "";
+        $aux['info_id'] = strval(isset($data['info_id']) ? $data['info_id'] : 0);
+        $aux['tare_id'] = strval(isset($data['tare_id']) ? $data['tare_id'] : 0);
+        $aux['case_id'] = strval(isset($data['case_id']) && $data['case_id'] != "" ? $data['case_id'] : 0);
+        $aux['user_id'] = strval(isset($data['user_id']) ? $data['user_id'] : 0);
+        $aux['form_id'] = strval(isset($data['form_id']) ? $data['form_id'] : 0);
+        $aux['proc_id'] = strval(isset($data['proc_id']) ? $data['proc_id'] : '');
+        $aux['tapl_id'] = strval(isset($data['tapl_id']) ? $data['tapl_id'] : '');
 
         return $aux;
     }

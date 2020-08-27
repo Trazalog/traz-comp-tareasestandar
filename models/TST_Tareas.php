@@ -20,6 +20,11 @@ class TST_Tareas extends CI_Model
         $aux->texto = "Fecha: ".formatFechaPG($data->fecha);
         $array['info'][] = $aux;
 
+        $aux = new StdClass();
+        $aux->color = 'primary';
+        $aux->texto = "Estado: $data->estado";
+        $array['info'][] = $aux;
+
         return $array;
     }
 

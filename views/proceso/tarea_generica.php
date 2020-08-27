@@ -1,8 +1,11 @@
+<input type="text hidden" id="ortaId" value="<?php echo $orta_id?>">
 <?php
-    echo getForm(30);
+    echo getForm($info_id);
 ?>
 <script>
 function cerrarTarea() {
+    validarFormularioCalidad();
+    return;
     wo();
     $.ajax({
         type: 'POST',
@@ -14,6 +17,26 @@ function cerrarTarea() {
             } else {
                 linkTo('<?php echo BPM ?>Proceso');
             }
+        },
+        error: function(res) {
+            error();
+        },
+        complete: function() {
+            wc();
+        }
+    });
+}
+
+function validarFormularioCalidad() {
+    wo();
+    var id = $('#ortaId').val();
+    $.ajax({
+        ansync: true,
+        type: 'GET',
+        dataType: 'JSON',
+        url: '<?php echo base_url() ?>general/etapa/validarFormularioCalidad/'+id,
+        success: function(res) {
+            console.log(res);
         },
         error: function(res) {
             error();

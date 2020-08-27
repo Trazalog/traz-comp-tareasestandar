@@ -37,7 +37,7 @@
     </div>
     <div class="col-md-6">
         <div class="box" id="bolsa-tareas">
-            <div class="box-body" >
+            <div class="box-body">
                 <div class="table-responsive" style="height: 540px;">
                     <table class="table table-striped table-hover table-fixed" id="tareas-calendario">
                         <thead>
@@ -69,12 +69,13 @@
 
 
 <script>
-
-
 var s_tarea = null;
 
 function clickCalendario(info) {
-    wbox('#bolsa-tareas');
+    if(info.date < Date.now()){
+        alert('No se puede seleccionar fechas anteriores a la actual.');
+        return;
+    }
     //HARDCODE
     const hora = " 00:00";
     var fecha = dateFormat(info.dateStr);
@@ -90,31 +91,25 @@ function clickCalendario(info) {
     }
 }
 
-function guardarTodasTareas(){
-    $('#tareas-calendario').find('.tarea').each(function(){
+function guardarTodasTareas() {
+    $('#tareas-calendario').find('.tarea').each(function() {
         console.log(this.id);
-        guardarTarea('#'+this.id);
+        guardarTarea('#' + this.id);
     })
 }
 
 function guardarTarea(id) {
 
     var tarea = getJson2(id);
-    tarea.origen =  getJson2($('#origen'));
-
+    tarea.origen = getJson2($('#origen'));
+    wbox('#bolsa-tareas');
     $.ajax({
         type: 'POST',
         dataType: 'JSON',
         url: '<?php echo TST ?>Tarea/guardarPlanificada',
         data: tarea,
         success: function(res) {
-            console.log(res);
-           // if (res.status) {
-                setJson(id, res);
-                // hecho();
-          //  } else {
-              //  falla();
-           // }
+            setJson(id, res);
         },
         error: function(res) {
             error();
@@ -122,8 +117,36 @@ function guardarTarea(id) {
         complete: function() {
             s_tarea = false;
             wbox();
+            wc();
         }
     });
 
+}
+
+function showForm(e) {
+    var data = getJson2(e);
+    $mdl =  $('#mdl-generico');
+    $mdl.find('.modal-title').html('Formulario Asociado');
+    $mdl.find('.modal-body').empty();
+    if(!data.info_id || data.info_id == "false") {
+        alert('Tarea sin formulario asociado');
+        return;
+    }
+    wo();
+    $.ajax({
+        type: 'GET',
+        dataType: 'JSON',
+        url: '<?php echo base_url(FRM) ?>Form/obtener/'+data.info_id,
+        success: function(res) {
+            $mdl.find('.modal-body').html(res.html);
+            $mdl.modal('show');
+        },
+        error: function(res) {
+            error();
+        },
+        complete: function() {
+            wc();
+        }
+    });
 }
 </script>

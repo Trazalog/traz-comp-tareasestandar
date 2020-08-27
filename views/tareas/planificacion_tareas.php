@@ -117,7 +117,7 @@ var accion =
     <button class="btn btn-link btn-xs btn-asignar" onclick="s_tarea = this;$('#mdl-usuarios').modal('show')"><i class="fa fa-user text-success mr-1"></i></button>
     <button class="btn btn-xs btn-link" title="Rec.Trabajo" onclick="s_tarea=this; editarEquipos(); $('#mdl-pere').modal('show')"><i class="fa fa-cogs"></i></button>
     <button class="btn btn-xs btn-link" title="Rec. Materiales" onclick="s_tarea=this; verDetallePedido();"><i class="fa fa-check-square-o"></i></button>
-    <button class="btn btn-xs btn-link" title="Formulario Tarea"><i class="fa fa-file-text"></i></button>
+    <button class="btn btn-xs btn-link" title="Formulario Tarea" onclick="showForm(this)"><i class="fa fa-file-text"></i></button>
     </accion>
     <button class="btn btn-link btn-xs" onclick="conf(et,this)"><i class='fa fa-times text-danger'></i></button>`;
 
@@ -125,12 +125,13 @@ $('#tareas-calendario').find('.acciones').html(accion);
 $('#tareas-calendario > tbody > tr').each(function() {
     var data = getJson(this);
     if (data.hasOwnProperty('fecha') && data.fecha != '3000-12-31+00:00' && data.fecha != '0031-01-01+00:00') {
-        $(this).find('.btn-planificar').append(bolita(data.fecha, 'blue'));
+        $(this).find('.btn-planificar').append(bolita(dateFormatPG(data.fecha), 'blue'));
     }
-
-    var user = getJson($('#' + data.user_id));
+    console.log('ban');
+    console.log(data);
+    var user = getJson($('tr#' +$.escapeSelector(data.user_id)));
+    console.log(user);
     if (user) {
-
         $(this).find('.btn-asignar').append(bolita(user.nombre.charAt(0).toUpperCase() + user.apellido.charAt(0)
             .toUpperCase(),
             'orange'));
@@ -140,6 +141,7 @@ $('accion').show();
 
 
 function agregarTarea(tarea) {
+    wo();
     if (tarea.nombre) {
         tarea.tare_id = (tarea.tare_id?tarea.tare_id:'0');
         const t = '#tareas-planificadas';

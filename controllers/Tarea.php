@@ -54,13 +54,13 @@ class Tarea extends CI_Controller
                             "img":"lib/dist/img/user2-160x160.jpg"
                         },
                         {
-                            "user_id":"ad.min",
+                            "user_id":"ad.min1",
                             "nombre":"Kimberli",
                             "apellido":"Ruterford",
                             "img":"lib/dist/img/user2-160x160.jpg"
                         },
                         {
-                            "user_id":"ad.min",
+                            "user_id":"ad.min2",
                             "nombre":"Roberto",
                             "apellido":"Bueno",
                             "img":"lib/dist/img/user2-160x160.jpg"
