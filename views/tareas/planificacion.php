@@ -26,17 +26,17 @@
     <input id="origen" class="hidden data-json" data-json='<?php echo json_encode($origen) ?>'>
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true" onclick="copiarTareas()"><i
+            <li class="active"><a href="#tab_11" data-toggle="tab" aria-expanded="true" onclick="copiarTareas()"><i
                         class="fa fa-arrow-circle-right mr-2"></i>Calendario</a></li>
-            <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false" onclick="copiarTareas(true)"><i
+            <li class=""><a href="#tab_22" data-toggle="tab" aria-expanded="false" onclick="copiarTareas(true)"><i
                         class="fa fa-arrow-circle-right mr-2"></i>Planifiación Tareas</a></li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane active" id="tab_1">
+            <div class="tab-pane active" id="tab_11">
                 <?php $this->load->view('tareas/planificacion_calendario'); ?>
             </div>
             <!-- /.tab-pane -->
-            <div class="tab-pane" id="tab_2">
+            <div class="tab-pane" id="tab_22">
                 <?php $this->load->view('tareas/planificacion_tareas'); ?>
             </div>
             <!-- /.tab-pane -->

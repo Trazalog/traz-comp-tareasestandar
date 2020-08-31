@@ -213,6 +213,7 @@ class Tareas extends CI_Model
         $aux['form_id'] = strval(isset($data['form_id']) ? $data['form_id'] : 0);
         $aux['proc_id'] = strval(isset($data['proc_id']) ? $data['proc_id'] : '');
         $aux['tapl_id'] = strval(isset($data['tapl_id']) ? $data['tapl_id'] : '');
+        $aux['descripcion'] = strval(isset($data['descripcion']) ? $data['descripcion'] : '');
 
         return $aux;
     }

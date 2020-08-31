@@ -14,15 +14,27 @@ class TST_Tareas extends CI_Model
     {
         $this->load->model(TST.'/Tareas');
         $data = $this->Tareas->obtenerXCaseId($tarea->caseId)['data'][0];
+        
+        $array['descripcion'] = $data->descripcion;
 
         $aux = new StdClass();
-        $aux->color = 'default';
-        $aux->texto = "Fecha: ".formatFechaPG($data->fecha);
+        $aux->color = 'primary';
+        $aux->texto = "Estado: " . ucfirst($data->estado);
         $array['info'][] = $aux;
 
         $aux = new StdClass();
         $aux->color = 'primary';
-        $aux->texto = "Estado: $data->estado";
+        $aux->texto = "Origen: $data->origen";
+        $array['info'][] = $aux;
+        
+        $aux = new StdClass();
+        $aux->color = 'primary';
+        $aux->texto = "Asignado: $data->user_id";
+        $array['info'][] = $aux;
+
+        $aux = new StdClass();
+        $aux->color = 'default';
+        $aux->texto = "Fecha: ".formatFechaPG($data->fecha);
         $array['info'][] = $aux;
 
         return $array;
@@ -51,7 +63,9 @@ class TST_Tareas extends CI_Model
     public function desplegarCabecera($tarea)
     {
         $this->load->model(TST.'/Tareas');
-        $data = $this->Tareas->obtenerXCaseId($tarea->caseId)['data'][0];
+        $this->load->model('general/Etapas');
+        $data['tarea'] = $this->Tareas->obtenerXCaseId($tarea->caseId)['data'][0];
+        $data['etapa'] = $this->Etapas->buscar($data['tarea']->orta_id)->etapa;
         return $this->load->view(TST.'proceso/cabecera_tarea', $data, true);
     }
 

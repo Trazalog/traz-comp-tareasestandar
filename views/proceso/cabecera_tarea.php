@@ -16,23 +16,53 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Tarea:</label>
-                        <input class="form-control" type="text" value="<?php echo $nombre ?>" readonly>
+                        <input class="form-control" type="text" value="<?php echo $tarea->nombre ?>" readonly>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Fecha:</label>
-                        <input class="form-control" type="text" value="<?php echo formatFechaPG($fecha)?>" readonly>
+                        <label>Estadp:</label>
+                        <input class="form-control" type="text" value="<?php echo ucfirst($tarea->estado) ?>" readonly>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                       <label>Usuario Asignado:</label>
-                       <input class="form-control" type="text" value="<?php echo $user_id ?>" readonly>
+                        <label>Usuario Asignado:</label>
+                        <input class="form-control" type="text" value="<?php echo $tarea->user_id ?>" readonly>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Etapa:</label>
+                        <input class="form-control" type="text" value="<?php echo $etapa->titulo ?>" readonly>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Establecimiento:</label>
+                        <input class="form-control" type="text" value="<?php echo $etapa->establecimiento ?>" readonly>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Lote:</label>
+                        <input class="form-control" type="text" value="<?php echo $etapa->lote ?>" readonly>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Orden Producción:</label>
+                        <input class="form-control" type="text" value="<?php echo $etapa->orden ?>" readonly>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Estado:</label>
+                        <input class="form-control" type="text" value="<?php echo $etapa->estado ?>" readonly>
                     </div>
                 </div>
             </div>
         </form>
     </div>
-    <!-- /.box-body -->
 </div>
