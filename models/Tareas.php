@@ -30,10 +30,17 @@ class Tareas extends CI_Model
 
     public function guardar($data)
     {
+        $data =  $this->mapTarea($data);
         $data['empr_id'] = strval(empresa());
         $post['post_tarea'] = $data;
         $rsp = $this->rest->callAPI('POST', $this->recurso, $post);
         return $rsp;
+    }
+
+    public function mapTarea($data)
+    {
+        if(!isset($data['form_id'])) $data['form_id'] = "0";
+        return $data;
     }
 
     public function guardarSubtarea($data)
