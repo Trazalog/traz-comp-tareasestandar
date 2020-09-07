@@ -93,7 +93,6 @@ function clickCalendario(info) {
 
 function guardarTodasTareas() {
     $('#tareas-calendario').find('.tarea').each(function() {
-        console.log(this.id);
         guardarTarea('#' + this.id);
     })
 }

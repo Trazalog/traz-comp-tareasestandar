@@ -148,15 +148,26 @@ class Tareas extends CI_Model
 
     public function guardarPlanificada($data)
     {
+        #PEDIDO DE MATERIALES
+        if(isset($data['pedido']) && isset($data['origen']['orta_id']))
+        {
+            $this->load->model(TST.'Pedidos');
+            $this->Pedidos->pedidoMateriales($data['pedido'], $data['origen']['orta_id']);
+        }
+
+        #PROCESO GENERICO TAREAS
         $res = $this->lanzarProceso($data);
         if($res){
             $data['case_id'] = (string) $res->payload->caseId;
+            
+            #SI EL PROCESO FUE LANZADO SE INSTANCIA EL FORMULARIO ASOCIADO A LA TAREA
             if($data['form_id']){
                 $this->load->model(FRM.'Forms');
                 $data['info_id'] = intval($this->Forms->guardar($data['form_id']));
             }
         }
         
+        #GUARDA O UPDATE LOS DATOS DE LA TAREA INSTANCIADA
         $post['_post_tarea_planificar'] = $this->map($data);
         $rsp = $this->rest->callAPI('POST', REST_TST . "tarea/planificar", $post);
         if ($rsp['status']) {
@@ -191,6 +202,7 @@ class Tareas extends CI_Model
         }
     }
 
+
     public function asignarOrigen($data)
     {
         if($data['orta_id'] != "0"){
@@ -213,6 +225,7 @@ class Tareas extends CI_Model
         $aux['form_id'] = strval(isset($data['form_id']) ? $data['form_id'] : 0);
         $aux['proc_id'] = strval(isset($data['proc_id']) ? $data['proc_id'] : '');
         $aux['tapl_id'] = strval(isset($data['tapl_id']) ? $data['tapl_id'] : '');
+        $aux['rece_id'] = strval(isset($data['rece_id']) ? $data['rece_id'] : '');
         $aux['descripcion'] = strval(isset($data['descripcion']) ? $data['descripcion'] : '');
 
         return $aux;

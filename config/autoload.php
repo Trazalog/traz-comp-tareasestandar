@@ -89,7 +89,7 @@ $autoload['drivers'] = array();
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-$autoload['helper'] = array('url', 'develop', 'sesion', 'admin', 'wso2');
+$autoload['helper'] = array('url','sesion', 'admin', 'wso2');
 
 /*
 | -------------------------------------------------------------------

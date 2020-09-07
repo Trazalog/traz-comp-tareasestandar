@@ -27,37 +27,45 @@
     <thead>
         <th>Pedido Artículos</th>
         <th width="10%">Cantidad</th>
-        <th width="5%"></th>
+        <th width="5%">Acciones</th>
     </thead>
     <tbody>
-        <?php
-            if(isset($pedido->detalles) && $pedido->detalles){
-                foreach ($pedido->detalles as $o) {
-                    echo "<tr class='data-json' data-json='".json_encode($o)."'>";
-                    echo "<td>$o->descripcion</td>";
-                    echo "<td>$o->cantidad</td>";
-                    echo "<td><button class='btn btn-link' onclick='$(this).closest(\"tr\").remove()'><i class='fa fa-trash text-danger'></i></button></td>";
-                    echo "</tr>";
-                }
-            }
-        ?>
+
     </tbody>
 </table>
-
+<div class="modal-footer">
+    <button class="btn btn-primary" onclick="guardarPedido()">Realizar Pedido</button>
+</div>
 <script>
 function agregarItem() {
+   
     var pedido = getForm('#pedido');
     var art = getJson2('#articulos');
+
+    if(!art.descripcion){
+        alert('Debes seleccionar un artículo');
+        return;
+    }
+
+    if(!pedido.cantidad){
+        alert('Ingrese una cantidad válida');
+        return
+    }
     $('#detalle_pedido > tbody').append(
-        `<tr class="data-json" data-json='${JSON.stringify(pedido)}'><td>${art.descripcion}</td><td class="text-center">${pedido.cantidad}</td><td><button class="btn btn-link" onclick="$(this).closest('tr').remove()"><i class="fa fa-trash text-danger"></i></button></td></tr>`
+        `<tr class="data-json" data-json='${JSON.stringify(pedido)}'>
+            <td>${art.descripcion}</td>
+            <td class="text-center">${pedido.cantidad}</td>
+            <td><button class="btn btn-link" onclick="$(this).closest('tr').remove()"><i class="fa fa-times text-danger"></i></button></td>
+        </tr>`
     );
     $('#pedido')[0].reset();
     $('#articulos').val("0").trigger('change');
 }
 
 function guardarPedido() {
+    var data = getJson2(s_tarea);
     var pedido = {
-        batch_id: "655"
+        batch_id: $('#batch_id').val()
     };
 
     var detalle = [];
@@ -65,19 +73,20 @@ function guardarPedido() {
         detalle.push(getJson2(this));
     });
 
-    var pema_id = getJson2(s_tarea).pema_id;
-
+    wo();
     $.ajax({
         type: 'POST',
         dataType: 'JSON',
-        url: '<?php echo base_url(TST) ?>Pedido/guardar' + (pema_id ? '/' + pema_id : ''),
+        url: '<?php echo base_url(TST) ?>Pedido/guardar/'+data.tapl_id,
         data: {
             pedido,
             detalle
         },
         success: function(res) {
             if (res.status) {
-                setAttr(s_tarea, 'pema_id', res.data);
+                $('#detalle_pedido > tbody').empty();
+                $('#tab-lista-pedidos').click();
+                reload('#lista-pedidos', data.tapl_id);
                 hecho();
             } else falla();
         },
@@ -85,7 +94,7 @@ function guardarPedido() {
             error();
         },
         complete: function() {
-
+            wc();
         }
     });
 }

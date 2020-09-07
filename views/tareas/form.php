@@ -29,9 +29,9 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label>Receta Asociada:</label>
-                <select id="rece_id" name="rece_id" class="form-control" style='width: 100%;'>
-                    <option value="0" selected> - Seleccionar Item -</option>
-                </select>
+                <?php
+                    echo selectFromFont('rece_id', 'Seleccionar Receta', RESTPT.'getFormulas', array('value' => 'form_id', 'descripcion'=>'descripcion'));
+                ?>
             </div>
         </div>
         <div class="col-md-6">
