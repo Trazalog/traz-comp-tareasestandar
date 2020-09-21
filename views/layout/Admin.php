@@ -456,8 +456,8 @@
     <script>
     linkTo('<?php echo DEF_VIEW ?>');
 
-    function hecho() {
-        alert('Hecho');
+    function hecho(msj = 'Hecho') {
+        alert(msj);
     }
 
     function falla() {
