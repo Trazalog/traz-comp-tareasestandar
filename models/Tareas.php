@@ -224,7 +224,7 @@ class Tareas extends CI_Model
     {
         $aux = array();
         $aux['nombre'] = $data['nombre'];
-        $aux['fecha'] = (isset($data['fecha']) && $data['fecha'] != "0031-01-01+00:00") ? format($data['fecha']) : '3000-12-31';
+        $aux['fecha'] = (isset($data['fecha']) && $data['fecha'] != "0031-01-01+00:00") ? formatFechaPG($data['fecha']) : '3000-12-31';
         $aux['info_id'] = strval(isset($data['info_id']) ? $data['info_id'] : 0);
         $aux['tare_id'] = strval(isset($data['tare_id']) ? $data['tare_id'] : 0);
         $aux['case_id'] = strval(isset($data['case_id']) && $data['case_id'] != "" ? $data['case_id'] : 0);

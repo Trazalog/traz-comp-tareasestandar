@@ -161,7 +161,7 @@ var selectCalendario = false;
 function planificar(e) {
     selectCalendario = true;
     s_tarea = e;
-    foco('.box-calendario');
+    foco('#box-calendario');
 }
 
 function agregarTareas() {

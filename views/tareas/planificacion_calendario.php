@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        <div class="box box-calendario">
+        <div id="box-calendario" class="box">
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-6">
