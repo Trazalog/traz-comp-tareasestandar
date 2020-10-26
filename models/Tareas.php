@@ -4,7 +4,7 @@
 
 class Tareas extends CI_Model
 {
-    private $recurso = REST_TST . 'tareas';
+    private $recurso = REST_TST . '/tareas';
 
     public function __construct()
     {
@@ -46,13 +46,13 @@ class Tareas extends CI_Model
     public function guardarSubtarea($data)
     {
         $post['post_subtarea'] = $data;
-        $rsp = $this->rest->callAPI('POST', REST_TST . "subtareas", $post);
+        $rsp = $this->rest->callAPI('POST', REST_TST . "/subtareas", $post);
         return $rsp;
     }
 
     public function obtenerPlantillas()
     {
-        $rsp = $this->rest->callAPI('GET', REST_TST . 'plantillas/' . empresa());
+        $rsp = $this->rest->callAPI('GET', REST_TST . '/plantillas/' . empresa());
         if ($rsp['status']) {
             $aux = json_decode($rsp['data']);
             if (isset($aux->plantillas->plantilla)) {
@@ -70,18 +70,18 @@ class Tareas extends CI_Model
     {
         if (isset($data['plan_id'])) {
             $post['post_plantilla'] = $data;
-            $rsp = $this->rest->callAPI('PUT', REST_TST . "plantillas", $post);
+            $rsp = $this->rest->callAPI('PUT', REST_TST . "/plantillas", $post);
         } else {
             $data['empr_id'] = strval(empresa());
             $post['post_plantilla'] = $data;
-            $rsp = $this->rest->callAPI('POST', REST_TST . "plantillas", $post);
+            $rsp = $this->rest->callAPI('POST', REST_TST . "/plantillas", $post);
         }
         return $rsp;
     }
 
     public function obtenerTareasPlantilla($id)
     {
-        $rsp = $this->rest->callAPI('GET', REST_TST . "plantillas/tareas/$id");
+        $rsp = $this->rest->callAPI('GET', REST_TST . "/plantillas/tareas/$id");
         if ($rsp['status']) {
             $aux = json_decode($rsp['data']);
             if (isset($aux->tareas->tarea)) {
@@ -98,27 +98,27 @@ class Tareas extends CI_Model
     public function asociarTareaPlantilla($data)
     {
         $post['post_plantillas_tareas'] = $data;
-        $rsp = $this->rest->callAPI('POST', REST_TST . "plantillas/tareas", $post);
+        $rsp = $this->rest->callAPI('POST', REST_TST . "/plantillas/tareas", $post);
         return $rsp;
     }
 
     public function eliminarTareaPlantilla($data)
     {
         $post['delete_plantillas_tareas'] = $data;
-        $rsp = $this->rest->callAPI('DELETE', REST_TST . "plantillas/tareas", $post);
+        $rsp = $this->rest->callAPI('DELETE', REST_TST . "/plantillas/tareas", $post);
         return $rsp;
     }
 
     public function eliminarPlantilla($id)
     {
         $data['delete_plantilla']['plan_id'] = $id;
-        $rsp = $this->rest->callAPI('DELETE', REST_TST . "plantillas", $data);
+        $rsp = $this->rest->callAPI('DELETE', REST_TST . "/plantillas", $data);
         return $rsp;
     }
 
     public function obtenerSubtareas($id)
     {
-        $rsp = $this->rest->callAPI('GET', REST_TST . "subtareas/$id");
+        $rsp = $this->rest->callAPI('GET', REST_TST . "/subtareas/$id");
         if ($rsp['status']) {
             $aux = json_decode($rsp['data']);
             if (isset($aux->subtareas->subtarea)) {
@@ -134,7 +134,7 @@ class Tareas extends CI_Model
     public function eliminarSubtarea($id)
     {
         $data['delete_subtarea']['suta_id'] = $id;
-        $rsp = $this->rest->callAPI('DELETE', REST_TST . "subtareas", $data);
+        $rsp = $this->rest->callAPI('DELETE', REST_TST . "/subtareas", $data);
         return $rsp;
     }
 
@@ -176,7 +176,7 @@ class Tareas extends CI_Model
         
         #GUARDA O UPDATE LOS DATOS DE LA TAREA INSTANCIADA
         $post['_post_tarea_planificar'] = $this->map($data);
-        $rsp = $this->rest->callAPI('POST', REST_TST . "tarea/planificar", $post);
+        $rsp = $this->rest->callAPI('POST', REST_TST . "/tarea/planificar", $post);
         if ($rsp['status']) {
             $rsp['data'] = json_decode($rsp['data']);
             $data['tapl_id'] = $rsp['data']->respuesta->tapl_id;
@@ -214,7 +214,7 @@ class Tareas extends CI_Model
     {
         if($data['orta_id'] != "0"){
             $post['_post_tarea_origen'] = $data;
-            $url = REST_TST . 'tarea/origen';
+            $url = REST_TST . '/tarea/origen';
             $rsp = $this->rest->callApi('POST', $url, $post);
             return $rsp;
         }
@@ -241,7 +241,7 @@ class Tareas extends CI_Model
     public function eliminarPlanificada($id)
     {
         $delete['delete_tarea_planificar']['tapl_id'] = $id;
-        $url = REST_TST . 'tarea/planificar';
+        $url = REST_TST . '/tarea/planificar';
         $rsp = $this->rest->callApi('DELETE', $url, $delete);
         return $rsp;
     }
@@ -278,7 +278,7 @@ class Tareas extends CI_Model
 
     public function obtenerPlanificadas($origen, $orta_id)
     {
-        $url = REST_TST . "tareas/planificar/$origen/$orta_id";
+        $url = REST_TST . "/tareas/planificar/$origen/$orta_id";
         $rsp = $this->rest->callApi('GET', $url);
         if ($rsp['status']) {
             $rsp['data'] = $this->mapRespuesta(json_decode($rsp['data'])->tareas->tarea);
@@ -312,7 +312,7 @@ class Tareas extends CI_Model
 
     public function obtenerXCaseId($caseId)
     {
-        $url = REST_TST."tareas/planificadas/case/$caseId";
+        $url = REST_TST."/tareas/planificadas/case/$caseId";
         return wso2($url);
     }
 
