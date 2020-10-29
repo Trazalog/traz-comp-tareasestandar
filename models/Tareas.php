@@ -234,6 +234,15 @@ class Tareas extends CI_Model
         $aux['tapl_id'] = strval(isset($data['tapl_id']) ? $data['tapl_id'] : '');
         $aux['rece_id'] = strval(isset($data['rece_id']) ? $data['rece_id'] : '');
         $aux['descripcion'] = strval(isset($data['descripcion']) ? $data['descripcion'] : '');
+        $aux['hora_duracion'] = isset($data['duracion']) ? $data['duracion'] : '';
+        $aux['empr_id'] = strval(empresa());
+
+        if($aux['fecha'] != '3000-12-31'){
+            $aux['fec_inicio'] = $aux['fecha'];
+            $min = $this->timeToMinutes($data['duracion']);
+            $aux['fec_fin'] = date('Y-m-d+H:i', strtotime("+$min minute", strtotime( $aux['fec_inicio'])));
+            $aux['fec_inicio'] .='+00:00';
+        }   
 
         return $aux;
     }
@@ -316,4 +325,16 @@ class Tareas extends CI_Model
         return wso2($url);
     }
 
+
+    function timeToMinutes($time){
+        $time = explode(':', $time);
+        return ($time[0]*60) + $time[1];
+    }
+
+    public function eliminarTareasSinOrigen($emprId)
+    {
+        $url = REST_TST . '/tareas/planificadas/sinorigen';
+        $data['_delete_tareas_planificadas_sinorigen']['empr_id'] = $emprId;
+        return wso2($url, 'DELETE', $data);
+    }
 }

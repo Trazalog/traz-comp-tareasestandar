@@ -206,7 +206,7 @@ var et = function eliminarTarea(e) {
             error();
         },
         complete: function() {
-
+            calendarRefetchEvents();
         }
     });
 }

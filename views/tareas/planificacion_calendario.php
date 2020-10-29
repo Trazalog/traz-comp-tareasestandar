@@ -66,8 +66,6 @@
     </div>
 </div>
 
-
-
 <script>
 var s_tarea = null;
 
@@ -117,6 +115,7 @@ function guardarTarea(id) {
             s_tarea = false;
             wbox();
             wc();
+            calendarRefetchEvents();
         }
     });
 
