@@ -22,7 +22,7 @@
             <div class="form-group">
                 <label>Formulario Asociado:</label>
                 <?php
-                    echo selectFromFont('form_id','Seleccionar Formulario', FRM_DS.'/formularios/1',['value'=>'form_id', 'descripcion'=>'nombre']);
+                    echo selectFromFont('form_id','Seleccionar Formulario', REST_FRM.'/formularios/1',['value'=>'form_id', 'descripcion'=>'nombre']);
                 ?>
             </div>
         </div>
@@ -30,7 +30,7 @@
             <div class="form-group">
                 <label>Receta Asociada:</label>
                 <?php
-                    echo selectFromFont('rece_id', 'Seleccionar Receta', REST_PRD_ETAPAS.'getFormulas/'.empresa(), array('value' => 'form_id', 'descripcion'=>'descripcion'));
+                    echo selectFromFont('rece_id', 'Seleccionar Receta', REST_PRD_ETAPAS.'/getFormulas', array('value' => 'form_id', 'descripcion'=>'descripcion'));
                 ?>
             </div>
         </div>

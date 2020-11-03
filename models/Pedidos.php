@@ -6,7 +6,7 @@ class Pedidos extends CI_Model
 {
     public function obtener($pema_id)
     {
-        $url = REST_ALM . "pedidos/$pema_id/" . empresa();
+        $url = REST_ALM . "/pedidos/$pema_id/" . empresa();
         $rsp = $this->rest->callApi('GET', $url);
         if ($rsp['status']) {
             $rsp['data'] = json_decode($rsp['data'])->pedidos->pedido[0];
@@ -23,7 +23,7 @@ class Pedidos extends CI_Model
     {
         
         $post['_post_pedidos'] = $this->map($data['pedido']);
-        $url = REST_ALM . 'pedidos';
+        $url = REST_ALM . '/pedidos';
         $rsp = $this->rest->callApi('POST', $url, $post);
 
         if ($rsp['status']) {
@@ -60,7 +60,7 @@ class Pedidos extends CI_Model
             $post[$rec . "_batch_req"][$rec][] = $this->mapDetalle($pema_id, $o);
         }
 
-        $url = REST_ALM . 'pedidos/detalle_batch_req';
+        $url = REST_ALM . '/pedidos/detalle_batch_req';
         $rsp = $this->rest->callApi('POST', $url, $post);
         if ($rsp['status']) {
             $rsp['data'] = $pema_id;
@@ -71,7 +71,7 @@ class Pedidos extends CI_Model
     public function eliminarDetalle($pema_id)
     {
         $data['_delete_pedidos_detalle']['pema_id'] = $pema_id;
-        $url = REST_ALM . 'pedidos/detalle';
+        $url = REST_ALM . '/pedidos/detalle';
         $rsp = $this->rest->callApi('DELETE', $url, $data);
         return $data;
     }
@@ -159,13 +159,13 @@ class Pedidos extends CI_Model
 
     public function obtenerXTarea($taplId)
     {
-        $url = REST_ALM."pedidos/tareas/$taplId";
+        $url = REST_ALM."/pedidos/tareas/$taplId";
         return wso2($url);
     }
 
     public function obtenerDetalle($pemaId)
     {   
-        $url = REST_ALM."pedidos/detalle/$pemaId";
+        $url = REST_ALM."/pedidos/detalle/$pemaId";
         return wso2($url);
     }
 
@@ -175,7 +175,7 @@ class Pedidos extends CI_Model
         $data['tapl_id'] = $taplId;
 
         $post['_post_pedidos_tareas'] = array_map('strval',$data);
-        $url = REST_ALM.'pedidos/tareas';
+        $url = REST_ALM.'/pedidos/tareas';
         return wso2($url, 'POST', $post);   
     }
 }
