@@ -269,7 +269,7 @@ class Tareas extends CI_Model
 
         $rb[] = $data;
 
-        $rsp = requestBox(REST_TST, $rb);
+        $rsp = requestBox(REST_TST.'/', $rb);
 
         return $rsp;
     }
