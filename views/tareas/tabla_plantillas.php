@@ -11,7 +11,7 @@
             $aux['Ver Tareas Asociadas']['icon']= 'fa-list';
             $aux['Editar']['accion']= 'editarPlantilla(this)';
             $aux['Editar']['icon']= 'fa-pencil';
-            $aux['Eliminar']['accion']='eliminarPlantilla(this)';
+            $aux['Eliminar']['accion']='conf(eliminarPlantilla, this)';
             $aux['Eliminar']['icon']= 'fa-trash';
             $aux = opcionesTabla($aux); 
 

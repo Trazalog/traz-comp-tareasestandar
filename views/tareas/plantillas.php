@@ -38,7 +38,7 @@ function guardarPlantilla(id = false) {
     });
 }
 
-function eliminarPlantilla(e) {
+var eliminarPlantilla = function(e) {
     const id = $(e).closest('.data-json').attr('id');
     wo()
     $.ajax({
