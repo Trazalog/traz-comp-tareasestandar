@@ -242,6 +242,9 @@ class Tareas extends CI_Model
             $min = $this->timeToMinutes($data['duracion']);
             $aux['fec_fin'] = date('Y-m-d+H:i', strtotime("+$min minute", strtotime( $aux['fec_inicio'])));
             $aux['fec_inicio'] .='+00:00';
+        }else{
+            $aux['fec_inicio'] = $aux['fecha'].'+00:00';
+            $aux['fec_fin'] = $aux['fecha'].'+00:00';
         }   
 
         return $aux;
