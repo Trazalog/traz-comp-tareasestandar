@@ -30,6 +30,8 @@
                         class="fa fa-arrow-circle-right mr-2"></i>Calendario</a></li>
             <li class=""><a href="#tab_22" data-toggle="tab" aria-expanded="false" onclick="copiarTareas(true)"><i
                         class="fa fa-arrow-circle-right mr-2"></i>Planifiación Tareas</a></li>
+                        <li class=""><a href="#tab_23" data-toggle="tab" aria-expanded="false" ><i
+                        class="fa fa-arrow-circle-right mr-2"></i>Notificacion Estandar</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="tab_11">
@@ -40,6 +42,9 @@
                 <?php $this->load->view('tareas/planificacion_tareas'); ?>
             </div>
             <!-- /.tab-pane -->
+            <div class="tab-pane" id="tab_23">
+                <?php $this->load->view('tareas/noti_estandar'); ?>
+            </div>
         </div>
         <!-- /.tab-content -->
     </div>
