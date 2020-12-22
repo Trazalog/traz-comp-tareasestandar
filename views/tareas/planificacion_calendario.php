@@ -2,6 +2,7 @@
     $this->load->view('tareas/planificacion/modal_equipos');
     $this->load->view('tareas/planificacion/modal_pedido_materiales');
     $this->load->view('tareas/planificacion/modal_asignar_usuario');
+    $this->load->view('tareas/planificacion/mdl_hora');
 ?>
 
 <div class="row">
@@ -68,24 +69,20 @@
 
 <script>
 var s_tarea = null;
-
+var s_fecha = false;
 function clickCalendario(info) {
-    if(info.date < Date.now()){
-        alert('No se puede seleccionar fechas anteriores a la actual.');
-        return;
-    }
-    //HARDCODE
-    const hora = " 00:00";
-    var fecha = dateFormat(info.dateStr);
-    if (selectCalendario) {
-        setAttr(s_tarea, 'fecha', fecha);
-        $(s_tarea).find('span').remove();
-        $(s_tarea).append(bolita(fecha + hora, 'blue'));
-        guardarTarea(s_tarea);
+    if (Date.parse(info.date) >= Date.parse(dateNow())) {
+        //HARDCODE
+        s_fecha = dateFormat(info.dateStr);
+        if (selectCalendario) {
+            //Actualizar Vista
+            foco();
+            selectCalendario = false;
 
-        //Actualizar Vista
-        foco();
-        selectCalendario = false;
+            $('#mdl-hora').modal('show');
+        }
+    } else {
+        alert('No se puede seleccionar fechas anteriores a la actual.');
     }
 }
 
@@ -123,10 +120,10 @@ function guardarTarea(id) {
 
 function showForm(e) {
     var data = getJson2(e);
-    $mdl =  $('#mdl-generico');
+    $mdl = $('#mdl-generico');
     $mdl.find('.modal-title').html('Formulario Asociado');
     $mdl.find('.modal-body').empty();
-    if(!data.info_id || data.info_id == "false") {
+    if (!data.info_id || data.info_id == "false") {
         alert('Tarea sin formulario asociado');
         return;
     }
@@ -134,7 +131,7 @@ function showForm(e) {
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
-        url: '<?php echo base_url(FRM) ?>Form/obtener/'+data.info_id,
+        url: '<?php echo base_url(FRM) ?>Form/obtener/' + data.info_id,
         success: function(res) {
             $mdl.find('.modal-body').html(res.html);
             $mdl.modal('show');
