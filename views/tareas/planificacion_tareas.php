@@ -141,8 +141,8 @@ $('accion').show();
 
 
 function agregarTarea(tarea) {
-    wo();
     if (tarea.nombre) {
+        wo();
         tarea.tare_id = (tarea.tare_id?tarea.tare_id:'0');
         const t = '#tareas-planificadas';
         const id = nextVal();
