@@ -191,10 +191,11 @@ $('#plantilla').change(function() {
 });
 
 var et = function eliminarTarea(e) {
-    const id = getJson2(e).tapl_id;
+    var data = getJson2(e);
+    const id = data.tapl_id;
+    if(!data.tapl_id) { alert('Error al eliminar Tarea'); return;}
     $(e).closest('tr').remove();
     if ($(e).find('tbody').find('tr').length == 0) $(e).find('tfoot').show();
-
     $.ajax({
         type: 'DELETE',
         dataType: 'JSON',
