@@ -70,6 +70,7 @@
 <script>
 var s_tarea = null;
 var s_fecha = false;
+
 function clickCalendario(info) {
     if (Date.parse(info.date) >= Date.parse(dateNow())) {
         //HARDCODE
@@ -144,4 +145,28 @@ function showForm(e) {
         }
     });
 }
+
+$('#sector').on('change', function() {
+    $.ajax({
+        type: 'GET',
+        dataType: 'JSON',
+        url: '<?php echo base_url(TST) ?>Tarea/obtenerEquiposXSector/'+this.value,
+        success: function(res) {
+            $('select#equipo').empty();
+            if(res.status){
+                res.data.forEach(function( e, i){
+                    console.log(e);
+                    $('select#equipo').append(`<option value='${e.codigo}'>${e.codigo} - ${e.descripcion}</option>`)
+                });
+            }
+            //hecho();
+        },
+        error: function(res) {
+            error();
+        },
+        complete: function() {
+
+        }
+    });
+})
 </script>
