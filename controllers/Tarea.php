@@ -169,6 +169,11 @@ class Tarea extends CI_Controller
         echo json_encode($res);
     }
 
-  
+    public function obtenerEquiposXSector($sectId)
+    {
+        $this->load->model(TST.'Equipos');
+        $rsp = $this->Equipos->obtener($sectId);
+        echo json_encode($rsp);
+    }
 
 }
