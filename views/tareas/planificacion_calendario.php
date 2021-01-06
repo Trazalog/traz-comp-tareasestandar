@@ -2,11 +2,12 @@
     $this->load->view('tareas/planificacion/modal_equipos');
     $this->load->view('tareas/planificacion/modal_pedido_materiales');
     $this->load->view('tareas/planificacion/modal_asignar_usuario');
+    $this->load->view('tareas/planificacion/mdl_hora');
 ?>
 
 <div class="row">
     <div class="col-md-6">
-        <div class="box box-calendario">
+        <div id="box-calendario" class="box">
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-6">
@@ -66,28 +67,23 @@
     </div>
 </div>
 
-
-
 <script>
 var s_tarea = null;
+var s_fecha = false;
 
 function clickCalendario(info) {
-    if(info.date < Date.now()){
-        alert('No se puede seleccionar fechas anteriores a la actual.');
-        return;
-    }
-    //HARDCODE
-    const hora = " 00:00";
-    var fecha = dateFormat(info.dateStr);
-    if (selectCalendario) {
-        setAttr(s_tarea, 'fecha', fecha);
-        $(s_tarea).find('span').remove();
-        $(s_tarea).append(bolita(fecha + hora, 'blue'));
-        guardarTarea(s_tarea);
+    if (Date.parse(info.date) >= Date.parse(dateNow())) {
+        //HARDCODE
+        s_fecha = dateFormat(info.dateStr);
+        if (selectCalendario) {
+            //Actualizar Vista
+            foco();
+            selectCalendario = false;
 
-        //Actualizar Vista
-        foco();
-        selectCalendario = false;
+            $('#mdl-hora').modal('show');
+        }
+    } else {
+        alert('No se puede seleccionar fechas anteriores a la actual.');
     }
 }
 
@@ -117,6 +113,7 @@ function guardarTarea(id) {
             s_tarea = false;
             wbox();
             wc();
+            calendarRefetchEvents();
         }
     });
 
@@ -124,10 +121,10 @@ function guardarTarea(id) {
 
 function showForm(e) {
     var data = getJson2(e);
-    $mdl =  $('#mdl-generico');
+    $mdl = $('#mdl-generico');
     $mdl.find('.modal-title').html('Formulario Asociado');
     $mdl.find('.modal-body').empty();
-    if(!data.info_id || data.info_id == "false") {
+    if (!data.info_id || data.info_id == "false") {
         alert('Tarea sin formulario asociado');
         return;
     }
@@ -135,7 +132,7 @@ function showForm(e) {
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
-        url: '<?php echo base_url(FRM) ?>Form/obtener/'+data.info_id,
+        url: '<?php echo base_url(FRM) ?>Form/obtener/' + data.info_id,
         success: function(res) {
             $mdl.find('.modal-body').html(res.html);
             $mdl.modal('show');
@@ -148,4 +145,28 @@ function showForm(e) {
         }
     });
 }
+
+$('#sector').on('change', function() {
+    $.ajax({
+        type: 'GET',
+        dataType: 'JSON',
+        url: '<?php echo base_url(TST) ?>Tarea/obtenerEquiposXSector/'+this.value,
+        success: function(res) {
+            $('select#equipo').empty();
+            if(res.status){
+                res.data.forEach(function( e, i){
+                    console.log(e);
+                    $('select#equipo').append(`<option value='${e.codigo}'>${e.codigo} - ${e.descripcion}</option>`)
+                });
+            }
+            //hecho();
+        },
+        error: function(res) {
+            error();
+        },
+        complete: function() {
+
+        }
+    });
+})
 </script>

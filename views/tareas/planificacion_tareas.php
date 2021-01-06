@@ -141,8 +141,8 @@ $('accion').show();
 
 
 function agregarTarea(tarea) {
-    wo();
     if (tarea.nombre) {
+        wo();
         tarea.tare_id = (tarea.tare_id?tarea.tare_id:'0');
         const t = '#tareas-planificadas';
         const id = nextVal();
@@ -161,7 +161,7 @@ var selectCalendario = false;
 function planificar(e) {
     selectCalendario = true;
     s_tarea = e;
-    foco('.box-calendario');
+    foco('#box-calendario');
 }
 
 function agregarTareas() {
@@ -191,10 +191,11 @@ $('#plantilla').change(function() {
 });
 
 var et = function eliminarTarea(e) {
-    const id = getJson2(e).tapl_id;
+    var data = getJson2(e);
+    const id = data.tapl_id;
+    if(!data.tapl_id) { alert('Error al eliminar Tarea'); return;}
     $(e).closest('tr').remove();
     if ($(e).find('tbody').find('tr').length == 0) $(e).find('tfoot').show();
-
     $.ajax({
         type: 'DELETE',
         dataType: 'JSON',
@@ -206,7 +207,7 @@ var et = function eliminarTarea(e) {
             error();
         },
         complete: function() {
-
+            calendarRefetchEvents();
         }
     });
 }

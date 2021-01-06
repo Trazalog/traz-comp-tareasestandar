@@ -2,7 +2,7 @@
     exit('No direct script access allowed');
 }
 
-class TST_Tareas extends CI_Model
+class Tstareas extends CI_Model
 {
     public function __construct()
     {

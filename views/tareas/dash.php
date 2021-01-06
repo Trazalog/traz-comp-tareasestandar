@@ -95,7 +95,7 @@ function editarTarea(e) {
     $('#editar').modal('show');
 }
 
-function eliminarTarea(e) {
+var eliminarTarea = function(e) {
     var data = getJson($(e).closest('tr'));
     wo();
     $.ajax({

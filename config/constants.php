@@ -86,8 +86,7 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 
 define('DEF_VIEW', 'Tarea/planificar');
 #define('DEF_VIEW', 'Tarea/tabla');
-define('REST_TST', 'http://localhost:8283/services/TareasSTD/');
-define('REST_ALM', 'http://localhost:8283/services/ALMDataService/');
+
 define('lib', 'lib/');
 define('LIB', 'lib/');
 

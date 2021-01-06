@@ -10,7 +10,7 @@
              $aux['Agregar Subtarea']['icon'] = 'fa-plus';
              $aux['Editar']['accion'] = 'editarTarea(this)';
              $aux['Editar']['icon'] = 'fa-edit';
-             $aux['Eliminar']['accion'] = 'eliminarTarea(this)';
+             $aux['Eliminar']['accion'] = 'conf(eliminarTarea, this)';
              $aux['Eliminar']['icon'] = 'fa-trash';
              $aux =  opcionesTabla($aux);
 
