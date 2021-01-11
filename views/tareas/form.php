@@ -3,19 +3,19 @@
         <div class="col-md-12">
             <div class="form-group">
                 <label>Nombre:</label>
-                <input id="nombre" name="nombre" class="form-control" type="text">
+                <input id="nombre" name="nombre" class="form-control" type="text" <?php echo req() ?>>
             </div>
         </div>
         <div class="col-md-12">
             <div class="form-group">
                 <label>Descripción:</label>
-                <textarea id="descripcion" name="descripcion" class="form-control" type="text"></textarea>
+                <textarea id="descripcion" name="descripcion" class="form-control" type="text" <?php echo req() ?>></textarea>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label>Duración Standar:</label>
-                <input id="duracion" name="duracion" class="form-control" type="text">
+                <input id="duracion" name="duracion" class="form-control" type="text" <?php echo req() ?>>
             </div>
         </div>
         <div class="col-md-6">
@@ -44,3 +44,7 @@
         </div>
     </div>
 </form>
+
+<script>
+initForm();
+</script>
