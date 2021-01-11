@@ -117,6 +117,7 @@ var eliminarTarea = function(e) {
 
 function guardarTarea(id = false) {
     if (id) {
+        if(!frm_validar('#frm-tarea-e')) return;
         var data = getForm('#frm-tarea-e');
     } else {
         if(!frm_validar('#frm-tarea')) return;
@@ -125,6 +126,7 @@ function guardarTarea(id = false) {
     wo();
     $.ajax({
         type: 'POST',
+        dataType: 'JSON',
         url: '<?php echo base_url(TST) ?>Tarea/guardar' + (id ? '/' + id : ''),
         data: {
             data
