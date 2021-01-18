@@ -11,7 +11,7 @@
                foreach ($tareas_plantilla as $key => $o) {
                    echo "<tr id='$o->tare_id' class='data-json' data-json='".json_encode($o)."'>";
                    echo "<td>$o->nombre</td>";
-                   echo "<td class='text-right'><button class='btn btn-link' onclick='eliminarTareaPlantilla(this)'><i class='fa fa-trash'></i></button></td>";
+                   echo "<td class='text-right'><button class='btn btn-link' onclick='conf(eliminarTareaPlantilla,this)'><i class='fa fa-trash'></i></button></td>";
                    echo "</tr>";
                 }
             }else{
@@ -23,7 +23,7 @@
 </div>
 
 <script>
-function eliminarTareaPlantilla(e) {
+ var eliminarTareaPlantilla = function(e) {
     var plan_id = selectPlan;
     var tare_id = $(e).closest('.data-json').attr('id');
     $.ajax({

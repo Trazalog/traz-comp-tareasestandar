@@ -18,13 +18,13 @@ class Tarea extends CI_Controller
         $data['usuarios'] = $this->obtenerUsuarios()->usuarios->usuario;
         $data['sectores'] = $this->Sectores->obtener()['data'];
 
-        $data['tareas_planificadas'] =  $this->Tareas->obtenerPlanificadas($origen, $orta_id)['data'];
+        $data['tareas_planificadas'] = $this->Tareas->obtenerPlanificadas($origen, $orta_id)['data'];
         $this->load->view('tareas/planificacion', $data);
     }
 
     public function obtener()
     {
-        $data  = $this->Tareas->obtener();
+        $data = $this->Tareas->obtener();
         echo json_encode($data);
     }
 
@@ -37,8 +37,8 @@ class Tarea extends CI_Controller
 
     public function eliminarPlanificada($id)
     {
-       $rsp = $this->Tareas->eliminarPlanificada($id);
-       echo json_encode($rsp);
+        $rsp = $this->Tareas->eliminarPlanificada($id);
+        echo json_encode($rsp);
     }
 
     public function obtenerUsuarios()
@@ -82,7 +82,7 @@ class Tarea extends CI_Controller
         $data['plantillas'] = $this->Tareas->obtenerPlantillas()['data'];
         $this->load->view('tareas/dash', $data);
         $this->load->view('tareas/subtareas');
-        
+
     }
 
     public function tabla()
@@ -94,14 +94,18 @@ class Tarea extends CI_Controller
     public function guardar($id = false)
     {
         $data = $this->input->post('data');
-
-        if ($id) {
-            $rsp = $this->Tareas->editar($id, $data);
+        if ($data) {
+            if ($id) {
+                $rsp = $this->Tareas->editar($id, $data);
+            } else {
+                $rsp = $this->Tareas->guardar($data);
+            }
+            if($rsp)
+            echo json_encode($rsp);
         } else {
-            $rsp = $this->Tareas->guardar($data);
+            $this->load->view(TST.'tareas/form');
         }
 
-        echo json_encode($rsp);
     }
 
     public function eliminar($id)
@@ -111,9 +115,13 @@ class Tarea extends CI_Controller
     }
     public function guardarSubtarea()
     {
-        $data = $this->input->post('data');
-        $rsp = $this->Tareas->guardarSubtarea($data);
-        echo json_encode($rsp);
+        $post = $this->input->post('data');
+        if ($post) {
+            $rsp = $this->Tareas->guardarSubtarea($post);
+            echo json_encode($rsp);
+        } else {
+            $this->load->view(TST . '/tareas/form');
+        }
     }
 
     public function tablaSubtareas($id)
@@ -152,7 +160,7 @@ class Tarea extends CI_Controller
     {
         $data['id'] = $id;
         $data['tareas_plantilla'] = $this->Tareas->obtenerTareasPlantilla($id)['data'];
-        $this->load->view('tareas/tabla_tareas_plantilla',$data);
+        $this->load->view('tareas/tabla_tareas_plantilla', $data);
     }
 
     public function asociarTareaPlantilla()
@@ -171,7 +179,7 @@ class Tarea extends CI_Controller
 
     public function obtenerEquiposXSector($sectId)
     {
-        $this->load->model(TST.'Equipos');
+        $this->load->model(TST . 'Equipos');
         $rsp = $this->Equipos->obtener($sectId);
         echo json_encode($rsp);
     }

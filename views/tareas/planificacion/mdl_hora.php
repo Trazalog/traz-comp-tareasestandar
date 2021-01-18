@@ -26,7 +26,7 @@
 
 <script>
 function planificarTarea() {
-    s_fecha = s_fecha + ' ' + $('#hora').val();
+    s_fecha = dateFormat(s_fecha) + '+' + $('#hora').val();
     setAttr(s_tarea, 'fecha', s_fecha);
     $(s_tarea).find('span').remove();
     $(s_tarea).append(bolita(s_fecha, 'blue'));

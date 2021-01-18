@@ -40,6 +40,8 @@ class Tareas extends CI_Model
     public function mapTarea($data)
     {
         if(!isset($data['form_id'])) $data['form_id'] = "0";
+        if(!isset($data['rece_id'])) $data['rece_id'] = "0";
+        if(!isset($data['proc_id'])) $data['proc_id'] = "0";
         return $data;
     }
 
@@ -193,7 +195,10 @@ class Tareas extends CI_Model
 
     public function lanzarProceso($tarea)
     {
-        if(isset($tarea['proc_id']) && $tarea['proc_id'] == "") return; 
+        if(isset($tarea['proc_id']) && $tarea['proc_id'] == ""){
+            log_message('DEBUG','#TRAZA | No hay proceso asociado');
+            return; 
+        } 
 
         if(isset($tarea['case_id']) && $tarea['case_id'] != "0" && $tarea['case_id'] != "") return;
 
@@ -206,6 +211,8 @@ class Tareas extends CI_Model
             $contract['payload']['taplId'] = $tarea['tapl_id'];
             $res = wso2(REST_API_BPM, 'POST', $contract);
             return $res['data'];
+        }else{
+            log_message('DEBUG','#TRAZA | Validacion de proceso fallida');
         }
     }
 
@@ -224,7 +231,7 @@ class Tareas extends CI_Model
     {
         $aux = array();
         $aux['nombre'] = $data['nombre'];
-        $aux['fecha'] = (isset($data['fecha']) && $data['fecha'] != "0031-01-01+00:00") ? formatFechaPG($data['fecha']) : '3000-12-31';
+        $aux['fecha'] = (isset($data['fecha']) && $data['fecha'] != "0031-01-01+00:00") ? $data['fecha'] : '3000-12-31';
         $aux['info_id'] = strval(isset($data['info_id']) ? $data['info_id'] : 0);
         $aux['tare_id'] = strval(isset($data['tare_id']) ? $data['tare_id'] : 0);
         $aux['case_id'] = strval(isset($data['case_id']) && $data['case_id'] != "" ? $data['case_id'] : 0);
@@ -237,7 +244,7 @@ class Tareas extends CI_Model
         $aux['hora_duracion'] = isset($data['duracion']) ? $data['duracion'] : '';
         $aux['empr_id'] = strval(empresa());
 
-        if($aux['fecha'] != '3000-12-31'){
+        if($aux['fecha'] != '3000-12-31+00:00'){
             $aux['fec_inicio'] = $aux['fecha'];
             $min = $this->timeToMinutes($data['duracion']);
             $aux['fec_fin'] = date('Y-m-d+H:i', strtotime("+$min minute", strtotime( $aux['fec_inicio'])));
