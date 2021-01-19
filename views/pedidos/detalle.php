@@ -40,8 +40,8 @@
 function agregarItem() {
    
     var pedido = getForm('#pedido');
-    var art = getJson2('#articulos');
-
+    var art = getJson('select#articulos');
+    console.log(art);
     if(!art.descripcion){
         alert('Debes seleccionar un artículo');
         return;
@@ -72,6 +72,11 @@ function guardarPedido() {
     $('#detalle_pedido > tbody > tr').each(function() {
         detalle.push(getJson2(this));
     });
+
+    if(detalle.length == 0){
+        alert('No se agrego ningún artículo al pedido');
+        return;
+    }
 
     wo();
     $.ajax({

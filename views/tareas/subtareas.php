@@ -14,7 +14,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Descripcion:</label>
+                                <label>Descripcion<?php echo hreq() ?>:</label>
                                 <input id="descripcion" name="descripcion" class="form-control" type="text">
                             </div>
                         </div>
@@ -52,6 +52,10 @@
 
 function guardarSubtarea() {
     var data = getForm('#frm-subtarea');
+    if(!data.descripcion){
+        alert('Por favor agregar una descripción para la subtarea');
+        return;
+    }
     data.tare_id = tare_id;
     wo()
     $.ajax({
