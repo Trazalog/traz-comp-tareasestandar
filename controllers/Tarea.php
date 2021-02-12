@@ -12,11 +12,53 @@ class Tarea extends CI_Controller
 
     public function planificar($origen, $orta_id)
     {
+				// (AGREGADO DE MERGE DE CHECHO) extraer el info_id que viene concatenado con orta_id separado por un 0
+					$aux = $orta_id;
+					$auxorta_id="";
+					$auxinfo_id=""; 
+					$petr_id="";
+					$o = 1;
+					$cont = strlen($aux);
+					for($i=0; $i<$cont; $i++)
+					{
+							if($aux[$i]!=0 && $o!=0)
+							{
+								$auxorta_id = $auxorta_id.$aux[$i];
+							}else{
+									$o = 0;
+								$auxinfo_id = $auxinfo_id.$aux[$i+1];
+							}
+					}
+					$contcero=0;
+					for($i=0; $i<$cont; $i++)
+					{
+							if($aux[$i]==0)
+							{  
+									if($contcero == 2)
+									{
+											$petr_id = $petr_id.$aux[$i];
+									}else{
+											$contcero++;
+									}
+							}
+					}
+
+					$orta_id = $auxorta_id;
+				// (FIN AGREGADO DE MERGE DE CHECHO) fin extraccion
+
         $data['origen'] = array('orta_id' => $orta_id, 'origen' => $origen);
         $data['tareas'] = $this->Tareas->obtener()['data'];
         $data['plantillas'] = $this->Tareas->obtenerPlantillas()['data'];
         $data['usuarios'] = $this->obtenerUsuarios()->usuarios->usuario;
-        $data['sectores'] = $this->Sectores->obtener()['data'];
+				$data['sectores'] = $this->Sectores->obtener()['data'];
+
+				// (AGREGADO 2 DE MERGE CHECHO)
+					$petr_id = 7;
+					$data['estatico'] =  $this->Tareas->obtenerPestaticopetr_id($petr_id)['data'];
+					$auxinfo_id=217;
+					// $html = getForm($auxinfo_id);
+					$data['info_id'] = $auxinfo_id;
+				// (FIN AGREGADO 2 DE MERGE CHECHO)
 
         $data['tareas_planificadas'] = $this->Tareas->obtenerPlanificadas($origen, $orta_id)['data'];
         $this->load->view('tareas/planificacion', $data);
