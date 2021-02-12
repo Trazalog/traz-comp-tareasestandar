@@ -347,4 +347,45 @@ class Tareas extends CI_Model
         $data['_delete_tareas_planificadas_sinorigen']['empr_id'] = $emprId;
         return wso2($url, 'DELETE', $data);
     }
+
+    // AGREGADO DE MERGE CHECHO
+			public function obtenerPestaticopetr_id($petr_id)
+			{
+					$url = REST_PRO."/getInfotrabajo/$petr_id";
+					return wso2($url);
+			}
+			public function obtenerform($info_id)
+			{
+					$this->db->select('name, label,valor, requerido, valo_id, orden, A.form_id, tipo_dato, C.nombre');
+					$this->db->from('frm.instancias_formularios as A');
+					$this->db->join('frm.formularios as C', 'C.form_id = A.form_id');
+					$this->db->where('A.info_id', $info_id);
+					$this->db->where('A.eliminado', false);
+					$this->db->order_by('A.orden');
+
+					$res = $this->db->get();
+
+					$aux = new StdClass();
+					$aux->info_id = $info_id;
+					$aux->nombre = $res->row()->nombre;
+					$aux->id = $info_id;
+					$aux->items = $res->result();
+
+					foreach ($aux->items as $key => $o) {
+
+							if ($o->tipo_dato == 'radio' || $o->tipo_dato == 'check' || $o->tipo_dato == 'select') {
+
+									$aux->items[$key]->values = $this->obtenerValores($o->valo_id);
+
+							}
+					}
+
+					return $aux;
+			}
+			public function obtenerValores($id)
+			{
+					$this->db->select('valor as value, valor as label');
+					return $this->db->get_where('frm.utl_tablas', array('tabla' => $id))->result();
+			}
+		// FIN AGREGADO DE MERGE CHECHO	
 }
