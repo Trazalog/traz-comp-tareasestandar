@@ -232,11 +232,11 @@ class Tareas extends CI_Model
         $aux = array();
         $aux['nombre'] = $data['nombre'];
         $aux['fecha'] = (isset($data['fecha']) && $data['fecha'] != "0031-01-01+00:00") ? $data['fecha'] : '3000-12-31';
-        $aux['info_id'] = strval(isset($data['info_id']) ? $data['info_id'] : 0);
-        $aux['tare_id'] = strval(isset($data['tare_id']) ? $data['tare_id'] : 0);
-        $aux['case_id'] = strval(isset($data['case_id']) && $data['case_id'] != "" ? $data['case_id'] : 0);
-        $aux['user_id'] = strval(isset($data['user_id']) ? $data['user_id'] : 0);
-        $aux['form_id'] = strval(isset($data['form_id']) ? $data['form_id'] : 0);
+        $aux['info_id'] = strval(isset($data['info_id']) ? $data['info_id'] : '');
+        $aux['tare_id'] = strval(isset($data['tare_id']) ? $data['tare_id'] : '');
+        $aux['case_id'] = strval(isset($data['case_id']) && $data['case_id'] != "" ? $data['case_id'] : '');
+        $aux['user_id'] = strval(isset($data['user_id']) ? $data['user_id'] : '');
+        $aux['form_id'] = strval(isset($data['form_id']) ? $data['form_id'] : '');
         $aux['proc_id'] = strval(isset($data['proc_id']) ? $data['proc_id'] : '');
         $aux['tapl_id'] = strval(isset($data['tapl_id']) ? $data['tapl_id'] : '');
         $aux['rece_id'] = strval(isset($data['rece_id']) ? $data['rece_id'] : '');
