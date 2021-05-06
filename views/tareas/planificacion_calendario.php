@@ -51,7 +51,7 @@
 
                                     foreach ($tareas_planificadas as $o) {
                                         
-                                        echo "<tr class='data-json' data-json='".json_encode($o)."'>";
+                                        echo "<tr class='data-json' data-json='".json_encode($o)."' title='". $o->descripcion ."'>";
                                         echo "<td><h5>$o->nombre</h5></td>";
                                         echo "<td class='text-right acciones'></td>";
                                         echo "</tr>";
