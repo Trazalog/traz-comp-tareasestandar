@@ -6,6 +6,7 @@
 ?>
 
 <div class="row">
+	<!-- Calendario Renderizado -->
     <div class="col-md-6">
         <div id="box-calendario" class="box">
             <div class="box-body">
@@ -36,6 +37,9 @@
             </div>
         </div>
     </div>
+	<!-- / Calendario Renderizado -->
+
+	<!-- Tareas Planificadas -->
     <div class="col-md-6">
         <div class="box" id="bolsa-tareas">
             <div class="box-body">
@@ -55,7 +59,7 @@
                                         echo "<td><h5>$o->nombre</h5></td>";
                                         echo "<td class='text-right acciones'></td>";
                                         echo "</tr>";
-                                        
+
                                     }
                                 }
                             ?>
@@ -65,6 +69,7 @@
             </div>
         </div>
     </div>
+	<!-- / Tareas Planificadas -->
 </div>
 
 <script>
@@ -94,7 +99,8 @@ function guardarTodasTareas() {
 }
 
 function guardarTarea(id) {
-
+//alert('guardar terea');
+debugger;
     var tarea = getJson2(id);
     tarea.origen = getJson2($('#origen'));
     wbox('#bolsa-tareas');
@@ -169,4 +175,6 @@ $('#sector').on('change', function() {
         }
     });
 })
+
+
 </script>

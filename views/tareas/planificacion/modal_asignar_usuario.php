@@ -13,9 +13,11 @@
                     <tbody>
                         <?php 
                             foreach ($usuarios as $o) {
-                                echo "<tr id='$o->user_id' class='data-json' data-json='".json_encode($o)."'>";
-                                echo "<td class='text-center'><img width='30px' height='30px' src='$o->img' class='img-circle' alt='User Image'></td>";
-                                echo "<td><h5>$o->nombre $o->apellido</h5></td>";
+
+                                echo "<tr id='$o->usernick' class='data-json' data-json='".json_encode($o)."'>";
+                                // echo "<td class='text-center'><img width='30px' height='30px' src='$o->img' class='img-circle' alt='User Image'></td>";
+																echo "<td class='text-center'><img width='30px' height='30px' src='lib/dist/img/user2-160x160.jpg' class='img-circle' alt='User Image'></td>";
+                                echo "<td><h5>$o->first_name $o->last_name</h5></td>";
                                 echo "</tr>";
                             }
                         ?>
@@ -32,10 +34,12 @@
 
 <script>
 $('table#usuarios > tbody').find('.data-json').on('click', function() {
+	debugger;
+
     var user = getJson(this);
-    setAttr(s_tarea, 'user_id', user.user_id);
+    setAttr(s_tarea, 'user_id', user.usernick);//cambiando 3ºparametro  tomo un item distinto del obj user (id o nickuser)
     $(s_tarea).find('span').remove();
-    $(s_tarea).append(bolita(user.nombre.charAt(0).toUpperCase() + user.apellido.charAt(0).toUpperCase(),
+    $(s_tarea).append(bolita(user.first_name.charAt(0).toUpperCase() + user.last_name.charAt(0).toUpperCase(),
         'orange'));
     guardarTarea(s_tarea);
     $('#mdl-usuarios').modal('hide');

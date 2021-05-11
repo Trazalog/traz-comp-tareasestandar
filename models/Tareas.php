@@ -188,7 +188,20 @@ class Tareas extends CI_Model
             if (isset($data['equipos'])) {
                 $this->asignarRecursos($data['tapl_id'], $data['equipos']);
             }
+						//TODO: LA TAREA TIENE NOMBRE DISTINTO VINIENDO DESDE LA VISTA, EN BPM ES DISPLAYNAME CON EL QUE BUSCAMOS COINCIDENCIA
+						// si hay usuario, lo asigno a tarea
+						//if (isset($data['user_id']) && $data['user_id'] != "") {
+
+								$actividad = $this->bpm->ObtenerActividades(BPM_PROCESS_ID_TAREA_GENERICA, $data['case_id']);
+								$nombre = $actividad[0]['displayName'];
+								$task = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID_TAREA_GENERICA, $data['case_id'], $nombre);
+
+								// con nickname local, traigo id de usuario en bpm para asignar l tarea
+								$usrBpm = $this->bpm->getUser($data['user_id']);
+								$resp_asign = $this->bpm->setUsuario($task, $usrBpm['data']['id']);
+						//}
         }
+
         unset($data['origen']);
         return $data;
     }
@@ -196,14 +209,14 @@ class Tareas extends CI_Model
     public function lanzarProceso($tarea)
     {
         if(isset($tarea['proc_id']) && $tarea['proc_id'] == ""){
-            log_message('DEBUG','#TRAZA | No hay proceso asociado');
+            log_message('DEBUG','#TRAZA|TRAZ-COMP-TAREASESTANDAR|TAREAS|lanzarProceso($tarea)| No hay proceso asociado');
             return; 
-        } 
-
+        }
+				// SI YA TIENE PROCESO LANZADO, RETORNA A FUNCION PADRE
         if(isset($tarea['case_id']) && $tarea['case_id'] != "0" && $tarea['case_id'] != "") return;
 
         #Validacion de Lanzar Proceso
-        if (isset($tarea['fecha']) && ($tarea['fecha'] != '3000-12-31+00:00') && isset($tarea['nombre']) && isset($tarea['user_id']) && isset($tarea['tapl_id'])) {     
+        if (isset($tarea['fecha']) && ($tarea['fecha'] != '3000-12-31+00:00') && isset($tarea['nombre']) && isset($tarea['user_id']) && isset($tarea['tapl_id'])) {
             $contract['nombre_proceso'] = $tarea['proc_id'];
             $contract['session'] = $this->session->has_userdata('bpm_token') ? $this->session->userdata('bpm_token') : '';
             $contract['payload']['nombreTarea'] = $tarea['nombre'];
@@ -212,8 +225,9 @@ class Tareas extends CI_Model
             $res = wso2(REST_API_BPM, 'POST', $contract);
             return $res['data'];
         }else{
-            log_message('DEBUG','#TRAZA | Validacion de proceso fallida');
+            log_message('DEBUG','#TRAZA|TRAZ-COMP-TAREASESTANDAR|TAREAS|lanzarProceso($tarea)| Validacion de proceso fallida');
         }
+
     }
 
 
@@ -387,5 +401,63 @@ class Tareas extends CI_Model
 					$this->db->select('valor as value, valor as label');
 					return $this->db->get_where('frm.utl_tablas', array('tabla' => $id))->result();
 			}
-		// FIN AGREGADO DE MERGE CHECHO	
+		// FIN AGREGADO DE MERGE CHECHO
+
+		/**
+		* Devuelve usuarios activos segun empresa (group de BPM)
+		* @param 
+		* @return
+		*/
+		function obtenerUsuarios($group)
+		{
+			log_message('INFO','#TRAZA|| >> ');
+
+			$aux = $this->rest->callAPI("GET",REST_CORE."/users/".$group);
+			$aux =json_decode($aux["data"]);
+			return $aux;
+		}
+
+		/**
+		* Devuelve petr_id por hito_id
+		* @param int $hito_id
+		* @return int $petr_id
+		*/
+		function getPetrIdXHitoId($orta_id)
+		{     
+			log_message('INFO','#TRAZA|| >> ');
+			$aux = $this->rest->callAPI("GET",REST_TST."/petrid/hito/".$orta_id);
+			$aux =json_decode($aux["data"]);
+			return $aux->pedidoTrabajoId->petr_id;
+			
+		}
+
+		/**
+		* Agrega a tareas planificadas nombre de usuarios asignados a cada una
+		* @param array tareas, array usuarios
+		* @return array tareas
+		*/
+		function marcarAsignados($tareas, $usuarios)
+		{
+
+			foreach ($tareas as $key => $tar) {
+
+				//guardo el nickname de usuario asignado
+				$nick = $tar->user_id;
+
+				foreach ($usuarios as $ind => $usr) {
+
+					if($usr->usernick == $nick){
+
+						$tar->nombreAsignado = $usr->first_name;
+						$tar->apellidoAsignado = $usr->last_name; break;
+					}else{
+
+						$tar->nombreAsignado = "";
+						$tar->apellidoAsignado = "";
+					}
+				}
+			}
+
+			return $tareas;
+		}
 }

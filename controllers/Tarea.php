@@ -9,13 +9,17 @@ class Tarea extends CI_Controller
         $this->load->model('Tareas');
         $this->load->model('Sectores');
     }
-
+		/**
+		* levanta componente planificacion de tareas(en Planificacion Trabajos)
+		* @param 
+		* @return
+		*/
     public function planificar($origen, $orta_id)
     {
 				// (AGREGADO DE MERGE DE CHECHO) extraer el info_id que viene concatenado con orta_id separado por un 0
 					$aux = $orta_id;
 					$auxorta_id="";
-					$auxinfo_id=""; 
+					$auxinfo_id="";
 					$petr_id="";
 					$o = 1;
 					$cont = strlen($aux);
@@ -52,15 +56,20 @@ class Tarea extends CI_Controller
         $data['usuarios'] = $this->obtenerUsuarios()->usuarios->usuario;
 				$data['sectores'] = $this->Sectores->obtener()['data'];
 
-				// (AGREGADO 2 DE MERGE CHECHO)
-					$petr_id = 7;
+				// Si la tarea proviene de un pedido de trabajo, es decir desde el Modulo Tareas
+				if($origen == 'PETR'){
+					$petr_id = $this->Tareas->getPetrIdXHitoId($orta_id);
 					$data['estatico'] =  $this->Tareas->obtenerPestaticopetr_id($petr_id)['data'];
-					$auxinfo_id=217;
-					// $html = getForm($auxinfo_id);
-					$data['info_id'] = $auxinfo_id;
+				}
+				//FIXME: BUSCAR EL HARDCODEO DE INFO ID PUEDE SER ID DE FORMULARIO DE TAREA
+				//$auxinfo_id=217;
+				// $html = getForm($auxinfo_id);
+				$data['info_id'] = $auxinfo_id;
 				// (FIN AGREGADO 2 DE MERGE CHECHO)
 
-        $data['tareas_planificadas'] = $this->Tareas->obtenerPlanificadas($origen, $orta_id)['data'];
+        $tareas = $this->Tareas->obtenerPlanificadas($origen, $orta_id)['data'];
+				$usuarios = $data['usuarios'];
+				$data['tareas_planificadas'] = $this->Tareas->marcarAsignados($tareas, $usuarios);
         $this->load->view('tareas/planificacion', $data);
     }
 
@@ -69,7 +78,11 @@ class Tarea extends CI_Controller
         $data = $this->Tareas->obtener();
         echo json_encode($data);
     }
-
+		/**
+		* Guarda asignacion de usuario a Tarea, edita (ver otro uso)
+		* @param
+		* @return 
+		*/
     public function guardarPlanificada()
     {
         $data = $this->input->post();
@@ -82,35 +95,17 @@ class Tarea extends CI_Controller
         $rsp = $this->Tareas->eliminarPlanificada($id);
         echo json_encode($rsp);
     }
-
+		/**
+		* Obtien usuarios locales segun empresa (group de BPM)
+		* @param
+		* @return arrary con listado de usuarios
+		*/
     public function obtenerUsuarios()
     {
-        return json_decode(
-            '{
-                "usuarios":{
-                    "usuario":[
-                        {
-                            "user_id":"ad.min",
-                            "nombre":"Anastasia",
-                            "apellido":"Diaz",
-                            "img":"lib/dist/img/user2-160x160.jpg"
-                        },
-                        {
-                            "user_id":"ad.min1",
-                            "nombre":"Kimberli",
-                            "apellido":"Ruterford",
-                            "img":"lib/dist/img/user2-160x160.jpg"
-                        },
-                        {
-                            "user_id":"ad.min2",
-                            "nombre":"Roberto",
-                            "apellido":"Bueno",
-                            "img":"lib/dist/img/user2-160x160.jpg"
-                        }
-                    ]
-                }
-            }'
-        );
+			$data = $this->session->userdata();
+			$group = $data['groupBpm'];
+			$usuarios = $this->Tareas->obtenerUsuarios($group);
+			return $usuarios;
     }
 
     public function crear()
