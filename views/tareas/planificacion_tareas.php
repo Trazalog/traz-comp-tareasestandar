@@ -62,7 +62,7 @@
                         <tbody>
                             <?php
                             foreach ($tareas as $o) {
-                                echo "<tr id='$o->tare_id' class='data-json' data-json='".json_encode($o)."'>";
+                                echo "<tr id='$o->tare_id' class='data-json' data-json='".json_encode($o)."' title='".$o->descripcion."'>";
                                 echo "<td><a href='#' onclick='obtenerSubtareas($o->tare_id)'>$o->nombre</a></td>";
                                 echo "<td>".bolita($o->duracion)."</td>";
                                 echo "<td><i class='fa fa-plus text-primary' onclick='agregarTarea(".(json_encode($o)).")'></i></td>";
