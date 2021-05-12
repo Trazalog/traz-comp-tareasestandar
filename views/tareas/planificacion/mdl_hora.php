@@ -37,10 +37,10 @@ function planificarTarea() {
 $('.timepicker').timepicker({
     timeFormat: 'HH:mm',
     interval: 60,
-    minTime: '10',
+    minTime: '<?php echo HORA_INICIO_JORNADA ?>',
     maxTime: '<?php echo HORA_FIN_JORNADA ?>',
-    defaultTime: '11',
-    startTime: '10:00',
+    defaultTime: '<?php echo HORA_INICIO_JORNADA ?>',
+    startTime: '<?php echo HORA_INICIO_JORNADA ?>',
     dynamic: false,
     dropdown: true,
     scrollbar: true,

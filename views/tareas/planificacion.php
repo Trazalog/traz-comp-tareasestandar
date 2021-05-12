@@ -38,13 +38,7 @@
             <!-- /.tab-pane -->
             <div class="tab-pane" id="tab_22">
                 <?php $this->load->view('tareas/planificacion_tareas'); ?>
-						</div>
-
-					<!-- AGREGADO DEL MERGE DE CHECHO -->
-            <li class=""><a href="#tab_23" data-toggle="tab" aria-expanded="false" ><i
-                class="fa fa-arrow-circle-right mr-2"></i>Notificacion Estandar</a></li>
-					<!-- FIN AGREGADO DEL MERGE DE CHECHO -->
-
+			</div>
             <!-- /.tab-pane -->
         </div>
         <!-- /.tab-content -->
