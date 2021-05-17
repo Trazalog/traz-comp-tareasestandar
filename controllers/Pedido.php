@@ -35,7 +35,7 @@ class Pedido extends CI_Controller
 
     public function verReceta($receId)
     {
-        $this->load->model('general/Formulas');
+        $this->load->model(PRD.'general/Formulas');
         $data['receta'] = $this->Formulas->getReceta($receId);
         $this->load->view(TST.'pedidos/receta', $data);
     }
