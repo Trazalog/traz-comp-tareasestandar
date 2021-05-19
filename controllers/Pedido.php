@@ -37,6 +37,7 @@ class Pedido extends CI_Controller
     {
         $this->load->model(PRD.'general/Formulas');
         $data['receta'] = $this->Formulas->getReceta($receId);
+        $data['artisReceta'] = $this->Formulas->getArticulosReceta($receId)->articulos->articulo;
         $this->load->view(TST.'pedidos/receta', $data);
     }
 

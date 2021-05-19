@@ -48,7 +48,7 @@
     </thead>
     <tbody>
         <?php
-            foreach ($receta->formula->articulos->articulo as $o) {
+            foreach ($artisReceta as $o) {
                 echo "<tr>";
                 echo "<td>";
                 echo "$o->descripcion<br>";
@@ -69,12 +69,14 @@
 var pedido = [];
 
 function calcular(valorAplicar) {
+    console.log(valorAplicar);
     pedido = [];
     if (!valorAplicar) {
         $('.cc').html('-');
         alert('Ingrese un valor válido');
         return;
     }
+    console.log("avanzo?");
     var frmCantidad = parseFloat($('#frm-cantidad').val());
     var cantidadAplicar = parseFloat(valorAplicar);
     $('.cc').each(function() {
