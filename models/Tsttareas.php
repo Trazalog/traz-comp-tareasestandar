@@ -63,7 +63,7 @@ class Tsttareas extends CI_Model
     public function desplegarCabecera($tarea)
     {
         $this->load->model(TST.'/Tareas');
-        $this->load->model('general/Etapas');
+        $this->load->model(PRD.'general/Etapas');
         $data['tarea'] = $this->Tareas->obtenerXCaseId($tarea->caseId)['data'][0];
         $data['etapa'] = $this->Etapas->buscar($data['tarea']->orta_id)->etapa;
         return $this->load->view(TST.'proceso/cabecera_tarea', $data, true);

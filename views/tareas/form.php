@@ -38,7 +38,7 @@
             <div class="form-group">
                 <label>Proceso Asociado:</label>
                 <?php
-                    echo selectFromCore('proc_id','Selecccionar Proceso', 'procesos');
+                    echo selectFromCore('proc_id','Seleccionar Proceso', 'procesos');
                 ?>
             </div>
         </div>
