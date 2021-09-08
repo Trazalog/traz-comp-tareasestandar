@@ -209,7 +209,7 @@ class Tareas extends CI_Model
     public function lanzarProceso($tarea)
     {
         if(isset($tarea['proc_id']) && $tarea['proc_id'] == ""){
-            log_message('DEBUG','#TRAZA|TRAZ-COMP-TAREASESTANDAR|TAREAS|lanzarProceso($tarea)| No hay proceso asociado');
+            log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | No hay proceso asociado');
             return; 
         }
 				// SI YA TIENE PROCESO LANZADO, RETORNA A FUNCION PADRE
@@ -219,13 +219,14 @@ class Tareas extends CI_Model
         if (isset($tarea['fecha']) && ($tarea['fecha'] != '3000-12-31+00:00') && isset($tarea['nombre']) && isset($tarea['user_id']) && isset($tarea['tapl_id'])) {
             $contract['nombre_proceso'] = $tarea['proc_id'];
             $contract['session'] = $this->session->has_userdata('bpm_token') ? $this->session->userdata('bpm_token') : '';
+            $contract['emprId'] = empresa();
             $contract['payload']['nombreTarea'] = $tarea['nombre'];
             $contract['payload']['userNick'] = $tarea['user_id'];
             $contract['payload']['taplId'] = $tarea['tapl_id'];
             $res = wso2(REST_API_BPM, 'POST', $contract);
             return $res['data'];
         }else{
-            log_message('DEBUG','#TRAZA|TRAZ-COMP-TAREASESTANDAR|TAREAS|lanzarProceso($tarea)| Validacion de proceso fallida');
+            log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | Validacion de proceso fallida');
         }
 
     }
@@ -404,16 +405,18 @@ class Tareas extends CI_Model
 		// FIN AGREGADO DE MERGE CHECHO
 
 		/**
-		* Devuelve usuarios activos segun empresa (group de BPM)
+		* Devuelve usuarios activos segun empresa
 		* @param 
-		* @return
+		* @return lista de usuarios por empresa
 		*/
-		function obtenerUsuarios($group)
+		function obtenerUsuarios()
 		{
-			log_message('INFO','#TRAZA|| >> ');
+            
+            $aux = $this->rest->callAPI("GET",REST_CORE."/users/".empresa());
+			$aux = json_decode($aux["data"]);
 
-			$aux = $this->rest->callAPI("GET",REST_CORE."/users/".$group);
-			$aux =json_decode($aux["data"]);
+			log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREAS | obtenerUsuarios() response >> ".json_encode($aux));
+
 			return $aux;
 		}
 
