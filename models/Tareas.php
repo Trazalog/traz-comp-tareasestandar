@@ -40,7 +40,7 @@ class Tareas extends CI_Model
     public function mapTarea($data)
     {
         if(!isset($data['form_id'])) $data['form_id'] = "0";
-        if(!isset($data['rece_id'])) $data['rece_id'] = "0";
+        if(!isset($data['rece_id'])) $data['rece_id'] = "";
         if(!isset($data['proc_id'])) $data['proc_id'] = "0";
         return $data;
     }
