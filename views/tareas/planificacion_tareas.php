@@ -1,4 +1,5 @@
 <div class="row">
+	<!-- Nueva Tarea -->
     <div class="col-md-6">
         <div class="box">
             <div class="form-group-input">
@@ -7,7 +8,7 @@
                     <input type="text" class="form-control" id="nueva-tarea" placeholder="Ingrese Nueva Tarea">
                     <div class="input-group-btn">
                         <button style="margin-top: 25px;" type="button" class="btn btn-success"
-                            onclick="agregarTarea({nombre:$('#nueva-tarea').val()}); $('#nueva-tarea').val('')"><i
+                            onclick="agregarTarea({nombre:$('#nueva-tarea').val(), proc_id: '<?php echo TAREAS_DEFAULT_PROC ?>'}); $('#nueva-tarea').val('')"><i
                                 class="fa fa-plus"></i></button>
                     </div>
                 </div>
@@ -33,6 +34,9 @@
             </div>
         </div>
     </div>
+	<!-- / Nueva Tarea -->
+
+	<!-- Seleccionar Plantilla -->
     <div class="col-md-6">
         <div class="box">
             <div class="box-body">
@@ -58,7 +62,7 @@
                         <tbody>
                             <?php
                             foreach ($tareas as $o) {
-                                echo "<tr id='$o->tare_id' class='data-json' data-json='".json_encode($o)."'>";
+                                echo "<tr id='$o->tare_id' class='data-json' data-json='".json_encode($o)."' title='".$o->descripcion."'>";
                                 echo "<td><a href='#' onclick='obtenerSubtareas($o->tare_id)'>$o->nombre</a></td>";
                                 echo "<td>".bolita($o->duracion)."</td>";
                                 echo "<td><i class='fa fa-plus text-primary' onclick='agregarTarea(".(json_encode($o)).")'></i></td>";
@@ -81,6 +85,7 @@
             </div>
         </div>
     </div>
+	<!-- / Seleccionar Plantilla -->
 </div>
 
 
@@ -111,6 +116,8 @@ function obtenerSubtareas(tarea) {
     }
 
 }
+
+// Acciones de la tabla Tareas Planificadas
 var accion =
     `<accion style="display:none">
     <button class="btn btn-link btn-xs btn-planificar" onclick="planificar(this)"><i class="fa fa-calendar text-success mr-1"></i></button>
@@ -121,8 +128,12 @@ var accion =
     </accion>
     <button class="btn btn-link btn-xs" onclick="conf(et,this)"><i class='fa fa-times text-danger'></i></button>`;
 
-$('#tareas-calendario').find('.acciones').html(accion);
-$('#tareas-calendario > tbody > tr').each(function() {
+
+// Agrega las acciones a la Tabla  pLanificadas
+		$('#tareas-calendario').find('.acciones').html(accion);
+
+// Recorre toda la Tabla Tareas Planificadas Marcando los usuarios asignados
+		$('#tareas-calendario > tbody > tr').each(function() {
     var data = getJson(this);
     if (data.hasOwnProperty('fecha') && data.fecha != '3000-12-31+00:00' && data.fecha != '0031-01-01+00:00') {
         $(this).find('.btn-planificar').append(bolita(dateFormatPG(data.fecha), 'blue'));
@@ -130,9 +141,11 @@ $('#tareas-calendario > tbody > tr').each(function() {
     console.log('ban');
     console.log(data);
     var user = getJson($('tr#' +$.escapeSelector(data.user_id)));
-    console.log(user);
+    console.log('usuario: ' + user);
+		console.log(user);
     if (user) {
-        $(this).find('.btn-asignar').append(bolita(user.nombre.charAt(0).toUpperCase() + user.apellido.charAt(0)
+
+        $(this).find('.btn-asignar').append(bolita(user.first_name.charAt(0).toUpperCase() + user.last_name.charAt(0)
             .toUpperCase(),
             'orange'));
     }
@@ -143,7 +156,7 @@ $('accion').show();
 function agregarTarea(tarea) {
     if (tarea.nombre) {
         wo();
-        tarea.tare_id = (tarea.tare_id?tarea.tare_id:'0');
+        tarea.tare_id = (tarea.tare_id?tarea.tare_id:'');
         const t = '#tareas-planificadas';
         const id = nextVal();
         $(t).append(
@@ -215,4 +228,5 @@ var et = function eliminarTarea(e) {
 function nextVal() {
     return Date.now();
 }
+
 </script>

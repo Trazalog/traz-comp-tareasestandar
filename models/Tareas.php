@@ -40,6 +40,8 @@ class Tareas extends CI_Model
     public function mapTarea($data)
     {
         if(!isset($data['form_id'])) $data['form_id'] = "0";
+        if(!isset($data['rece_id'])) $data['rece_id'] = "";
+        if(!isset($data['proc_id'])) $data['proc_id'] = "0";
         return $data;
     }
 
@@ -186,27 +188,47 @@ class Tareas extends CI_Model
             if (isset($data['equipos'])) {
                 $this->asignarRecursos($data['tapl_id'], $data['equipos']);
             }
+						//TODO: LA TAREA TIENE NOMBRE DISTINTO VINIENDO DESDE LA VISTA, EN BPM ES DISPLAYNAME CON EL QUE BUSCAMOS COINCIDENCIA
+						// si hay usuario, lo asigno a tarea
+						//if (isset($data['user_id']) && $data['user_id'] != "") {
+
+								$actividad = $this->bpm->ObtenerActividades(BPM_PROCESS_ID_TAREA_GENERICA, $data['case_id']);
+								$nombre = $actividad[0]['displayName'];
+								$task = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID_TAREA_GENERICA, $data['case_id'], $nombre);
+
+								// con nickname local, traigo id de usuario en bpm para asignar l tarea
+								$usrBpm = $this->bpm->getUser($data['user_id']);
+								$resp_asign = $this->bpm->setUsuario($task, $usrBpm['data']['id']);
+						//}
         }
+
         unset($data['origen']);
         return $data;
     }
 
     public function lanzarProceso($tarea)
     {
-        if(isset($tarea['proc_id']) && $tarea['proc_id'] == "") return; 
-
+        if(isset($tarea['proc_id']) && $tarea['proc_id'] == ""){
+            log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | No hay proceso asociado');
+            return; 
+        }
+				// SI YA TIENE PROCESO LANZADO, RETORNA A FUNCION PADRE
         if(isset($tarea['case_id']) && $tarea['case_id'] != "0" && $tarea['case_id'] != "") return;
 
         #Validacion de Lanzar Proceso
-        if (isset($tarea['fecha']) && ($tarea['fecha'] != '3000-12-31+00:00') && isset($tarea['nombre']) && isset($tarea['user_id']) && isset($tarea['tapl_id'])) {     
+        if (isset($tarea['fecha']) && ($tarea['fecha'] != '3000-12-31+00:00') && isset($tarea['nombre']) && isset($tarea['user_id']) && isset($tarea['tapl_id'])) {
             $contract['nombre_proceso'] = $tarea['proc_id'];
             $contract['session'] = $this->session->has_userdata('bpm_token') ? $this->session->userdata('bpm_token') : '';
+            $contract['emprId'] = empresa();
             $contract['payload']['nombreTarea'] = $tarea['nombre'];
             $contract['payload']['userNick'] = $tarea['user_id'];
             $contract['payload']['taplId'] = $tarea['tapl_id'];
             $res = wso2(REST_API_BPM, 'POST', $contract);
             return $res['data'];
+        }else{
+            log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | Validacion de proceso fallida');
         }
+
     }
 
 
@@ -224,12 +246,12 @@ class Tareas extends CI_Model
     {
         $aux = array();
         $aux['nombre'] = $data['nombre'];
-        $aux['fecha'] = (isset($data['fecha']) && $data['fecha'] != "0031-01-01+00:00") ? formatFechaPG($data['fecha']) : '3000-12-31';
-        $aux['info_id'] = strval(isset($data['info_id']) ? $data['info_id'] : 0);
-        $aux['tare_id'] = strval(isset($data['tare_id']) ? $data['tare_id'] : 0);
-        $aux['case_id'] = strval(isset($data['case_id']) && $data['case_id'] != "" ? $data['case_id'] : 0);
-        $aux['user_id'] = strval(isset($data['user_id']) ? $data['user_id'] : 0);
-        $aux['form_id'] = strval(isset($data['form_id']) ? $data['form_id'] : 0);
+        $aux['fecha'] = (isset($data['fecha']) && $data['fecha'] != "0031-01-01+00:00") ? $data['fecha'] : '3000-12-31';
+        $aux['info_id'] = strval(isset($data['info_id']) ? $data['info_id'] : '');
+        $aux['tare_id'] = strval(isset($data['tare_id']) ? $data['tare_id'] : '');
+        $aux['case_id'] = strval(isset($data['case_id']) && $data['case_id'] != "" ? $data['case_id'] : '');
+        $aux['user_id'] = strval(isset($data['user_id']) ? $data['user_id'] : '');
+        $aux['form_id'] = strval(isset($data['form_id']) ? $data['form_id'] : '');
         $aux['proc_id'] = strval(isset($data['proc_id']) ? $data['proc_id'] : '');
         $aux['tapl_id'] = strval(isset($data['tapl_id']) ? $data['tapl_id'] : '');
         $aux['rece_id'] = strval(isset($data['rece_id']) ? $data['rece_id'] : '');
@@ -237,7 +259,7 @@ class Tareas extends CI_Model
         $aux['hora_duracion'] = isset($data['duracion']) ? $data['duracion'] : '';
         $aux['empr_id'] = strval(empresa());
 
-        if($aux['fecha'] != '3000-12-31'){
+        if($aux['fecha'] != '3000-12-31+00:00'){
             $aux['fec_inicio'] = $aux['fecha'];
             $min = $this->timeToMinutes($data['duracion']);
             $aux['fec_fin'] = date('Y-m-d+H:i', strtotime("+$min minute", strtotime( $aux['fec_inicio'])));
@@ -340,4 +362,105 @@ class Tareas extends CI_Model
         $data['_delete_tareas_planificadas_sinorigen']['empr_id'] = $emprId;
         return wso2($url, 'DELETE', $data);
     }
+
+    // AGREGADO DE MERGE CHECHO
+			public function obtenerPestaticopetr_id($petr_id)
+			{
+					$url = REST_PRO."/getInfotrabajo/$petr_id";
+					return wso2($url);
+			}
+			public function obtenerform($info_id)
+			{
+					$this->db->select('name, label,valor, requerido, valo_id, orden, A.form_id, tipo_dato, C.nombre');
+					$this->db->from('frm.instancias_formularios as A');
+					$this->db->join('frm.formularios as C', 'C.form_id = A.form_id');
+					$this->db->where('A.info_id', $info_id);
+					$this->db->where('A.eliminado', false);
+					$this->db->order_by('A.orden');
+
+					$res = $this->db->get();
+
+					$aux = new StdClass();
+					$aux->info_id = $info_id;
+					$aux->nombre = $res->row()->nombre;
+					$aux->id = $info_id;
+					$aux->items = $res->result();
+
+					foreach ($aux->items as $key => $o) {
+
+							if ($o->tipo_dato == 'radio' || $o->tipo_dato == 'check' || $o->tipo_dato == 'select') {
+
+									$aux->items[$key]->values = $this->obtenerValores($o->valo_id);
+
+							}
+					}
+
+					return $aux;
+			}
+			public function obtenerValores($id)
+			{
+					$this->db->select('valor as value, valor as label');
+					return $this->db->get_where('frm.utl_tablas', array('tabla' => $id))->result();
+			}
+		// FIN AGREGADO DE MERGE CHECHO
+
+		/**
+		* Devuelve usuarios activos segun empresa
+		* @param 
+		* @return lista de usuarios por empresa
+		*/
+		function obtenerUsuarios()
+		{
+            
+            $aux = $this->rest->callAPI("GET",REST_CORE."/users/".empresa());
+			$aux = json_decode($aux["data"]);
+
+			log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREAS | obtenerUsuarios() response >> ".json_encode($aux));
+
+			return $aux;
+		}
+
+		/**
+		* Devuelve petr_id por hito_id
+		* @param int $hito_id
+		* @return int $petr_id
+		*/
+		function getPetrIdXHitoId($orta_id)
+		{     
+			log_message('INFO','#TRAZA|| >> ');
+			$aux = $this->rest->callAPI("GET",REST_TST."/petrid/hito/".$orta_id);
+			$aux =json_decode($aux["data"]);
+			return $aux->pedidoTrabajoId->petr_id;
+			
+		}
+
+		/**
+		* Agrega a tareas planificadas nombre de usuarios asignados a cada una
+		* @param array tareas, array usuarios
+		* @return array tareas
+		*/
+		function marcarAsignados($tareas, $usuarios)
+		{
+
+			foreach ($tareas as $key => $tar) {
+
+				//guardo el nickname de usuario asignado
+				$nick = $tar->user_id;
+
+				foreach ($usuarios as $ind => $usr) {
+
+					if($usr->usernick == $nick){
+
+						$tar->nombreAsignado = $usr->first_name;
+						$tar->apellidoAsignado = $usr->last_name; break;
+					}else{
+
+						$tar->nombreAsignado = "";
+						$tar->apellidoAsignado = "";
+					}
+				}
+			}
+
+			return $tareas;
+		}
 }

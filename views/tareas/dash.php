@@ -40,7 +40,7 @@
 
             <!-- Modal body -->
             <div class="modal-body">
-                <?php $this->load->view('tareas/form')?>
+                <?php echo comp('nueva-tarea', base_url(TST.'tarea/guardar'),1) ?>
             </div>
 
             <!-- Modal footer -->
@@ -80,6 +80,7 @@
 
 
 <script>
+initForm();
 var tare_id;
 function agregarSubtareas(e) {
     var data = getJson($(e).closest('tr'));
@@ -116,28 +117,35 @@ var eliminarTarea = function(e) {
 
 function guardarTarea(id = false) {
     if (id) {
+        if(!frm_validar('#frm-tarea-e')) return;
         var data = getForm('#frm-tarea-e');
     } else {
+        if(!frm_validar('#frm-tarea')) return;
         var data = getForm('#frm-tarea');
     }
     wo();
     $.ajax({
         type: 'POST',
+        dataType: 'JSON',
         url: '<?php echo base_url(TST) ?>Tarea/guardar' + (id ? '/' + id : ''),
         data: {
             data
         },
         success: function(result) {
-            $('#nuevo').modal('hide');
-            $('#editar').modal('hide');
-            $('#frm-tarea')[0].reset();
-            $('#frm-tarea-e')[0].reset();
-            reload('#tareas');
-            alert('Hecho');
-            actualizarTareasSelect();
+            if(result.status){
+                $('#nuevo').modal('hide');
+                $('#editar').modal('hide');
+                reload('#frm-tarea');
+                frmReset('#frm-tarea-e');
+                reload('#tareas');
+                alert('Hecho');
+                actualizarTareasSelect();
+            }else{
+                falla();
+            }
         },
         error: function(result) {
-            alert('Error')
+            error();
         },
         complete:function(){
             wc();

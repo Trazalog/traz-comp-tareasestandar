@@ -26,7 +26,7 @@
 
 <script>
 function planificarTarea() {
-    s_fecha = s_fecha + ' ' + $('#hora').val();
+    s_fecha = dateFormat(s_fecha) + '+' + $('#hora').val();
     setAttr(s_tarea, 'fecha', s_fecha);
     $(s_tarea).find('span').remove();
     $(s_tarea).append(bolita(s_fecha, 'blue'));
@@ -37,10 +37,10 @@ function planificarTarea() {
 $('.timepicker').timepicker({
     timeFormat: 'HH:mm',
     interval: 60,
-    minTime: '10',
+    minTime: '<?php echo HORA_INICIO_JORNADA ?>',
     maxTime: '<?php echo HORA_FIN_JORNADA ?>',
-    defaultTime: '11',
-    startTime: '10:00',
+    defaultTime: '<?php echo HORA_INICIO_JORNADA ?>',
+    startTime: '<?php echo HORA_INICIO_JORNADA ?>',
     dynamic: false,
     dropdown: true,
     scrollbar: true,

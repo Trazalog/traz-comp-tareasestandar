@@ -38,7 +38,7 @@
             <!-- /.tab-pane -->
             <div class="tab-pane" id="tab_22">
                 <?php $this->load->view('tareas/planificacion_tareas'); ?>
-            </div>
+			</div>
             <!-- /.tab-pane -->
         </div>
         <!-- /.tab-content -->

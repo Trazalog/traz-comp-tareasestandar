@@ -118,6 +118,10 @@ function actualizarTareasSelect() {
 function asociarTareaPlantilla() {
     var plan_id = selectPlan;
     var tare_id = $('select#tareas').val();
+    if(!tare_id){
+        alert('Por favor, seleecionar una tarea');
+        return;
+    }
     wo()
     $.ajax({
         type: 'POST',
