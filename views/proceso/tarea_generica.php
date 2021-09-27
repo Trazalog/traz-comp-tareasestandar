@@ -1,6 +1,6 @@
 <input class="hidden" type="text" id="ortaId" value="<?php echo $orta_id?>">
 
-<div class="box-header">
+<div class="box-header with-border">
     <div class="box-title">Lista de subtareas</div>
 </div>
 <div class="box-body">
@@ -25,7 +25,7 @@
     </table>
 </div>
 
-<div class="box-header">
+<div class="box-header with-border">
     <div class="box-title">Formulario Tarea</div>
 </div>
 <div class="box-body">

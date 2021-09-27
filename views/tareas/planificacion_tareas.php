@@ -8,7 +8,7 @@
                     <input type="text" class="form-control" id="nueva-tarea" placeholder="Ingrese Nueva Tarea">
                     <div class="input-group-btn">
                         <button style="margin-top: 25px;" type="button" class="btn btn-success"
-                            onclick="agregarTarea({nombre:$('#nueva-tarea').val()}); $('#nueva-tarea').val('')"><i
+                            onclick="agregarTarea({nombre:$('#nueva-tarea').val(), proc_id: '<?php echo TAREAS_DEFAULT_PROC ?>'}); $('#nueva-tarea').val('')"><i
                                 class="fa fa-plus"></i></button>
                     </div>
                 </div>

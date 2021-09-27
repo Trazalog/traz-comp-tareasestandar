@@ -102,10 +102,10 @@ class Tarea extends CI_Controller
 		*/
     public function obtenerUsuarios()
     {
-			$data = $this->session->userdata();
-			$group = $data['groupBpm'];
-			$usuarios = $this->Tareas->obtenerUsuarios($group);
-			return $usuarios;
+        log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | obtenerUsuarios() ");
+        
+        $usuarios = $this->Tareas->obtenerUsuarios();
+        return $usuarios;
     }
 
     public function crear()
