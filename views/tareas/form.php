@@ -22,7 +22,7 @@
             <div class="form-group">
                 <label>Formulario Asociado:</label>
                 <?php
-                    echo selectFromFont('form_id','Seleccionar Formulario', REST_FRM.'/formularios/1',['value'=>'form_id', 'descripcion'=>'nombre']);
+                    echo selectFromFont('form_id','Seleccionar Formulario', REST_FRM.'/formularios/'.empresa(),['value'=>'form_id', 'descripcion'=>'nombre']);
                 ?>
             </div>
         </div>
