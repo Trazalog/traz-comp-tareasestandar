@@ -132,6 +132,11 @@ class Tarea extends CI_Controller
     {
         $data = $this->input->post('data');
         if ($data) {
+          if(!isset($data['rece_id']))
+{
+     $data['rece_id'] ='0';
+
+}
             if ($id) {
                 $rsp = $this->Tareas->editar($id, $data);
             } else {
