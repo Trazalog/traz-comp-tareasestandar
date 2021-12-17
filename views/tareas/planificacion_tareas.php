@@ -120,6 +120,7 @@ function obtenerSubtareas(tarea) {
 // Acciones de la tabla Tareas Planificadas
 var accion =
     `<accion style="display:none">
+    <button class="btn btn-link btn-xs btn-estado"><i class=""></i></button>
     <button class="btn btn-link btn-xs btn-planificar" onclick="planificar(this)"><i class="fa fa-calendar text-success mr-1"></i></button>
     <button class="btn btn-link btn-xs btn-asignar" onclick="s_tarea = this;$('#mdl-usuarios').modal('show')"><i class="fa fa-user text-success mr-1"></i></button>
     <button class="btn btn-xs btn-link" title="Rec.Trabajo" onclick="s_tarea=this; editarEquipos(); $('#mdl-pere').modal('show')"><i class="fa fa-cogs"></i></button>
@@ -134,10 +135,61 @@ var accion =
 
 // Recorre toda la Tabla Tareas Planificadas Marcando los usuarios asignados
 		$('#tareas-calendario > tbody > tr').each(function() {
+            debugger;
     var data = getJson(this);
-    if (data.hasOwnProperty('fecha') && data.fecha != '3000-12-31+00:00' && data.fecha != '0031-01-01+00:00') {
-        $(this).find('.btn-planificar').append(bolita(dateFormatPG(data.fecha), 'blue'));
+
+    estado_tarea = data.estado
+    switch (estado_tarea) {
+            case 'creada':
+                console.log('estado: ' + estado_tarea);
+                $(this).find('.btn-estado').append(bolita(estado_tarea, 'purple', 'Estado: '+ estado_tarea));
+                break;
+
+            case 'solicitado':
+                console.log('estado: ' + estado_tarea);
+                $(this).find('.btn-estado').append(bolita(estado_tarea, 'orange', 'Estado: '+ estado_tarea));
+                break;
+                Rechazado
+            case 'aprobado':
+                console.log('estado: ' + estado_tarea);
+                $(this).find('.btn-estado').append(bolita(estado_tarea, 'orange', 'Estado: '+ estado_tarea));
+                break;
+
+            case 'rechazado':
+                console.log('estado: ' + estado_tarea);
+                $(this).find('.btn-estado').append(bolita(estado_tarea, 'red', 'Estado: '+ estado_tarea));
+                break;
+
+            default:
+            console.log('estado: ' + estado_tarea);
+            $(this).find('.btn-estado').append(bolita(estado_tarea, 'gray', 'Estado'));
+                break;
+            }
+            
+
+    if ( data.fecha == '3000-12-31+00:00' || data.fecha == '0031-01-01+00:00') {
+      //retoques fecha
+      ////
+debugger;
+
+      console.log('fecha: ' + data.fecha);
+        $(this).find('.btn-estado').append(bolita('Sin Planificar', 'gray', 'Estado: Sin Planificar'));
+     
+    } else if (data.hasOwnProperty('fecha') && data.fecha != '3000-12-31+00:00' && data.fecha != '0031-01-01+00:00') {
+      //retoques fecha
+      ////
+   var fechita =  Date.parse(data.fehca);
+   console.log(fechita);
+        //  $(this).find('.btn-planificar').append(bolita(dateFormatPG(data.fecha), 'blue'));
+        $(this).find('.btn-planificar').append(bolita((data.fecha), 'blue'));
+     
+     
+    } else{
+        console.log('fecha: ' + data.fecha);
+      //          $(this).find('.btn-estado').append(bolita('Sin Planificar', 'orange', 'Estado: Sin Planificar'));
+              
     }
+ 
     console.log('ban');
     console.log(data);
     var user = getJson($('tr#' +$.escapeSelector(data.user_id)));

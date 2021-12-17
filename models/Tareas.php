@@ -317,7 +317,7 @@ class Tareas extends CI_Model
         if ($rsp['status']) {
             $rsp['data'] = $this->mapRespuesta(json_decode($rsp['data'])->tareas->tarea);
         }
-        return $rsp;
+         return $rsp;
     }
 
     public function mapRespuesta($data)
