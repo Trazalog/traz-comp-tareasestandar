@@ -90,10 +90,27 @@ class Tarea extends CI_Controller
         echo json_encode($res);
     }
 
+    /**
+		* eliminar Planificada 
+		* @param $id
+		* @return Array respuesta del servicio
+		*/
     public function eliminarPlanificada($id)
     {
         $rsp = $this->Tareas->eliminarPlanificada($id);
         echo json_encode($rsp);
+
+        if (!$rsp['status']) {
+            return $rsp;
+            log_message("ERROR", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | eliminar Planificada " . json_encode($rsp));    
+        } 
+        else{
+            return $rsp;
+            log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | eliminar Planificada " . json_encode($rsp));
+     
+        }
+
+        
     }
 		/**
 		* Obtien usuarios locales segun empresa (group de BPM)
@@ -134,7 +151,7 @@ class Tarea extends CI_Controller
         if ($data) {
           if(!isset($data['rece_id']))
 {
-     $data['rece_id'] ='0';
+     $data['rece_id'] ='';
 
 }
             if ($id) {
