@@ -46,7 +46,7 @@
                 <div class="table-responsive" style="height: 540px;">
                     <table class="table table-striped table-hover table-fixed" id="tareas-calendario">
                         <thead>
-                            <th>Tareas Planificadas</th>
+                            <th>Tareas :</th>
                             <th width="50%"></th>
                         </thead>
                         <tbody>
@@ -88,7 +88,15 @@ function clickCalendario(info) {
             $('#mdl-hora').modal('show');
         }
     } else {
-        alert('No se puede seleccionar fechas anteriores a la actual.');
+
+    Swal.fire({
+        type: 'error',
+        title: 'Error...',
+        text: 'No se puede seleccionar fechas anteriores a la actual!',
+        target: document.getElementById('box-calendario'),
+        
+        })
+    
     }
 }
 
@@ -131,7 +139,13 @@ function showForm(e) {
     $mdl.find('.modal-title').html('Formulario Asociado');
     $mdl.find('.modal-body').empty();
     if (!data.info_id || data.info_id == "false") {
-        alert('Tarea sin formulario asociado');
+
+        Swal.fire({
+            type: 'info',
+            title: 'Info',
+            text: 'Tarea sin formulario asociado!'
+                        
+            })
         return;
     }
     wo();

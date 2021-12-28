@@ -120,11 +120,13 @@ function obtenerSubtareas(tarea) {
 // Acciones de la tabla Tareas Planificadas
 var accion =
     `<accion style="display:none">
-    <button class="btn btn-link btn-xs btn-planificar" onclick="planificar(this)"><i class="fa fa-calendar text-success mr-1"></i></button>
-    <button class="btn btn-link btn-xs btn-asignar" onclick="s_tarea = this;$('#mdl-usuarios').modal('show')"><i class="fa fa-user text-success mr-1"></i></button>
-    <button class="btn btn-xs btn-link" title="Rec.Trabajo" onclick="s_tarea=this; editarEquipos(); $('#mdl-pere').modal('show')"><i class="fa fa-cogs"></i></button>
-    <button class="btn btn-xs btn-link" title="Rec. Materiales" onclick="s_tarea=this; verDetallePedido();"><i class="fa fa-check-square-o"></i></button>
-    <button class="btn btn-xs btn-link" title="Formulario Tarea" onclick="showForm(this)"><i class="fa fa-file-text"></i></button>
+    <button class="btn btn-link btn-sm btn-estado"><i class=""></i></button>
+    <button class="btn btn-link btn-sm btn-planificado"><i class=""></i></button>
+    <button class="btn btn-link btn-sm btn-planificar" onclick="planificar(this)"><i class="fa fa-calendar text-success mr-1"></i></button>
+    <button class="btn btn-link btn-sm btn-asignar" onclick="s_tarea = this;$('#mdl-usuarios').modal('show')"><i class="fa fa-user text-success mr-1"></i></button>
+    <button class="btn btn-sm btn-link" title="Rec.Trabajo" onclick="s_tarea=this; editarEquipos(); $('#mdl-pere').modal('show')"><i class="fa fa-cogs"></i></button>
+    <button class="btn btn-sm btn-link" title="Rec. Materiales" onclick="s_tarea=this; verDetallePedido();"><i class="fa fa-check-square-o"></i></button>
+    <button class="btn btn-sm btn-link" title="Formulario Tarea" onclick="showForm(this)"><i class="fa fa-file-text"></i></button>
     </accion>
     <button class="btn btn-link btn-xs" onclick="conf(et,this)"><i class='fa fa-times text-danger'></i></button>`;
 
@@ -134,10 +136,61 @@ var accion =
 
 // Recorre toda la Tabla Tareas Planificadas Marcando los usuarios asignados
 		$('#tareas-calendario > tbody > tr').each(function() {
+            debugger;
     var data = getJson(this);
-    if (data.hasOwnProperty('fecha') && data.fecha != '3000-12-31+00:00' && data.fecha != '0031-01-01+00:00') {
-        $(this).find('.btn-planificar').append(bolita(dateFormatPG(data.fecha), 'blue'));
+
+    estado_tarea = data.estado
+    switch (estado_tarea) {
+            case 'creada':
+                console.log('estado: ' + estado_tarea);
+                $(this).find('.btn-estado').append(bolita(estado_tarea, 'purple', 'Estado: '+ estado_tarea));
+                break;
+
+            case 'solicitado':
+                console.log('estado: ' + estado_tarea);
+                $(this).find('.btn-estado').append(bolita(estado_tarea, 'orange', 'Estado: '+ estado_tarea));
+                break;
+                
+            case 'aprobado':
+                console.log('estado: ' + estado_tarea);
+                $(this).find('.btn-estado').append(bolita(estado_tarea, 'orange', 'Estado: '+ estado_tarea));
+                break;
+
+            case 'rechazado':
+                console.log('estado: ' + estado_tarea);
+                $(this).find('.btn-estado').append(bolita(estado_tarea, 'red', 'Estado: '+ estado_tarea));
+                break;
+
+            default:
+            console.log('estado: ' + estado_tarea);
+            $(this).find('.btn-estado').append(bolita(estado_tarea, 'gray', 'Estado'));
+                break;
+            }
+            
+
+    if ( data.fecha == '3000-12-31+00:00' || data.fecha == '0031-01-01+00:00') {
+      //retoques fecha
+      ////
+debugger;
+
+      console.log('fecha: ' + data.fecha);
+        $(this).find('.btn-planificado').append(bolita('Sin Planificar', 'gray', 'Estado: Sin Planificar'));
+     
+    } else if (data.hasOwnProperty('fecha') && data.fecha != '3000-12-31+00:00' && data.fecha != '0031-01-01+00:00') {
+      //retoques fecha
+      ////
+   var fechita =  Date.parse(data.fehca);
+   console.log(fechita);
+        $(this).find('.btn-planificar').append(bolita(dateFormatPG(data.fecha), 'blue' , 'Estado: Planificado'));
+      //    $(this).find('.btn-planificar').append(bolita((data.fecha), 'blue'));
+      $(this).find('.btn-planificado').append(bolita('Planificado', 'purple', 'Estado: Planificado'));
+      $('.btn-estado').hide();
+    } else{
+        console.log('fecha: ' + data.fecha);
+      //          $(this).find('.btn-estado').append(bolita('Sin Planificar', 'orange', 'Estado: Sin Planificar'));
+              
     }
+ 
     console.log('ban');
     console.log(data);
     var user = getJson($('tr#' +$.escapeSelector(data.user_id)));
@@ -186,6 +239,7 @@ function agregarTareas() {
 }
 
 $('#plantilla').change(function() {
+    debugger;
     if (this.value == "0") { //Plantilla no seleccionada
         $('#tareas > tbody').find('tr').show();
         $('#tareas').find('tfoot').hide();

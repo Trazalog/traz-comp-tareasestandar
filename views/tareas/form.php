@@ -30,7 +30,7 @@
             <div class="form-group">
                 <label>Receta Asociada:</label>
                 <?php
-                    echo selectFromFont('rece_id', 'Seleccionar Receta', REST_PRD_ETAPAS.'/getFormulas/'.empresa(), array('value' => 'form_id', 'descripcion'=>'descripcion'), true);
+                    echo selectFromFont('rece_id', 'Seleccionar Receta', REST_PRD_ETAPAS.'/getFormulas/'.empresa(), array('value' => 'form_id', 'descripcion'=>'descripcion'), false);
                 ?>
             </div>
         </div>
