@@ -39,8 +39,9 @@ $('table#usuarios > tbody').find('.data-json').on('click', function() {
     var user = getJson(this);
     setAttr(s_tarea, 'user_id', user.usernick);//cambiando 3ºparametro  tomo un item distinto del obj user (id o nickuser)
     $(s_tarea).find('span').remove();
-    $(s_tarea).append(bolita(user.first_name.charAt(0).toUpperCase() + user.last_name.charAt(0).toUpperCase(),
-        'orange'));
+    // $(s_tarea).append(bolita(user.first_name.charAt(0).toUpperCase() + user.last_name.charAt(0).toUpperCase(),
+    //     'orange'));
+    $(s_tarea).append(bolita(user.first_name + ' ' + user.last_name,'orange'));
     guardarTarea(s_tarea);
     $('#mdl-usuarios').modal('hide');
 });
