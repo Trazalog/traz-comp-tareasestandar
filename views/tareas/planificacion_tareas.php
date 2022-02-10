@@ -198,9 +198,10 @@ debugger;
 		console.log(user);
     if (user) {
 
-        $(this).find('.btn-asignar').append(bolita(user.first_name.charAt(0).toUpperCase() + user.last_name.charAt(0)
-            .toUpperCase(),
-            'orange'));
+        // $(this).find('.btn-asignar').append(bolita(user.first_name.charAt(0).toUpperCase() + user.last_name.charAt(0)
+        //     .toUpperCase(),
+        //     'orange'));
+        $(this).find('.btn-asignar').append(bolita(user.first_name+ ' ' + user.last_name,'orange'));
     }
 });
 $('accion').show();
