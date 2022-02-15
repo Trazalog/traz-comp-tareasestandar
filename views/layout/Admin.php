@@ -69,7 +69,7 @@
 }
 </style>
 
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-red sidebar-mini">
     <?php $this->load->view('layout/wait') ?>
     <div class="wrapper">
 
