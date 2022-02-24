@@ -51,7 +51,7 @@ class Indicadores extends \koolreport\KoolReport
       // ->pipe(new OnlyColumn(array(
       //     "titulo", "stock", "unidad_medida", "estado"
       // )))
-      ->pipe($this->dataStore("data_produccion_table"));
+      ->pipe($this->dataStore("data_kpi_basico_table"));
 
     $this->src("apiarray")
       // ->pipe(new RemoveColumn(array(
