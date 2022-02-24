@@ -8,188 +8,162 @@ use \koolreport\widgets\google\ColumnChart;
 //use \koolreport\widgets\koolphp\Card;
 
 ?>
-<body>
-
+<!--_________________BODY REPORTE___________________________-->
 <div id="reportContent" class="report-content">
-  <div class="box box-primary">
-
-    <div class="box-header with-border">
-        <div class="box-tittle">
-            <h4>KPI Tareas</h4>
-        </div>
-    </div>
-
-    <div class="box-body">
-
-      <!-- _____ GRUPO 1 _____ -->
-        <div class="col-md-12">
-       
-            <div class="form-group">
-            <h5>Seleccionar un Periodo</h5>
-              <div class="col-md-3 col-md-2 mb-2 mb-lg-0">
-                <label style="padding-left: 20%;">Fecha Desde <strong class="text-danger">*</strong> :</label>
-                <div class="input-group date">
-                  <a class="input-group-addon" id="daterange-btn" title="Más fechas">
-                    <i class="fa fa-magic"></i>
-                    <span></span>
-                  </a>
-                  <input type="date" class="form-control pull-right" id="datepickerDesde" name="datepickerDesde" placeholder="Desde">
-                </div>
-              </div>
-
-
-                <div class="col-md-3 col-md-2 col-md-offset-1 mb-lg-0">
-                  <label>Fecha Hasta  <strong class="text-danger">*</strong> :</label>
-                  <div class="input-group date">
-                    <input type="date" class="form-control" id="datepickerHasta" name="datepickerHasta" placeholder="Hasta">
-                   
-                </div>
-                <!-- <div class="col-md-2 col-md-2 col-md-offset-1 mb-lg-0"> -->
-                
-                <!-- </div> -->
-
-        </div>
-        <a class="form-group" onclick="MostrarFiltro()"><i class="fa fa-filter fa-3 text-blue" style="cursor: pointer;" title="Más Filtros"></i>Filtros</a>
-              <div class="col-md-4 col-md-offset-3">
-              
-                  <div class="form-group">
-
-                      <label for="tipoajuste" class="form-label">Agrupar por</label>
-                      <div class="form-group">
-                        <button type="button" class="btn btn-default btn-flat col-sm-4 col-md-3 mb-2" style="float: right !important;">Fecha</button>
-                    
-                        <button type="button" class="btn btn-info btn-flat col-sm-4 col-md-3 mb-2"  style="float: right !important;">Usuario</button>
-                      </div>
-
-                  </div>
-
-            </div>
-
-        <div class="col-md-12">
-            <div class="col-md-3" style="width:100%; display:none;"  id="select">
-                <select class="form-control" id="Usuarios">
-              
-                </select>
-            </div>
-
-            <div class="col-md-3" style="width:100%; display:none;"  id="select2">
-                <select class="form-control" id="Clientes">
-              
-                </select>
-            </div>
-        
-        </div>
-
-        </div>
-      <!-- _____ GRUPO 1 _____ -->
   <div class="row">
-  <br>
-        <br>
-      <div class="col-md-12 mx-auto">
-      <br>
-        <br>
-            <div class="center-block">
-  
-              <button type="button" class="btn btn-danger col-sm-6 col-md-4 col-md-offset-1"><h3>0</h3>
-              <label for="">Tareas Finalizadas</label>
-              </button>
-            
-              <button type="button" class="btn btn-success col-sm-6 col-md-4 col-md-offset-2"><h3>0</h3>
-              <label for="">Tareas Planificadas</label>
-              </button>
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <div class="box box-solid">
+        <div class="box box-primary">
+          <div class="box-header with-border">
+              <div class="box-tittle">
+                  <h4>KPI Tareas</h4>
+              </div>
+          </div>
+          <br>
+          <!--_________________FILTRO_________________-->
+            <form id="frm-filtros">
+              <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                  <!-- _____ FECHA DESDE _____ -->
+                  <div class="form-group col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                    <label style="padding-left: 20%;">Fecha Desde <strong class="text-danger">*</strong> :</label>
+                    <div class="input-group date">
+                      <a class="input-group-addon" id="daterange-btn" title="Más fechas">
+                        <i class="fa fa-magic"></i>
+                        <span></span>
+                      </a>
+                      <input type="date" class="form-control pull-right" id="datepickerDesde" name="datepickerDesde" placeholder="Desde">
+                    </div>
+                  </div>
+                  <!-- _____ FIN FECHA DESDE _____ -->
+                  <!-- _____ FECHA HASTA _____ -->
+                  <div class="form-group col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                    <label>Fecha Hasta  <strong class="text-danger">*</strong> :</label>
+                    <div class="input-group">
+                      <input type="date" class="form-control" id="datepickerHasta" name="datepickerHasta" placeholder="Hasta">
+                      <a style="cursor: pointer;" class="input-group-addon" onclick="MostrarFiltro()">
+                        <i class="fa fa-filter" title="Más Filtros"></i>
+                      </a>
+                    </div>
+                  </div>
+                  <!-- _____ FIN FECHA HASTA _____ -->
+                  <!-- _____ BLOQUE AGRUPAR _____ -->
+                  <div class="form-group col-md-4 col-md-offset-1">
+                    <label for="tipoajuste" class="form-label">Agrupar por</label>
+                      <button type="button" class="btn btn-default btn-flat col-sm-4 col-md-3 mb-2" style="float: right !important;">Fecha</button>
+                      <button type="button" class="btn btn-info btn-flat col-sm-4 col-md-3 mb-2"  style="float: right !important;">Usuario</button>
+                  </div>
+                  <!-- _____ FIN BLOQUE AGRUPAR _____ -->
+                </div>
+              </div> <!-- FIN .row -->
+                <!-- _____ BLOQUE MAS FILTROS _____ -->
+                <div class="row" id="masFiltros" data="false" hidden>
+                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="form-group col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                      <select style="width:100%" class="form-control select2" id="Usuarios">
+                      </select>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                      <select style="width:100%" class="form-control select2" id="Clientes">
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <!-- _____  FIN BLOQUE MAS FILTROS _____ -->
+            </div>
+          </form>
+          <hr>
+          <!-- _____ FIN FILTROS _____ -->
+          <!-- _____ CONTADORES TAREAS _____ -->    
+          <div class="row">
+            <div class="col-md-12">
+              <div class="center-block">
+                <button type="button" class="btn btn-danger col-sm-6 col-md-4 col-md-offset-1"><h3>0</h3>
+                  <label for="">Tareas Finalizadas</label>
+                </button>
+                <button type="button" class="btn btn-success col-sm-6 col-md-4 col-md-offset-2"><h3>0</h3>
+                  <label for="">Tareas Planificadas</label>
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- _____ FIN CONTADORES TAREAS _____ -->    
+          <!--_______ TABLA _______-->
+          <div class="box-body">
+            <div class="col-md-12">
+              <?php
+              Table::create(array(
+              "dataStore" => $this->dataStore('data_historico_table'),
+                "themeBase" => "bs4",
+                "showFooter" => true, // cambiar true por "top" para ubicarlo en la parte superior
+                "headers" => array(
+                  array(
+                    "Reporte de Producción" => array("colSpan" => 6),
+                    // "Other Information" => array("colSpan" => 2),
+                  )
+                ), // Para desactivar encabezado reemplazar "headers" por "showHeader"=>false
+                "showHeader" => false,
 
-           </div>
-      </div>
-  </div>    
-
-
-      <div class="col-md-12">
- 
-        <br>
-      </div>
-
-
-
-      <!--_______ TABLA _______-->
-      <div class="col-md-12">
-        <?php
-        Table::create(array(
-         "dataStore" => $this->dataStore('data_historico_table'),
-          "themeBase" => "bs4",
-          "showFooter" => true, // cambiar true por "top" para ubicarlo en la parte superior
-          "headers" => array(
-            array(
-              "Reporte de Producción" => array("colSpan" => 6),
-              // "Other Information" => array("colSpan" => 2),
-            )
-          ), // Para desactivar encabezado reemplazar "headers" por "showHeader"=>false
-          "showHeader" => false,
-
-          "columns" => array(
-            "user_id" => array(
-              "label" => "Usuario"
-            ),
-            "petr_id" => array(
-              "label" => "N° Pedido"
-            ),
-            "nu_hito" => array(
-              "label" => "N° Hito"
-            ),
-            "clie_nombre" => array(
-              "label" => "Cliente"
-            ),
-            "total" => array(
-              "label" => "Total"
-            ),
-            "planificadas" => array(
-              "label" => "Planificadas"
-            ),
-            "finalizadas" => array(
-              "label" => "Finalizadas"
-            ),
-            array(
-              "label" => "Fecha",
-              "value" => function($row) {
-                $aux = explode("T",$row["fec_alta"]);
-                $row["fec_alta"] = date("d-m-Y",strtotime($aux[0]));
-                return $row["fec_alta"];
-              },
-              "type" => "date"
-            ),
-            "tipo_mov" => array(
-              "label" => "Tipo Movim."
-            )
-          ),
-          "cssClass" => array(
-            "table" => "table-scroll table-responsive dataTables_wrapper form-inline dt-bootstrap dataTable table table-bordered table-striped table-hover display",
-            "th" => "sorting"
-          )
-        ));
-        ?>
-      </div>
-      
-
-    </div>
-
-  </div>
-</div>
-</body>
+                "columns" => array(
+                  "user_id" => array(
+                    "label" => "Usuario"
+                  ),
+                  "petr_id" => array(
+                    "label" => "N° Pedido"
+                  ),
+                  "nu_hito" => array(
+                    "label" => "N° Hito"
+                  ),
+                  "clie_nombre" => array(
+                    "label" => "Cliente"
+                  ),
+                  "total" => array(
+                    "label" => "Total"
+                  ),
+                  "planificadas" => array(
+                    "label" => "Planificadas"
+                  ),
+                  "finalizadas" => array(
+                    "label" => "Finalizadas"
+                  ),
+                  array(
+                    "label" => "Fecha",
+                    "value" => function($row) {
+                      $aux = explode("T",$row["fec_alta"]);
+                      $row["fec_alta"] = date("d-m-Y",strtotime($aux[0]));
+                      return $row["fec_alta"];
+                    },
+                    "type" => "date"
+                  ),
+                  "tipo_mov" => array(
+                    "label" => "Tipo Movim."
+                  )
+                ),
+                "cssClass" => array(
+                  "table" => "table-scroll table-responsive dataTables_wrapper form-inline dt-bootstrap dataTable table table-bordered table-striped table-hover display",
+                  "th" => "sorting"
+                )
+              ));
+              ?>
+            </div><!-- FIN .col-md-12  -->
+          </div><!-- FIN .box-body -->
+          <!--_________________ FIN TABLA ____________________________-->
+        </div> <!-- FIN .box box-primary -->
+        <!--_________________ FIN BODY REPORTE ____________________________-->
+      </div> <!-- FIN .box box-solid -->
+    </div><!-- FIN .col-xs-12 col-sm-12 col-md-12 col-lg-12 -->
+  </div><!-- FIN .row -->
+</div> <!-- FIN #reportContent -->
 <script>
 function  MostrarFiltro(){
-  debugger;
-    
-    $('#select').attr({'style': 'display:block'});
-
-    $('#select2').attr({'style': 'display:block'});
-   
-   // detectarForm();
-    //initForm(); 
-
-    // setTimeout(function(){ 
-    //     $('.btnEntrega').attr({'style': 'display:block'});
-    //     $("#btncerrarTarea").removeAttr("style");
-    //     wc();
-    // }, 4000);
+  var masFiltros = $('#masFiltros').attr('data');
+  if (masFiltros == "false") {
+    $('#masFiltros').removeAttr('hidden');
+    $('#masFiltros').attr('data', "true");
+  }else{
+    $('#masFiltros').attr('hidden', '');
+    $('#masFiltros').attr('data', "false");
+  }
 }
 
 
