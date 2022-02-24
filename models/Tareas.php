@@ -420,6 +420,20 @@ class Tareas extends CI_Model
 			return $aux;
 		}
 
+/**
+		*Obtiene datos de clientes 
+		* @param empr_id
+		* @return lista de clientes por empresa
+		**/
+        public function obtenerClientes()
+        {
+            $empr_id = empresa();
+
+            $resource = "/clientes/porEmpresa/$empr_id/porEstado/ACTIVO";
+            $url = REST_CORE . $resource;
+            return wso2($url);                                
+        }
+   
 		/**
 		* Devuelve petr_id por hito_id
 		* @param int $hito_id

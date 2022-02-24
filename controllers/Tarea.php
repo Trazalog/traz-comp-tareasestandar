@@ -108,6 +108,26 @@ class Tarea extends CI_Controller
             return $rsp;
             log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | eliminar Planificada " . json_encode($rsp));
      
+        //    $processId = TAREAS_DEFAULT_PROC;
+
+          //  $case_id = "";
+
+          //  $rsp = $this->bpm->eliminarCaso($processId, $case_id);
+
+            //     if (!$rsp) {
+    
+            //     log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso  >> Error al Eliminar Case_id');
+    
+            //     //return $rsp;
+            //     echo json_encode($rsp);
+    
+            // } else {
+            //     log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso >> Se Elimino Caso y Pedido de trabajo Correctamente');
+    
+            //     echo json_encode($rsp);
+            
+            // }
+
         }
 
         
