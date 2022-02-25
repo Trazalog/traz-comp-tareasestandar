@@ -50,8 +50,8 @@ use \koolreport\widgets\google\ColumnChart;
                   <!-- _____ BLOQUE AGRUPAR _____ -->
                   <div class="form-group col-md-4 col-md-offset-1">
                     <label style="margin-left:20%" for="tipoajuste" class="form-label">Agrupar por:</label>
-                      <button type="button" class="btn btn-default btn-flat col-sm-4 col-md-3 mb-2" style="float: right !important;">Fecha</button>
-                      <button type="button" class="btn btn-info btn-flat col-sm-4 col-md-3 mb-2"  style="float: right !important;">Usuario</button>
+                      <button id="btnFecha" type="button" class="btn btn-default btn-flat col-sm-4 col-md-3 mb-2" style="float: right !important;">Fecha</button>
+                      <button id="btnUsuario" type="button" class="btn btn-info btn-flat col-sm-4 col-md-3 mb-2"  style="float: right !important;">Usuario</button>
                   </div>
                   <!-- _____ FIN BLOQUE AGRUPAR _____ -->
                 </div>
@@ -148,14 +148,24 @@ use \koolreport\widgets\google\ColumnChart;
                   "nombre_cliente" => array(
                     "label" => "Cliente"
                   ),
-                "fec_inicio"=>array("label" => "fecha inicio",
-                      "type"=>"date",
-                      "prefix"=>"fecha"),
-
-                  "fec_fin"=>array("label" => "fecha fin",
-                  "type"=>"date",
-                    "prefix"=>"fecha"),
-
+                  array(
+                    "label" => "Fecha Inicio",
+                    "value" => function($row) {
+                      $aux = explode("T",$row["fec_inicio"]);
+                      $row["fec_inicio"] = date("d-m-Y",strtotime($aux[0]));
+                      return $row["fec_inicio"];
+                    },
+                    "type" => "date"
+                  ),
+                  array(
+                    "label" => "Fecha Fin",
+                    "value" => function($row) {
+                      $aux = explode("T",$row["fec_fin"]);
+                      $row["fec_fin"] = date("d-m-Y",strtotime($aux[0]));
+                      return $row["fec_fin"];
+                    },
+                    "type" => "date"
+                  ),
                   // "total" => array(
                   //   "label" => "Total"
                   // ),
@@ -216,6 +226,9 @@ function  MostrarFiltro(){
       $('.select2').select2();
       $('.dataTable').DataTable({
         responsive: true,
+        rowGroup: {
+          enable: false
+        },
         language: {
         url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
         },
@@ -349,5 +362,12 @@ function  MostrarFiltro(){
         }
       })
     }
+
+  //Funcionalidades botones para grupar filas en la tabla
+  $(document).on( 'click', '#btnUsuario',function (e) {
+    e.preventDefault();
+    let tabla = $('.dataTable').DataTable();
+    tabla.rowGroup().enable().dataSrc(0).order([[ 0, 'desc' ]]).draw();
+  });
   </script>
 
