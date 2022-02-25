@@ -100,53 +100,83 @@ use \koolreport\widgets\google\ColumnChart;
           <!--_______ TABLA _______-->
           <div class="box-body">
             <div class="col-md-12">
-              <?php
+         
+            <?php
+            
+    ColumnChart::create(array(
+    "title"=>"KPI Tareas",
+    "dataStore" => $this->dataStore('data_kpi_basico_table'),
+    "columns"=>array(
+        "category",
+        "petr_id"=>array("label" => "N° Pedido",
+        "type"=>"number",
+        "prefix"=>"N°"),
+
+       
+
+        // "nombre_cliente"=>array("label" => "Cliente",
+        // "type"=>"text",
+        // "prefix"=>"$"),
+    )
+));
+
+
+
+
               Table::create(array(
               "dataStore" => $this->dataStore('data_kpi_basico_table'),
                 "themeBase" => "bs4",
-                "showFooter" => true, // cambiar true por "top" para ubicarlo en la parte superior
+                "showFooter" => false, // cambiar true por "top" para ubicarlo en la parte superior
                 "headers" => array(
                   array(
-                    "Reporte de Producción" => array("colSpan" => 6),
+                    "Indicador de Eficiencia" => array("colSpan" => 6),
                     // "Other Information" => array("colSpan" => 2),
                   )
                 ), // Para desactivar encabezado reemplazar "headers" por "showHeader"=>false
-                "showHeader" => false,
+                "showHeader" => true,
 
                 "columns" => array(
-                  "id_usuario" => array(
+                  "user_id" => array(
                     "label" => "Usuario"
                   ),
                   "petr_id" => array(
                     "label" => "N° Pedido"
                   ),
-                  "nu_hito" => array(
-                    "label" => "N° Hito"
-                  ),
+                  // "nu_hito" => array(
+                  //   "label" => "N° Hito"
+                  // ),
                   "nombre_cliente" => array(
                     "label" => "Cliente"
                   ),
-                  "total" => array(
-                    "label" => "Total"
-                  ),
-                  "planificadas" => array(
-                    "label" => "Planificadas"
-                  ),
-                  "finalizadas" => array(
-                    "label" => "Finalizadas"
-                  ),
-                  array(
-                    "label" => "Fecha",
-                    "value" => function($row) {
-                      $aux = explode("T",$row["fec_alta"]);
-                      $row["fec_alta"] = date("d-m-Y",strtotime($aux[0]));
-                      return $row["fec_alta"];
-                    },
-                    "type" => "date"
-                  ),
-                  "tipo_mov" => array(
-                    "label" => "Tipo Movim."
-                  )
+                "fec_inicio"=>array("label" => "fecha inicio",
+                      "type"=>"date",
+                      "prefix"=>"fecha"),
+
+                  "fec_fin"=>array("label" => "fecha fin",
+                  "type"=>"date",
+                    "prefix"=>"fecha"),
+
+                  // "total" => array(
+                  //   "label" => "Total"
+                  // ),
+                  // "planificadas" => array(
+                  //   "label" => "Planificadas"
+                  // ),
+                  // "finalizadas" => array(
+                  //   "label" => "Finalizadas"
+                  // ),
+                  // array(
+                  //   "label" => "Fecha",
+                  //   "value" => function($row) {
+                  //     $aux = explode("T",$row["fec_alta"]);
+                  //     $row["fec_alta"] = date("d-m-Y",strtotime($aux[0]));
+                  //     return $row["fec_alta"];
+                  //   },
+                  //   "type" => "date"
+                  // ),
+                  // "tipo_mov" => array(
+                  //   "label" => "Tipo Movim."
+                  // )
                 ),
                 "cssClass" => array(
                   "table" => "table-scroll table-responsive dataTables_wrapper form-inline dt-bootstrap dataTable table table-bordered table-striped table-hover display",

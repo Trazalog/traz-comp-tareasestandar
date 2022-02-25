@@ -46,7 +46,7 @@ class Indicadores extends \koolreport\KoolReport
 
   protected function setup()
   {
-    log_message('DEBUG', '#TRAZA| #PRODUCCION.PHP|#PRODUCCION|#SETUP| #INGRESO');
+    log_message('DEBUG', '#TRAZA| #PRODUCCION.PHP|#TAREA|#SETUP| #KPIBASICO');
     $this->src("apiarray")
       // ->pipe(new OnlyColumn(array(
       //     "titulo", "stock", "unidad_medida", "estado"
@@ -64,9 +64,9 @@ class Indicadores extends \koolreport\KoolReport
 
     $this->src("apiarray")
       ->pipe(new OnlyColumn(array(
-        "producto", "cantidad"
+        "user_id", "user_id"
       )))
-      ->pipe($this->dataStore("data_produccion_columnChart"));
+      ->pipe($this->dataStore("data_kpi_basico_columnChart"));
 
     // $this->src("apiarray2")
     //     ->pipe($this->dataStore("ejemplo"));
