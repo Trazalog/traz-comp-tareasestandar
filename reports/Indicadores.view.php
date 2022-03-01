@@ -87,10 +87,12 @@ use \koolreport\widgets\google\ColumnChart;
           <div class="row">
             <div class="col-md-12">
               <div class="center-block">
-                <button type="button" class="btn btn-danger col-sm-6 col-md-4 col-md-offset-1"><h3>0</h3>
+                <button type="button" class="btn btn-danger col-sm-6 col-md-4 col-md-offset-1">
+                <h3 id="cantidad_finalizadas">0</h3>
                   <label for="">Tareas Finalizadas</label>
                 </button>
-                <button type="button" class="btn btn-success col-sm-6 col-md-4 col-md-offset-2"><h3>0</h3>
+                <button type="button" class="btn btn-success col-sm-6 col-md-4 col-md-offset-2">
+                <h3 id="cantidad_planificadas">0</h3>
                   <label for="">Tareas Planificadas</label>
                 </button>
               </div>
@@ -107,16 +109,22 @@ use \koolreport\widgets\google\ColumnChart;
     "title"=>"KPI Tareas",
     "dataStore" => $this->dataStore('data_kpi_basico_table'),
     "columns"=>array(
-        "category",
-        "petr_id"=>array("label" => "N° Pedido",
+      "category",
+
+        "cant_inicio"=>array("label" => "tareas planificadas",
         "type"=>"number",
-        "prefix"=>"N°"),
+        "prefix"=>""),
+        
 
-       
+        "cant_fin"=>array("label" => "tareas finalizadas",
+        "type"=>"number",
+        "prefix"=>""),
 
-        // "nombre_cliente"=>array("label" => "Cliente",
-        // "type"=>"text",
-        // "prefix"=>"$"),
+        
+        // "petr_id"=>array("label" => "N° Pedido",
+        // "type"=>"number",
+        // "prefix"=>"N°"),
+
     )
 ));
 
@@ -126,7 +134,7 @@ use \koolreport\widgets\google\ColumnChart;
               Table::create(array(
               "dataStore" => $this->dataStore('data_kpi_basico_table'),
                 "themeBase" => "bs4",
-                "showFooter" => false, // cambiar true por "top" para ubicarlo en la parte superior
+                "showFooter" => true, // cambiar true por "top" para ubicarlo en la parte superior
                 "headers" => array(
                   array(
                     "Indicador de Eficiencia" => array("colSpan" => 6),
@@ -142,9 +150,6 @@ use \koolreport\widgets\google\ColumnChart;
                   "petr_id" => array(
                     "label" => "N° Pedido"
                   ),
-                  // "nu_hito" => array(
-                  //   "label" => "N° Hito"
-                  // ),
                   "nombre_cliente" => array(
                     "label" => "Cliente"
                   ),
@@ -162,31 +167,28 @@ use \koolreport\widgets\google\ColumnChart;
                     "value" => function($row) {
                       $aux = explode("T",$row["fec_fin"]);
                       $row["fec_fin"] = date("d-m-Y",strtotime($aux[0]));
-                      return $row["fec_fin"];
+
+                      if($row["fec_fin"] == "31-12-3000"){
+                        return "-";
+
+                      } else {
+                        return $row["fec_fin"];
+                      }
+                     
                     },
                     "type" => "date"
                   ),
-                  // "total" => array(
-                  //   "label" => "Total"
-                  // ),
-                  // "planificadas" => array(
-                  //   "label" => "Planificadas"
-                  // ),
-                  // "finalizadas" => array(
-                  //   "label" => "Finalizadas"
-                  // ),
-                  // array(
-                  //   "label" => "Fecha",
-                  //   "value" => function($row) {
-                  //     $aux = explode("T",$row["fec_alta"]);
-                  //     $row["fec_alta"] = date("d-m-Y",strtotime($aux[0]));
-                  //     return $row["fec_alta"];
-                  //   },
-                  //   "type" => "date"
-                  // ),
-                  // "tipo_mov" => array(
-                  //   "label" => "Tipo Movim."
-                  // )
+                  
+                  "cant_inicio" => array(
+                    "label" => "Planificadas",
+                  
+                    
+                  ),
+                  "cant_fin" => array(
+                    "label" => "Finalizadas",
+                    
+                  ),
+                
                 ),
                 "cssClass" => array(
                   "table" => "table-scroll table-responsive dataTables_wrapper form-inline dt-bootstrap dataTable table table-bordered table-striped table-hover display",
@@ -218,6 +220,8 @@ function  MostrarFiltro(){
 
     selectUsuario();
     selectCliente();
+ //  cantidadFinalizada();
+ //cantidadPlanificada();
 
     fechaMagic();
     //Funcion de datatable para extencion de botones exportar
@@ -226,6 +230,40 @@ function  MostrarFiltro(){
       $('.select2').select2();
       $('.dataTable').DataTable({
         responsive: true,
+        footerCallback: function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+ 
+            // Remove the formatting to get integer data for summation
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+ 
+            // Total Finalizadas (over all pages)
+            totalFinalizadas = api
+                .column(6)
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+                $('#cantidad_finalizadas').text(totalFinalizadas);
+
+
+                  // Total Planificadas (over all pages)
+            totalPlanificadas = api
+                .column(5)
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+                $('#cantidad_planificadas').text(totalPlanificadas);
+ 
+        
+        },
         rowGroup: {
           enable: false
         },
@@ -279,19 +317,7 @@ function  MostrarFiltro(){
       });
     });
 
-    $('tr > td').each(function() {
-      if ($(this).text() == 0) {
-        $(this).text('-');
-        $(this).css('text-align', 'center');
-      }
-    });
-    
-    // $('#panel-derecho-body').load('<?php echo base_url() ?>index.php/Reportes/filtroProduccion');
 
-    $('.flt-clear').click(function() {
-      $('#frm-filtros')[0].reset();
-      $('#producto').val(null).trigger('change');
-    });
 
     function filtrar() {
       var data = new FormData($('#frm-filtros')[0]);
@@ -369,5 +395,5 @@ function  MostrarFiltro(){
     let tabla = $('.dataTable').DataTable();
     tabla.rowGroup().enable().dataSrc(0).order([[ 0, 'desc' ]]).draw();
   });
-  </script>
+ </script>
 
