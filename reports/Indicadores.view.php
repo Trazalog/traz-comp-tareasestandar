@@ -26,7 +26,7 @@ use \koolreport\widgets\google\ColumnChart;
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                   <!-- _____ FECHA DESDE _____ -->
                   <div class="form-group col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                    <label style="padding-left: 20%;">Fecha Desde <strong class="text-danger">*</strong> :</label>
+                    <label>Fecha Desde <strong class="text-danger">*</strong> :</label>
                     <div class="input-group date">
                       <a class="input-group-addon" id="daterange-btn" title="Más fechas">
                         <i class="fa fa-magic"></i>
@@ -49,9 +49,9 @@ use \koolreport\widgets\google\ColumnChart;
                   <!-- _____ FIN FECHA HASTA _____ -->
                   <!-- _____ BLOQUE AGRUPAR _____ -->
                   <div class="form-group col-md-4 col-md-offset-1">
-                    <label for="tipoajuste" class="form-label">Agrupar por</label>
-                      <button type="button" class="btn btn-default btn-flat col-sm-4 col-md-3 mb-2" style="float: right !important;">Fecha</button>
-                      <button type="button" class="btn btn-info btn-flat col-sm-4 col-md-3 mb-2"  style="float: right !important;">Usuario</button>
+                    <label style="margin-left:20%" for="tipoajuste" class="form-label">Agrupar por:</label>
+                      <button id="btnFecha" type="button" class="btn btn-default btn-flat col-sm-4 col-md-3 mb-2" style="float: right !important;">Fecha</button>
+                      <button id="btnUsuario" type="button" class="btn btn-info btn-flat col-sm-4 col-md-3 mb-2"  style="float: right !important;">Usuario</button>
                   </div>
                   <!-- _____ FIN BLOQUE AGRUPAR _____ -->
                 </div>
@@ -60,16 +60,25 @@ use \koolreport\widgets\google\ColumnChart;
                 <div class="row" id="masFiltros" data="false" hidden>
                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="form-group col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                      <select style="width:100%" class="form-control select2" id="Usuarios">
+                      <label>Usuario:</label>
+                      <select style="width:100%" class="form-control select2" id="usuarios" name="usuario">
                       </select>
                     </div>
                     <div class="form-group col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                      <select style="width:100%" class="form-control select2" id="Clientes">
+                      <label>Cliente:</label>
+                      <select style="width:100%" class="form-control select2" id="clientes" name="cliente">
                       </select>
                     </div>
                   </div>
                 </div>
                 <!-- _____  FIN BLOQUE MAS FILTROS _____ -->
+                <div class="row">
+                  <div style="margin-right: 20px" class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2 pull-right">
+                    <label class="col-lg-12">&nbsp;</label>
+                    <button type="button" class="btn btn-danger btn-flat flt-clear col-lg-6">Limpiar</button>
+                    <button type="button" class="btn btn-success btn-flat col-lg-6" onclick="filtrar()">Filtrar</button>
+                  </div>
+                </div>
             </div>
           </form>
           <hr>
@@ -78,10 +87,12 @@ use \koolreport\widgets\google\ColumnChart;
           <div class="row">
             <div class="col-md-12">
               <div class="center-block">
-                <button type="button" class="btn btn-danger col-sm-6 col-md-4 col-md-offset-1"><h3>0</h3>
+                <button type="button" class="btn btn-danger col-sm-6 col-md-4 col-md-offset-1">
+                <h3 id="cantidad_finalizadas">0</h3>
                   <label for="">Tareas Finalizadas</label>
                 </button>
-                <button type="button" class="btn btn-success col-sm-6 col-md-4 col-md-offset-2"><h3>0</h3>
+                <button type="button" class="btn btn-success col-sm-6 col-md-4 col-md-offset-2">
+                <h3 id="cantidad_planificadas">0</h3>
                   <label for="">Tareas Planificadas</label>
                 </button>
               </div>
@@ -91,18 +102,46 @@ use \koolreport\widgets\google\ColumnChart;
           <!--_______ TABLA _______-->
           <div class="box-body">
             <div class="col-md-12">
-              <?php
+         
+            <?php
+            
+    ColumnChart::create(array(
+    "title"=>"KPI Tareas",
+    "dataStore" => $this->dataStore('data_kpi_basico_table'),
+    "columns"=>array(
+      "category",
+
+        "cant_inicio"=>array("label" => "tareas planificadas",
+        "type"=>"number",
+        "prefix"=>""),
+        
+
+        "cant_fin"=>array("label" => "tareas finalizadas",
+        "type"=>"number",
+        "prefix"=>""),
+
+        
+        // "petr_id"=>array("label" => "N° Pedido",
+        // "type"=>"number",
+        // "prefix"=>"N°"),
+
+    )
+));
+
+
+
+
               Table::create(array(
-              "dataStore" => $this->dataStore('data_historico_table'),
+              "dataStore" => $this->dataStore('data_kpi_basico_table'),
                 "themeBase" => "bs4",
                 "showFooter" => true, // cambiar true por "top" para ubicarlo en la parte superior
                 "headers" => array(
                   array(
-                    "Reporte de Producción" => array("colSpan" => 6),
+                    "Indicador de Eficiencia" => array("colSpan" => 6),
                     // "Other Information" => array("colSpan" => 2),
                   )
                 ), // Para desactivar encabezado reemplazar "headers" por "showHeader"=>false
-                "showHeader" => false,
+                "showHeader" => true,
 
                 "columns" => array(
                   "user_id" => array(
@@ -111,33 +150,45 @@ use \koolreport\widgets\google\ColumnChart;
                   "petr_id" => array(
                     "label" => "N° Pedido"
                   ),
-                  "nu_hito" => array(
-                    "label" => "N° Hito"
-                  ),
-                  "clie_nombre" => array(
+                  "nombre_cliente" => array(
                     "label" => "Cliente"
                   ),
-                  "total" => array(
-                    "label" => "Total"
-                  ),
-                  "planificadas" => array(
-                    "label" => "Planificadas"
-                  ),
-                  "finalizadas" => array(
-                    "label" => "Finalizadas"
-                  ),
                   array(
-                    "label" => "Fecha",
+                    "label" => "Fecha Inicio",
                     "value" => function($row) {
-                      $aux = explode("T",$row["fec_alta"]);
-                      $row["fec_alta"] = date("d-m-Y",strtotime($aux[0]));
-                      return $row["fec_alta"];
+                      $aux = explode("T",$row["fec_inicio"]);
+                      $row["fec_inicio"] = date("d-m-Y",strtotime($aux[0]));
+                      return $row["fec_inicio"];
                     },
                     "type" => "date"
                   ),
-                  "tipo_mov" => array(
-                    "label" => "Tipo Movim."
-                  )
+                  array(
+                    "label" => "Fecha Fin",
+                    "value" => function($row) {
+                      $aux = explode("T",$row["fec_fin"]);
+                      $row["fec_fin"] = date("d-m-Y",strtotime($aux[0]));
+
+                      if($row["fec_fin"] == "31-12-3000"){
+                        return "-";
+
+                      } else {
+                        return $row["fec_fin"];
+                      }
+                     
+                    },
+                    "type" => "date"
+                  ),
+                  
+                  "cant_inicio" => array(
+                    "label" => "Planificadas",
+                  
+                    
+                  ),
+                  "cant_fin" => array(
+                    "label" => "Finalizadas",
+                    
+                  ),
+                
                 ),
                 "cssClass" => array(
                   "table" => "table-scroll table-responsive dataTables_wrapper form-inline dt-bootstrap dataTable table table-bordered table-striped table-hover display",
@@ -169,6 +220,8 @@ function  MostrarFiltro(){
 
     selectUsuario();
     selectCliente();
+ //  cantidadFinalizada();
+ //cantidadPlanificada();
 
     fechaMagic();
     //Funcion de datatable para extencion de botones exportar
@@ -177,6 +230,43 @@ function  MostrarFiltro(){
       $('.select2').select2();
       $('.dataTable').DataTable({
         responsive: true,
+        footerCallback: function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+ 
+            // Remove the formatting to get integer data for summation
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+ 
+            // Total Finalizadas (over all pages)
+            totalFinalizadas = api
+                .column(6)
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+                $('#cantidad_finalizadas').text(totalFinalizadas);
+
+
+                  // Total Planificadas (over all pages)
+            totalPlanificadas = api
+                .column(5)
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+                $('#cantidad_planificadas').text(totalPlanificadas);
+ 
+        
+        },
+        rowGroup: {
+          enable: false
+        },
         language: {
         url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
         },
@@ -227,32 +317,20 @@ function  MostrarFiltro(){
       });
     });
 
-    $('tr > td').each(function() {
-      if ($(this).text() == 0) {
-        $(this).text('-');
-        $(this).css('text-align', 'center');
-      }
-    });
-    
-    // $('#panel-derecho-body').load('<?php echo base_url() ?>index.php/Reportes/filtroProduccion');
 
-    $('.flt-clear').click(function() {
-      $('#frm-filtros')[0].reset();
-      $('#producto').val(null).trigger('change');
-    });
 
     function filtrar() {
       var data = new FormData($('#frm-filtros')[0]);
       data = formToObject(data);
       wo();
-      var url = 'produccion';
+      var url = 'indicadores';
       $.ajax({
         type: 'POST',
 
         data: {
           data
         },
-        url: '<?php echo base_url(PRD) ?>Reportes/' + url,
+        url: '<?php echo base_url(TST) ?>Reportes/' + url,
         success: function(result) {
           $('#reportContent').empty();
           $('#reportContent').html(result);
@@ -271,17 +349,13 @@ function  MostrarFiltro(){
         type: "GET",
         dataType: "JSON",
         url: "<?php echo base_url(TST) ?>Reportes/obtenerUsuarios",
-        success: function(rsp) {
-console.log(rsp);
-            
-          var opcUsuarios = '<option value="" disabled selected>por Usuario</option>';
+        success: function(rsp) {    
+          var opcUsuarios = '<option value="" disabled selected>- Seleccionar -</option>';
 
-            rsp.usuarios.usuario.forEach(element => {
-                opcUsuarios += "<option value=" + element.id + ">" + element.first_name + " " + element.last_name + "</option>";
-            });
-            $('#Usuarios').html(opcUsuarios);
-
-
+          rsp.usuarios.usuario.forEach(element => {
+              opcUsuarios += "<option value=" + element.id + ">" + element.first_name + " " + element.last_name + "</option>";
+          });
+          $('#usuarios').html(opcUsuarios);
         },
         error: function(rsp) {
           alert('Error tremendo');
@@ -293,24 +367,18 @@ console.log(rsp);
     }
 
     function selectCliente() {
-      debugger;
-
       $.ajax({
         type: "GET",
         dataType: "JSON",
         url: "<?php echo base_url(TST) ?>Reportes/obtenerClientes",
         success: function(rsp) {
-debugger;
-console.log(rsp);
-            
-          var opcClientes = '<option value="" disabled selected>por Cliente</option>';
+          console.log(rsp);
+          var opcClientes = '<option value="" disabled selected>- Seleccionar -</option>';
 
-            rsp.data.forEach(element => {
-              opcClientes += "<option value=" + element.clie_id + ">" + element.nombre + "</option>";
-            });
-            $('#Clientes').html(opcClientes);
-
-
+          rsp.data.forEach(element => {
+            opcClientes += "<option value=" + element.clie_id + ">" + element.nombre + "</option>";
+          });
+          $('#clientes').html(opcClientes);
         },
         error: function(rsp) {
           alert('Error tremendo');
@@ -320,5 +388,12 @@ console.log(rsp);
         }
       })
     }
-  </script>
+
+  //Funcionalidades botones para grupar filas en la tabla
+  $(document).on( 'click', '#btnUsuario',function (e) {
+    e.preventDefault();
+    let tabla = $('.dataTable').DataTable();
+    tabla.rowGroup().enable().dataSrc(0).order([[ 0, 'desc' ]]).draw();
+  });
+ </script>
 

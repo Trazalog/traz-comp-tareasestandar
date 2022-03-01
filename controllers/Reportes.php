@@ -25,181 +25,38 @@ class Reportes extends CI_Controller
       echo json_encode($usuarios);
   }
   
- /**
-		*Obtiene datos de Clientes segun empresa 
-		**/
-    public function obtenerClientes()
-    {
-        log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | obtenerClientes() ");
-        
-        $clientes = $this->Tareas->obtenerClientes();
-        echo json_encode($clientes);
-    }
-
+  /**
+    *Obtiene datos de Clientes segun empresa 
+  **/
+  public function obtenerClientes()
+  {
+      log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | obtenerClientes() ");
+      
+      $clientes = $this->Tareas->obtenerClientes();
+      echo json_encode($clientes);
+  }
   
   public function indicadores(){
 
     $data = $this->input->post('data');
 
-   // $producto = $data['producto'];
-  //  $etapa = $data['etapa'];
-    $desde = $data['datepickerDesde'];
-    $hasta = $data['datepickerHasta'];
+    $usuario = $data['usuario'] ? $data['usuario'] : '';
+    $cliente = $data['cliente'] ? $data['cliente'] : '';
+    $desde = $data['datepickerDesde'] ? date("d-m-Y", strtotime($data['datepickerDesde'])) : '';
+    $hasta = $data['datepickerHasta'] ? date("d-m-Y", strtotime($data['datepickerHasta'])) : '';
 
-    if ( $desde || $hasta) {
-      $desde = ($desde) ? date("d-m-Y", strtotime($desde)) : null;
-      $hasta = ($hasta) ? date("d-m-Y", strtotime($hasta)) : null;
-      
-      log_message('DEBUG', '#TRAZA | #TRAZ-COMP TAREASESTANDAR | #REPORTES | indicadores() | #DESDE: >>' . $desde . '#HASTA: >>' . $hasta);
-
-      $url =  REST_TST."/tareas/indicadores/desde/". $desde . "/hasta/" . $hasta;
-     // $url = REST_PRD_ETAPAS . '/productos/etapa/' . $etapa . '/desde/' . $desde . '/hasta/' . $hasta . '/producto/' . $producto.'/empr_id/'.empresa();
-      $json = $this->Koolreport->depurarJson($url)->tareas->tarea;
-      $reporte = new Indicadores($json);
-      $reporte->run()->render();
-      
-    } else {
-
-      log_message('DEBUG', '#TRAZA | #TRAZ-COMP TAREASESTANDAR | #REPORTES | indicadores() | #FILTROS');
-      
-      $url = REST_PRD_ETAPAS . '/productos/etapa//desde//hasta//producto//empr_id/'.empresa();
-      $json = $this->Koolreport->depurarJson($url)->productos->producto;
-
-      log_message('DEBUG', '#TRAZA | #TRAZ-PROD-TRAZASOFT | #REPORTES | produccion() | #JSON: >>' . json_encode($json));
-
-      $reporte = new Indicadores($json);
-      $reporte->run()->render();
-      
-    }
-  }
-
-
-
-
-  ///////////////////////////////////
-  //////////////////////////////////
-  // public function prodResponsable()
-  // {
-  //   $data = $this->input->post('data');
-  //   $responsable = $data['responsable'];
-  //   $producto = $data['producto'];
-  //   $etapa = $data['etapa'];
-  //   $desde = $data['datepickerDesde'];
-  //   $hasta = $data['datepickerHasta'];
-
-  //   if ($responsable || $producto || $etapa || $desde || $hasta) {
-  //     $desde = ($desde) ? date("d-m-Y", strtotime($desde)) : null;
-  //     $hasta = ($hasta) ? date("d-m-Y", strtotime($hasta)) : null;
-
-  //     log_message('DEBUG', '#TRAZA | #TRAZ-PROD-TRAZASOFT | #REPORTES | prodResponsable() | #ETAPA: >>' . $etapa . '#DESDE: >>' . $desde . '#HASTA: >>' . $hasta . '#PRODUCTO: >>' . $producto);
-
-  //     $url = REST_TDS . '/productos/recurso/' . $responsable . '/etapa/' . $etapa . '/desde/' . $desde . '/hasta/' . $hasta . '/producto/' . $producto;
-  //     $json = $this->Koolreport->depurarJson($url)->productos->producto;
-  //     $reporte = new Prod_Responsable($json);
-  //     $reporte->run()->render();
-
-  //   } else {
-  //     log_message('DEBUG', '#TRAZA | #TRAZ-PROD-TRAZASOFT | #REPORTES | prodResponsable() | #INGRESO');
-
-  //     $url = REST_TDS . '/productos/recurso//etapa//desde//hasta//producto/';
-  //     $json = $this->Koolreport->depurarJson($url)->productos->producto;
-
-  //     log_message('DEBUG', '#TRAZA | #TRAZ-PROD-TRAZASOFT | #REPORTES | prodResponsable() | #JSON: >>' . $json);
-  //     $reporte = new Prod_Responsable($json);
-  //     $reporte->run()->render();
-  //   }
-
-  // }
-
-  // public function filtroProduccion()
-  // {
-  //   log_message('DEBUG', '#TRAZA | #TRAZ-PROD-TRAZASOFT | #REPORTES | filtroProduccion() | #INGRESO');
-  //   // $url['responsables'] = '';
-  //   $url['articulos'] = REST_PRD_ETAPAS . '/articulos/'.empresa();
-  //   // $url['unidades_medida'] = '';
-  //   $url['etapas'] = REST_PRD_ETAPAS . '/etapas';
-
-  //   // $valores['responsables'] = $this->Koolreport->depurarJson($url['responsables'])->responsables->responsable;
-  //   $valores['articulos'] = $this->Koolreport->depurarJson($url['articulos'])->articulos->articulo;
-  //   // $valores['unidades_medida'] = $this->Koolreport->depurarJson($url['unidades_medida'])->unidades->unidad;
-  //   $valores['etapas'] = $this->Koolreport->depurarJson($url['etapas'])->etapas->etapa;
-
-  //   // $data['filtro'] = $this->Opcionesfiltros->filtrosProduccion($valores);
-
-  //   // $data['calendarioDesde'] = true;
-  //   // $data['calendarioHasta'] = true;
-  //   // $data['op'] = "produccion";
-
-  //   // $this->load->view(PRD.'layout/Filtro', $data);
-  //   echo json_encode($valores);
-  // }
-
-  // public function filtroProdResponsable()
-  // {
-  //   log_message('DEBUG', '#TRAZA | #TRAZ-PROD-TRAZASOFT | #REPORTES | filtroProdResponsable() | #INGRESO');
-  //   $url['responsables'] = REST_TDS . '/recursos/list';
-  //   $url['productos'] = REST_TDS . '/productos/list';
-  //   // $url['unidades_medida'] = '';
-  //   $url['etapas'] = REST_TDS . '/etapas/all/list';
-
-  //   $valores['responsables'] = $this->Koolreport->depurarJson($url['responsables'])->recursos->recurso;
-  //   $valores['productos'] = $this->Koolreport->depurarJson($url['productos'])->productos->producto;
-  //   // $valores['unidades_medida'] = $this->Koolreport->depurarJson($url['unidades_medida'])->unidades->unidad;
-  //   $valores['etapas'] = $this->Koolreport->depurarJson($url['etapas'])->etapas->etapa;
-
-  //   // $data['filtro'] = $this->Opcionesfiltros->filtrosProdResponsable($valores);
-
-  //   // $data['calendarioDesde'] = true;
-  //   // $data['calendarioHasta'] = true;
-  //   // $data['op'] = 'prodResponsable';
-
-  //   // $this->load->view(PRD.'layout/Filtro', $data);
-  //   echo json_encode($valores);
-  // }
-
-  // public function ingresos()
-  // {
-  //   log_message('DEBUG', '#TRAZA | #TRAZ-PROD-TRAZASOFT | #REPORTES | ingresos() | #INGRESO');
-  //   $data = $this->input->post('data');
-  //   $json = $this->Opcionesfiltros->getIngresos($data);
-  //   $reporte = new Ingresos($json);
-  //   $reporte->run()->render();
-  // }
-
-  // public function cantidadIngresos()
-  // {
-  //   log_message('DEBUG', '#TRAZA | #TRAZ-PROD-TRAZASOFT | #REPORTES | cantidadIngresos() | #INGRESO');
-  //   $data = $this->input->post('data');
-  //   $rsp = $this->Opcionesfiltros->getCantidadIngresos($data);
-  //   echo json_encode($rsp);
-  // }
-
-  // public function filtroIngresos()
-  // {
-  //   log_message('DEBUG', '#TRAZA | #TRAZ-PROD-TRAZASOFT | #REPORTES | filtroIngresos() | #INGRESO');
-  //   $rsp['proveedores'] = $this->Opcionesfiltros->getProveedores();
-  //   $rsp['transportista'] = $this->Opcionesfiltros->getTransportistas();
-  //   $rsp['productos'] = $this->Opcionesfiltros->getProductos();
-  //   $rsp['u_medidas'] = $this->Opcionesfiltros->getMedidas();
+    $desde = ($desde) ? date("d-m-Y", strtotime($desde)) : '';
+    $hasta = ($hasta) ? date("d-m-Y", strtotime($hasta)) : '';
     
-  //   echo json_encode($rsp);
-  // }
+    log_message('DEBUG', '#TRAZA | #TRAZ-COMP TAREASESTANDAR | #REPORTES | indicadores() | #DESDE: >>' . $desde . '#HASTA: >>' . $hasta);
 
-  // public function asignacionDeRecursos()
-  // {
-  //   log_message('DEBUG', '#TRAZA | #TRAZ-PROD-TRAZASOFT | #REPORTES | asignacionDeRecursos | #INGRESO');
-  //   $data = $this->input->post('data');
-  //   $json = $this->Opcionesfiltros->asignacionDeRecursos($data);
-  //   $reporte = new Asignacion_de_recursos($json);
-  //   $reporte->run()->render();
-  // }
+    $url =  REST_TST."/tareas/kpi/basico/desde/".$desde."/hasta/".$hasta."/usuario/".$usuario."/cliente/".$cliente."/empresa/".empresa();
 
-  // public function filtroAsignacionDeRecursos()
-  // {
-  //   log_message('DEBUG', '#TRAZA | #TRAZ-PROD-TRAZASOFT | #REPORTES | filtroAsignacionDeRecursos() | #INGRESO');
-  //   $rsp['lote'] = $this->Opcionesfiltros->getLotes();
-  //   echo json_encode($rsp);
-  // }
+    $json = $this->Koolreport->depurarJson($url)->tareas->tarea;
+    
+    $reporte = new Indicadores($json);
+    $reporte->run()->render();
+  }
 
   public function salidas(){
     log_message('DEBUG', '#TRAZA | #TRAZ-COMP-TAREASESTANDAR | #REPORTES | salidas() | #INGRESO');
