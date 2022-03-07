@@ -264,36 +264,19 @@ var et = function eliminarTarea(e) {
 
     var data = getJson2(e);
     const id = data.tapl_id;
+    const proc_id = data.proc_id;
+    const case_id = data.case_id;
+
     if(!data.tapl_id) { alert('Error al eliminar Tarea'); return;}
     $(e).closest('tr').remove();
 
- // Data_json = $(e).closest('tr').attr('data-json');  
-
- // console.log('trae:' + Data_json);
-
- proc_id = data.proc_id;
-
- console.log('trae Proceso Nombre: ' + proc_id);
-
- if(!data.case_id) { 
-
-   console.log('la tarea no esta programada');
-
- }
-else{
-
-    case_id = data.case_id;
-
-console.log('trae case_id N°: ' + case_id);
-
-}
-
+ 
 ///CHUKA CHUKA ver data
     if ($(e).find('tbody').find('tr').length == 0) $(e).find('tfoot').show();
     $.ajax({
         type: 'DELETE',
         dataType: 'JSON',
-     //   data: {id, case_id},
+        data: {id},
         url: '<?php echo TST ?>Tarea/eliminarPlanificada/'+ id,
         success: function(res) {
             if (!res.status) falla();
