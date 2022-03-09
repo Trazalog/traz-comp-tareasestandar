@@ -350,6 +350,21 @@ class Tareas extends CI_Model
         return wso2($url);
     }
 
+    
+    public function obtenerTareaPlanificada($id)
+    {
+        $url = REST_TST."/tarea/planificada/$id";
+        
+          $rsp = $this->rest->callApi('GET', $url);
+
+          if ($rsp['status']) {
+            $rsp['data'] = json_decode($rsp['data'])->tareaPlanificada;
+            }
+            return  $rsp['data'];
+       
+    }
+
+
 
     function timeToMinutes($time){
         $time = explode(':', $time);

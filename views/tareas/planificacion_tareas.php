@@ -264,8 +264,6 @@ var et = function eliminarTarea(e) {
 
     var data = getJson2(e);
     const id = data.tapl_id;
-    const proc_id = data.proc_id;
-    const case_id = data.case_id;
 
     if(!data.tapl_id) { alert('Error al eliminar Tarea'); return;}
     $(e).closest('tr').remove();

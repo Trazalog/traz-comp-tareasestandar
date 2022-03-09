@@ -97,40 +97,47 @@ class Tarea extends CI_Controller
 		*/
     public function eliminarPlanificada($id)
     {
-       // $rsp = $this->Tareas->eliminarPlanificada($id);
-       //() echo json_encode($rsp);
 
-        // if (!$rsp['status']) {
-        //     return $rsp;
-        //     log_message("ERROR", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | eliminar Planificada " . json_encode($rsp));    
-        // } 
-        // else{
-        //     return $rsp;
-        //     log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | eliminar Planificada " . json_encode($rsp));
-     
-        //    $processId = TAREAS_DEFAULT_PROC;
+        $data = $this->Tareas->obtenerTareaPlanificada($id);
+  
+      
 
-          //  $case_id = "";
+      $processId = $data->proc_id;
 
-          //  $rsp2 = $this->bpm->eliminarCaso($processId, $case_id);
+       $case_id = $data->case_id;
 
-            //     if (!$rsp2) {
-    
-            //     log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso  >> Error al Eliminar Case_id');
-    
-            //     //return $rsp;
-            //     echo json_encode($rsp2);
-    
-            // } else {
-            //     log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso >> Se Elimino Caso y Pedido de trabajo Correctamente');
-    
-            //     echo json_encode($rsp2);
-            
-            // }
 
-      //  }
+           if(isset($processId) && isset($case_id)){
 
+                $rsp2 = $this->bpm->eliminarCaso($processId, $case_id);
+
+                    if (!$rsp2) {
         
+                    log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso  >> Error al Eliminar Case_id');
+        
+                    echo json_encode($rsp2);
+        
+                } else {
+                    log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso >> Se Elimino Caso y Pedido de trabajo Correctamente');
+        
+                    echo json_encode($rsp2);
+
+                }
+
+           }
+
+
+      $rsp = $this->Tareas->eliminarPlanificada($id);
+
+        if (!$rsp['status']) {
+            return $rsp;
+            log_message("ERROR", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | eliminar Planificada " . json_encode($rsp));    
+        } 
+        else{
+            return $rsp;
+            log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | eliminar Planificada " . json_encode($rsp));
+            
+            }    
     }
 		/**
 		* Obtien usuarios locales segun empresa (group de BPM)
