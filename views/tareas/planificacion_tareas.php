@@ -123,7 +123,7 @@ var accion =
     <button class="btn btn-link btn-sm btn-estado"><i class=""></i></button>
     <button class="btn btn-link btn-sm btn-planificado"><i class=""></i></button>
     <button class="btn btn-link btn-sm btn-planificar" onclick="planificar(this)"><i class="fa fa-calendar text-success mr-1"></i></button>
-    <button class="btn btn-link btn-sm btn-asignar" onclick="s_tarea = this;$('#mdl-usuarios').modal('show')"><i class="fa fa-user text-success mr-1"></i></button>
+    <button class="btn btn-link btn-sm btn-asignar" title="Asignar Usuario" onclick="s_tarea = this;$('#mdl-usuarios').modal('show')"><i class="fa fa-user text-success mr-1"></i></button>
     <button class="btn btn-sm btn-link" title="Rec.Trabajo" onclick="s_tarea=this; editarEquipos(); $('#mdl-pere').modal('show')"><i class="fa fa-cogs"></i></button>
     <button class="btn btn-sm btn-link" title="Rec. Materiales" onclick="s_tarea=this; verDetallePedido();"><i class="fa fa-check-square-o"></i></button>
     <button class="btn btn-sm btn-link" title="Formulario Tarea" onclick="showForm(this)"><i class="fa fa-file-text"></i></button>
@@ -201,7 +201,7 @@ debugger;
         // $(this).find('.btn-asignar').append(bolita(user.first_name.charAt(0).toUpperCase() + user.last_name.charAt(0)
         //     .toUpperCase(),
         //     'orange'));
-        $(this).find('.btn-asignar').append(bolita(user.first_name+ ' ' + user.last_name,'orange'));
+        $(this).find('.btn-asignar').append(bolita(user.first_name+ ' ' + user.last_name,'orange',''));
     }
 });
 $('accion').show();

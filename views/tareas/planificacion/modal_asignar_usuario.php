@@ -72,7 +72,8 @@ Swal.fire({
   showCancelButton: true,
   confirmButtonColor: '#3085d6',
   cancelButtonColor: '#d33',
-  confirmButtonText: 'SI, Asignar!'
+  confirmButtonText: 'SI, Asignar!',
+  cancelButtonText: 'No, Cancelar!'
 }).then((result) => {
     console.log(result);
 	if (result.value) {
