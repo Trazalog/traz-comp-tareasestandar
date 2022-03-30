@@ -33,15 +33,76 @@
 </div>
 
 <script>
+
+// function UsuarioSelected(e){
+//     debugger;
+
+//     arraydatos = $(e).closest('tr').attr('data-json');
+
+// 	var datos = JSON.parse(arraydatos);
+
+//     var usuarioTarea = getJson($('tr#' +$.escapeSelector(datos.user_id)));
+
+//     console.log(usuarioTarea);
+
+//     console.log(datos.user_id);
+
+   
+
+// const usuarioAsignado = datos.user_id;
+
+// return usuarioAsignado;
+
+// }
+
+
+
+
+
 $('table#usuarios > tbody').find('.data-json').on('click', function() {
 	debugger;
 
     var user = getJson(this);
-    setAttr(s_tarea, 'user_id', user.usernick);//cambiando 3ºparametro  tomo un item distinto del obj user (id o nickuser)
+
+// return;
+Swal.fire({
+  title: 'Desea Asignarle la Tarea a : ' + user.usernick ,
+  text: "",
+  type: 'question',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'SI, Asignar!',
+  cancelButtonText: 'No, Cancelar!'
+}).then((result) => {
+    console.log(result);
+	if (result.value) {
+    console.log('selecciono usuario : ' + user.usernick );
+					
+      
+  setAttr(s_tarea, 'user_id', user.usernick);//cambiando 3ºparametro  tomo un item distinto del obj user (id o nickuser)
     $(s_tarea).find('span').remove();
-    $(s_tarea).append(bolita(user.first_name.charAt(0).toUpperCase() + user.last_name.charAt(0).toUpperCase(),
-        'orange'));
+    // $(s_tarea).append(bolita(user.first_name.charAt(0).toUpperCase() + user.last_name.charAt(0).toUpperCase(),
+    //     'orange'));
+    $(s_tarea).append(bolita(user.first_name + ' ' + user.last_name,'orange'));
     guardarTarea(s_tarea);
+
+    Swal.fire(
+      'Hecho!',
+      'Usuario asignado a la tarea correctamente!.',
+      'success'
+    )
+
     $('#mdl-usuarios').modal('hide');
+
+
+  } else if (result.dismiss) {
+                    console.log('sale por cancelado');
+                    Swal.fire('Cancelado', '', 'error')
+                }
+})
+ 
+
+
 });
 </script>

@@ -317,7 +317,7 @@ class Tareas extends CI_Model
         if ($rsp['status']) {
             $rsp['data'] = $this->mapRespuesta(json_decode($rsp['data'])->tareas->tarea);
         }
-        return $rsp;
+         return $rsp;
     }
 
     public function mapRespuesta($data)
@@ -349,6 +349,21 @@ class Tareas extends CI_Model
         $url = REST_TST."/tareas/planificadas/case/$caseId";
         return wso2($url);
     }
+
+    
+    public function obtenerTareaPlanificada($id)
+    {
+        $url = REST_TST."/tarea/planificada/$id";
+        
+          $rsp = $this->rest->callApi('GET', $url);
+
+          if ($rsp['status']) {
+            $rsp['data'] = json_decode($rsp['data'])->tareaPlanificada;
+            }
+            return  $rsp['data'];
+       
+    }
+
 
 
     function timeToMinutes($time){
@@ -420,6 +435,20 @@ class Tareas extends CI_Model
 			return $aux;
 		}
 
+/**
+		*Obtiene datos de clientes 
+		* @param empr_id
+		* @return lista de clientes por empresa
+		**/
+        public function obtenerClientes()
+        {
+            $empr_id = empresa();
+
+            $resource = "/clientes/porEmpresa/$empr_id/porEstado/ACTIVO";
+            $url = REST_CORE . $resource;
+            return wso2($url);                                
+        }
+   
 		/**
 		* Devuelve petr_id por hito_id
 		* @param int $hito_id

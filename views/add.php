@@ -19,7 +19,7 @@
 
 <script>
 function agregarTarea(e) {
-
+debugger;
     $('#lista-tareas').append(
         `<li id="${e.id}>" data-json='${JSON.stringify(e)}'>
                 <span class="handle ui-sortable-handle">
@@ -38,6 +38,7 @@ function agregarTarea(e) {
 }
 
 $('#tsk-new').click(function() {
+    debugger;
     agregarTarea({
         nombre: $('#nombre').val(),
         descripcion: $('#descripcion').val(),

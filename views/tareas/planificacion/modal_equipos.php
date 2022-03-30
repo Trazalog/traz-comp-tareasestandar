@@ -49,7 +49,7 @@
 $("#pl-equipo").select2();
 
 $('#pl-sector').change(function() {
-
+debugger;
     var aux = $('#pl-equipo').val();
 
     var equipos = getJson($(this).find('option:selected'));

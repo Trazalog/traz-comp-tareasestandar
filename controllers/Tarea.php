@@ -90,10 +90,54 @@ class Tarea extends CI_Controller
         echo json_encode($res);
     }
 
+    /**
+		* eliminar Planificada 
+		* @param $id
+		* @return Array respuesta del servicio
+		*/
     public function eliminarPlanificada($id)
     {
-        $rsp = $this->Tareas->eliminarPlanificada($id);
-        echo json_encode($rsp);
+
+        $data = $this->Tareas->obtenerTareaPlanificada($id);
+  
+      
+
+      $processId = $data->proc_id;
+
+       $case_id = $data->case_id;
+
+
+           if(isset($processId) && isset($case_id)){
+
+                $rsp2 = $this->bpm->eliminarCaso($processId, $case_id);
+
+                    if (!$rsp2) {
+        
+                    log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso  >> Error al Eliminar Case_id');
+        
+                    echo json_encode($rsp2);
+        
+                } else {
+                    log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso >> Se Elimino Caso y Pedido de trabajo Correctamente');
+        
+                    echo json_encode($rsp2);
+
+                }
+
+           }
+
+
+      $rsp = $this->Tareas->eliminarPlanificada($id);
+
+        if (!$rsp['status']) {
+            return $rsp;
+            log_message("ERROR", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | eliminar Planificada " . json_encode($rsp));    
+        } 
+        else{
+            return $rsp;
+            log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | eliminar Planificada " . json_encode($rsp));
+            
+            }    
     }
 		/**
 		* Obtien usuarios locales segun empresa (group de BPM)
@@ -132,6 +176,11 @@ class Tarea extends CI_Controller
     {
         $data = $this->input->post('data');
         if ($data) {
+          if(!isset($data['rece_id']))
+{
+     $data['rece_id'] ='';
+
+}
             if ($id) {
                 $rsp = $this->Tareas->editar($id, $data);
             } else {
