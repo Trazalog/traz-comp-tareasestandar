@@ -1,5 +1,7 @@
 <input class="hidden" type="text" id="ortaId" value="<?php echo $orta_id?>">
 
+<button class="btn btn-success" type="submit" name="iniciar_tarea" id="iniciar_tarea"><i class="fa fa-play-circle" aria-hidden="true"></i> Inicializar Tarea</button>
+<br><br>
 <div class="box-header with-border">
     <div class="box-title">Lista de subtareas</div>
 </div>
@@ -33,6 +35,12 @@
     echo getForm($info_id);
     ?>
 </div>
+<br><br>
+<button class="btn btn-primary" type="submit" name="terminar_tarea" id="terminar_tarea"><i class="fa fa-stop-circle" aria-hidden="true"></i> Terminar Tarea</button>
+
+
+
+
 <script>
 function cerrarTarea() {
     var id = $('#ortaId').val();
