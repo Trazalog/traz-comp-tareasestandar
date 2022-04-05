@@ -270,4 +270,42 @@ class Tarea extends CI_Controller
         echo json_encode($rsp);
     }
 
+    public function iniciarTareaPlanificada($fec_inicio,$case_id)
+    {
+        $fecha = str_replace("%20", " ", $fec_inicio);
+
+
+
+        $data['_put_inicioTarea'] = array(
+           
+            "fec_inicio" => $fecha,
+            "case_id" => $case_id,
+           
+
+        );
+
+
+        $rsp = $this->Tareas->ActualizarFecha_inicio($data);
+        echo json_encode($rsp);
+    }
+
+    public function terminarTareaPlanificada($fec_fin,$case_id)
+    {
+        $fecha = str_replace("%20", " ", $fec_fin);
+
+
+
+        $data['_put_inicioTarea'] = array(
+           
+            "fec_fin" => $fecha,
+            "case_id" => $case_id,
+           
+
+        );
+
+
+        $rsp = $this->Tareas->ActualizarFecha_fin($data);
+        echo json_encode($rsp);
+    }
+
 }
