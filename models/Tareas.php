@@ -492,4 +492,23 @@ class Tareas extends CI_Model
 
 			return $tareas;
 		}
+
+
+        public function ActualizarFecha_inicio($data)
+        {
+        
+            $url = REST_TST . "/tarea/iniciar";
+
+            return wso2($url, 'PUT', $data);
+            }
+
+
+        public function ActualizarFecha_fin($data)
+        {
+            
+            $url = REST_TST . "/tarea/finalizar";
+    
+            return wso2($url, 'PUT', $data);
+            }
+
 }
