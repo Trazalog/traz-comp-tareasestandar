@@ -4,7 +4,7 @@
 <div class="box-header with-border">
     <div class="box-title">Lista de subtareas</div>
 </div>
-<div class="box-body" style="display: none">
+<div id="listadoSubtareas" class="box-body" style="display: none">
     <table class="table table-hover table-striped">
         <tbody>
             <?php
@@ -29,7 +29,7 @@
 <div class="box-header with-border">
     <div class="box-title">Formulario Tarea</div>
 </div>
-<div class="box-body" style="display: none">
+<div id="formularioTarea" class="box-body" style="display: none">
     <?php
     echo getForm($info_id);
     ?>
@@ -45,7 +45,7 @@ function cerrarTarea() {
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
-        url: '<?php echo base_url() ?>general/etapa/validarFormularioCalidad/' + id,
+        url: '<?php echo base_url(PRD) ?>general/etapa/validarFormularioCalidad/' + id,
         success: function(res) {
             status = res.status;
             if (!res.status) {

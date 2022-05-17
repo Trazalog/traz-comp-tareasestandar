@@ -132,7 +132,7 @@ debugger;
     });
 
 }
-
+//Muestra la instacia del formulario dinamico asociada a la TAREA STANDAR
 function showForm(e) {
     var data = getJson2(e);
     $mdl = $('#mdl-generico');
@@ -143,7 +143,7 @@ function showForm(e) {
         Swal.fire({
             type: 'info',
             title: 'Info',
-            text: 'Tarea sin formulario asociado!'
+            text: 'Aún no se completó formulario asociado!'
                         
             })
         return;
