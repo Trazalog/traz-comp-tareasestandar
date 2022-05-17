@@ -1,9 +1,10 @@
 <input class="hidden" type="text" id="ortaId" value="<?php echo $orta_id?>">
 
+<br><br>
 <div class="box-header with-border">
     <div class="box-title">Lista de subtareas</div>
 </div>
-<div class="box-body">
+<div class="box-body" style="display: none">
     <table class="table table-hover table-striped">
         <tbody>
             <?php
@@ -28,11 +29,14 @@
 <div class="box-header with-border">
     <div class="box-title">Formulario Tarea</div>
 </div>
-<div class="box-body">
+<div class="box-body" style="display: none">
     <?php
     echo getForm($info_id);
     ?>
 </div>
+<br><br>
+
+
 <script>
 function cerrarTarea() {
     var id = $('#ortaId').val();

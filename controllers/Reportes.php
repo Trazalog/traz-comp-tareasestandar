@@ -53,6 +53,7 @@ class Reportes extends CI_Controller
     $url =  REST_TST."/tareas/kpi/basico/desde/".$desde."/hasta/".$hasta."/usuario/".$usuario."/cliente/".$cliente."/empresa/".empresa();
 
     $json = $this->Koolreport->depurarJson($url)->tareas->tarea;
+    
     $reporte = new Indicadores($json);
     $reporte->run()->render();
   }

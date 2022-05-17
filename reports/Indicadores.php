@@ -46,29 +46,16 @@ class Indicadores extends \koolreport\KoolReport
 
   protected function setup()
   {
-    log_message('DEBUG', '#TRAZA| #PRODUCCION.PHP|#PRODUCCION|#SETUP| #INGRESO');
+    log_message('DEBUG', '#TRAZA| #PRODUCCION.PHP|#TAREA|#SETUP| #KPIBASICO');
     $this->src("apiarray")
-      // ->pipe(new OnlyColumn(array(
-      //     "titulo", "stock", "unidad_medida", "estado"
-      // )))
       ->pipe($this->dataStore("data_kpi_basico_table"));
 
     $this->src("apiarray")
-      // ->pipe(new RemoveColumn(array(
-      //     "extraInfo","unwantedColumn"
-      // )))
       ->pipe(new OnlyColumn(array(
-        "producto", "cantidad"
+        "user_id", "cant_inicio", "cant_fin"
       )))
-      ->pipe($this->dataStore("data_produccion_pieChart"));
+      ->pipe($this->dataStore("data_kpi_basico_columnChart"));
+  
 
-    $this->src("apiarray")
-      ->pipe(new OnlyColumn(array(
-        "producto", "cantidad"
-      )))
-      ->pipe($this->dataStore("data_produccion_columnChart"));
-
-    // $this->src("apiarray2")
-    //     ->pipe($this->dataStore("ejemplo"));
   }
 }
