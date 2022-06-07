@@ -27,9 +27,19 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Equipo:</label>
-                            <select name="equipo" id="equipo" class="form-control">
-                                <option value="0">- Seleccionar -</option>
-                            </select>
+                            <div class="input-group">
+                                <select name="equipo" id="equipo" class="form-control">
+                                    <option value="0">- Seleccionar -</option>
+                                </select>
+                                <span style="background-color: #646c6f;cursor: pointer;color: white;" id="add_filtro" class="input-group-addon" onclick="agregarFiltro()" title="Filtrar"><i class="fa fa-tags"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="seccionFiltros">
+
                         </div>
                     </div>
                 </div>
@@ -107,8 +117,6 @@ function guardarTodasTareas() {
 }
 
 function guardarTarea(id) {
-//alert('guardar terea');
-debugger;
     var tarea = getJson2(id);
     tarea.origen = getJson2($('#origen'));
     wbox('#bolsa-tareas');
@@ -175,7 +183,6 @@ $('#sector').on('change', function() {
             $('select#equipo').empty();
             if(res.status){
                 res.data.forEach(function( e, i){
-                    console.log(e);
                     $('select#equipo').append(`<option value='${e.codigo}'>${e.codigo} - ${e.descripcion}</option>`)
                 });
             }
@@ -189,6 +196,13 @@ $('#sector').on('change', function() {
         }
     });
 })
-
-
+//Seccion filtros en el calendario
+function agregarFiltro(){
+    sector = $("#equipo option:selected").text();
+    equipo = $("#sector option:selected").text();
+    $("#seccionFiltros").append(`<button class='btn btn-link btn-sm' onclick='eliminarFiltro(this)'><span data-toggle='tooltip' title='FILTRO' class='badge bg-gray estado'><i class="fa fa-times"></i> ${equipo} | ${sector}</span></button>`)
+}
+function eliminarFiltro(tag){
+    $(tag).remove();
+}
 </script>

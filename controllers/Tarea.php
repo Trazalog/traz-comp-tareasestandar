@@ -83,8 +83,8 @@ class Tarea extends CI_Controller
 		* @param
 		* @return 
 		*/
-    public function guardarPlanificada()
-    {
+    public function guardarPlanificada(){
+        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | guardarPlanificada()");
         $data = $this->input->post();
         $res = $this->Tareas->guardarPlanificada($data);
         echo json_encode($res);

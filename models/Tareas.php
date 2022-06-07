@@ -154,12 +154,16 @@ class Tareas extends CI_Model
         $rsp = $this->rest->callAPI('DELETE', $this->recurso, $data);
         return $rsp;
     }
+    /**
+        * Guarda la tarea planificada, realiza el pedido de materiales y lanza el proceso de tarea generica si se le asigna un usuario
+        * @param array datos tarea planificada
+        * @return array
+	*/
+    public function guardarPlanificada($data){
+        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | guardarPlanificada()".json_encode($data));
 
-    public function guardarPlanificada($data)
-    {
         #PEDIDO DE MATERIALES
-        if(isset($data['pedido']) && isset($data['origen']['orta_id']))
-        {
+        if(isset($data['pedido']) && isset($data['origen']['orta_id'])){
             $this->load->model(TST.'Pedidos');
             $this->Pedidos->pedidoMateriales($data['pedido'], $data['origen']['orta_id']);
         }
@@ -205,14 +209,17 @@ class Tareas extends CI_Model
         unset($data['origen']);
         return $data;
     }
-
-    public function lanzarProceso($tarea)
-    {
+    /**
+        * Lanza el proceso de la tarea genérica
+        * @param array datos termicos
+        * @return bool true or false
+	*/
+    public function lanzarProceso($tarea){
         if(isset($tarea['proc_id']) && $tarea['proc_id'] == ""){
             log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | No hay proceso asociado');
             return; 
         }
-				// SI YA TIENE PROCESO LANZADO, RETORNA A FUNCION PADRE
+        // SI YA TIENE PROCESO LANZADO, RETORNA A FUNCION PADRE
         if(isset($tarea['case_id']) && $tarea['case_id'] != "0" && $tarea['case_id'] != "") return;
 
         #Validacion de Lanzar Proceso

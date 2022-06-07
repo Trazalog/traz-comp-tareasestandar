@@ -168,23 +168,14 @@ var accion =
             }
             
 
-    if ( data.fecha == '3000-12-31+00:00' || data.fecha == '0031-01-01+00:00') {
-      //retoques fecha
-      ////
-debugger;
-
-      console.log('fecha: ' + data.fecha);
+    if ( data.fecha >= '2100-12-31') {
         $(this).find('.btn-planificado').append(bolita('Sin Planificar', 'gray', 'Estado: Sin Planificar'));
-     
     } else if (data.hasOwnProperty('fecha') && data.fecha != '3000-12-31+00:00' && data.fecha != '0031-01-01+00:00') {
-      //retoques fecha
-      ////
-   var fechita =  Date.parse(data.fehca);
-   console.log(fechita);
+        var fechita =  Date.parse(data.fecha);
         $(this).find('.btn-planificar').append(bolita(dateFormatPG(data.fecha), 'blue' , 'Estado: Planificado'));
-      //    $(this).find('.btn-planificar').append(bolita((data.fecha), 'blue'));
-      $(this).find('.btn-planificado').append(bolita('Planificado', 'purple', 'Estado: Planificado'));
-      $('.btn-estado').hide();
+        //    $(this).find('.btn-planificar').append(bolita((data.fecha), 'blue'));
+        $(this).find('.btn-planificado').append(bolita('Planificado', 'purple', 'Estado: Planificado'));
+        $('.btn-estado').hide();
     } else{
         console.log('fecha: ' + data.fecha);
       //          $(this).find('.btn-estado').append(bolita('Sin Planificar', 'orange', 'Estado: Sin Planificar'));
@@ -208,7 +199,6 @@ $('accion').show();
 
 
 function agregarTarea(tarea) {
-    debugger;
     if (tarea.nombre) {
         wo();
         tarea.tare_id = (tarea.tare_id?tarea.tare_id:'');
