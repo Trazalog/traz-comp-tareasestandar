@@ -27,18 +27,28 @@ class Tareas extends CI_Model
 
         return $rsp;
     }
+    /**
+	* Recibe los datos de la tarea estadar y la guarda
+	* @param array datos tarea standard
+	* @return array respuesta del servicio
+	*/
+    public function guardar($data){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | guardar()');
 
-    public function guardar($data)
-    {
         $data =  $this->mapTarea($data);
         $data['empr_id'] = strval(empresa());
         $post['post_tarea'] = $data;
         $rsp = $this->rest->callAPI('POST', $this->recurso, $post);
         return $rsp;
     }
+    /**
+	* Formatea data para el DS
+	* @param array datos tarea standard
+	* @return array datos formateados
+	*/
+    public function mapTarea($data){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | mapTarea()');
 
-    public function mapTarea($data)
-    {
         if(!isset($data['form_id'])) $data['form_id'] = "0";
         if(!isset($data['rece_id'])) $data['rece_id'] = "";
         if(!isset($data['proc_id'])) $data['proc_id'] = "0";
@@ -139,9 +149,15 @@ class Tareas extends CI_Model
         $rsp = $this->rest->callAPI('DELETE', REST_TST . "/subtareas", $data);
         return $rsp;
     }
-
-    public function editar($id, $data)
-    {
+    /**
+	* Edita una tarea std a partir de su id
+	* @param array datos tarea standard
+	* @return array respuesta del service
+	*/
+    public function editar($id, $data){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | editar()');
+        
+        $data =  $this->mapTarea($data);
         $data['tare_id'] = $id;
         $put['put_tarea'] = $data;
         $rsp = $this->rest->callAPI('PUT', $this->recurso, $put);

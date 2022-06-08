@@ -138,10 +138,10 @@ function guardarTarea(id = false) {
                 reload('#frm-tarea');
                 frmReset('#frm-tarea-e');
                 reload('#tareas');
-                alert('Hecho');
+                id ? hecho('','Se editó la tarea estandar exitosamente!') : notificar('','Se guardo la tarea estandar exitosamente!');
                 actualizarTareasSelect();
             }else{
-                falla();
+                error();
             }
         },
         error: function(result) {

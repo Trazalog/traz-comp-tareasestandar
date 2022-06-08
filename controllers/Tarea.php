@@ -171,16 +171,19 @@ class Tarea extends CI_Controller
         $data['tareas'] = $this->Tareas->obtener()['data'];
         $this->load->view('tareas/tabla', $data);
     }
+    /**
+	* Recibe los datos de la tarea estadar, si recibe un id edita la tarea de lo contrario la guarda
+	* @param array datos tarea standard
+	* @return array respuesta del servicio
+	*/
+    public function guardar($id = false){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | guardar()');
 
-    public function guardar($id = false)
-    {
         $data = $this->input->post('data');
         if ($data) {
-          if(!isset($data['rece_id']))
-{
-     $data['rece_id'] ='';
-
-}
+          if(!isset($data['rece_id'])){
+                $data['rece_id'] ='';
+            }
             if ($id) {
                 $rsp = $this->Tareas->editar($id, $data);
             } else {
