@@ -182,6 +182,12 @@ class Tareas extends CI_Model
         if(isset($data['pedido']) && isset($data['origen']['orta_id'])){
             $this->load->model(TST.'Pedidos');
             $this->Pedidos->pedidoMateriales($data['pedido'], $data['origen']['orta_id']);
+        }else{
+            $msg = !isset($data['pedido']) ? "No se cargaron datos del pedido. " : '';
+            $msg = !isset($data['origen']['orta_id']) ? "No posee asociado un orta_id. " : '';
+            $resp['pedido_materiales']['status'] = false;
+            $resp['pedidos_materiales']['msg'] = $msg;
+            log_message('DEBUG', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | guardarPlanificada() >> No realizo el pedido por ".$msg);
         }
 
         #PROCESO GENERICO TAREAS
@@ -232,7 +238,7 @@ class Tareas extends CI_Model
 	*/
     public function lanzarProceso($tarea){
         if(isset($tarea['proc_id']) && $tarea['proc_id'] == ""){
-            log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | No hay proceso asociado');
+            log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | No hay proceso asociado >> $tarea["proc_id"] = '.$tarea['proc_id']);
             return; 
         }
         // SI YA TIENE PROCESO LANZADO, RETORNA A FUNCION PADRE
@@ -264,9 +270,13 @@ class Tareas extends CI_Model
             return $rsp;
         }
     }
-
-    public function map($data)
-    {
+    /**
+        * Formatea los datos para poder ser enviador al service
+        * @param array datos tarea planificada
+        * @return array datos formateados de la tarea planificada
+	*/
+    public function map($data){
+        log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | Tareas | map($data)');
         $aux = array();
         $aux['nombre'] = $data['nombre'];
         $aux['fecha'] = (isset($data['fecha']) && $data['fecha'] != "0031-01-01+00:00") ? $data['fecha'] : '3000-12-31';
@@ -283,10 +293,10 @@ class Tareas extends CI_Model
         $aux['empr_id'] = strval(empresa());
 
         if($aux['fecha'] != '3000-12-31+00:00'){
-            $aux['fec_inicio'] = $aux['fecha'];
+            $aux['fec_inicio'] = str_replace("+"," ",$aux['fecha']);
             $min = $this->timeToMinutes($data['duracion']);
             $aux['fec_fin'] = date('Y-m-d+H:i', strtotime("+$min minute", strtotime( $aux['fec_inicio'])));
-            $aux['fec_inicio'] .='+00:00';
+            // $aux['fec_inicio'] .='+00:00';
         }else{
             $aux['fec_inicio'] = $aux['fecha'].'+00:00';
             $aux['fec_fin'] = $aux['fecha'].'+00:00';
@@ -386,9 +396,11 @@ class Tareas extends CI_Model
             return  $rsp['data'];
        
     }
-
-
-
+    /**
+        * Formatea la duracion de la tarea enviada a minutos
+        * @param string duracion
+        * @return string duracion en minutos
+	*/
     function timeToMinutes($time){
         $time = explode(':', $time);
         return ($time[0]*60) + $time[1];

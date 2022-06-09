@@ -78,11 +78,11 @@ class Tarea extends CI_Controller
         $data = $this->Tareas->obtener();
         echo json_encode($data);
     }
-		/**
-		* Guarda asignacion de usuario a Tarea, edita (ver otro uso)
-		* @param
-		* @return 
-		*/
+    /**
+    * Guarda asignacion de usuario a Tarea, edita (ver otro uso)
+    * @param
+    * @return 
+    */
     public function guardarPlanificada(){
         log_message('DEBUG', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | guardarPlanificada()");
         $data = $this->input->post();

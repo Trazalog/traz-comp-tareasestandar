@@ -84,9 +84,13 @@ class Pedidos extends CI_Model
             "arti_id" => $data['arti_id'],
         );
     }
-
-    public function pedidoMateriales($dataPedido, $batchId)
-    {
+    /**
+    * Llama al proceso para realizar un pedido de materiales
+    * @param array datos del pedido
+    * @return array respuesta del service
+    */
+    public function pedidoMateriales($dataPedido, $batchId){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREASESTANDAR | pedidoMateriales($dataPedido, $batchId) ');
         $this->load->model('general/Etapas');
         $arrayPost['fecha'] = date('Y-m-d');
         $arrayPost['empr_id'] = (string) empresa();
