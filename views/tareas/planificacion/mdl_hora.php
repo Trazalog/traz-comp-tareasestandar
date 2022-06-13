@@ -26,10 +26,11 @@
 
 <script>
 function planificarTarea() {
-    s_fecha = dateFormat(s_fecha) + '+' + $('#hora').val();
+    s_fecha = dateFormat(s_fecha) + ' ' + $('#hora').val();
+    fechaTag = s_fecha.replace(' ', ' | ');
     setAttr(s_tarea, 'fecha', s_fecha);
     $(s_tarea).find('span').remove();
-    $(s_tarea).append(bolita(s_fecha, 'blue'));
+    $(s_tarea).append(bolita(fechaTag, 'blue'));
     $('#mdl-hora').modal('hide');
     guardarTarea(s_tarea);
 }

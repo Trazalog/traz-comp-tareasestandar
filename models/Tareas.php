@@ -176,18 +176,19 @@ class Tareas extends CI_Model
         * @return array
 	*/
     public function guardarPlanificada($data){
-        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | guardarPlanificada()".json_encode($data));
+        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | guardarPlanificada() >> ");
 
         #PEDIDO DE MATERIALES
         if(isset($data['pedido']) && isset($data['origen']['orta_id'])){
             $this->load->model(TST.'Pedidos');
             $this->Pedidos->pedidoMateriales($data['pedido'], $data['origen']['orta_id']);
         }else{
-            $msg = !isset($data['pedido']) ? "No se cargaron datos del pedido. " : '';
-            $msg = !isset($data['origen']['orta_id']) ? "No posee asociado un orta_id. " : '';
+            $msg = '';
+            $msg .= !isset($data['pedido']) ? "No se cargaron datos del pedido. " : '';
+            $msg .= !isset($data['origen']['orta_id']) ? "No posee asociado un orta_id. " : '';
             $resp['pedido_materiales']['status'] = false;
-            $resp['pedidos_materiales']['msg'] = $msg;
-            log_message('DEBUG', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | guardarPlanificada() >> No realizo el pedido por ".$msg);
+            $resp['pedido_materiales']['msg'] = $msg;
+            log_message('DEBUG', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | guardarPlanificada() >> No realizo el pedido: ".$msg);
         }
 
         #PROCESO GENERICO TAREAS
@@ -201,10 +202,9 @@ class Tareas extends CI_Model
                 $data['info_id'] = intval($this->Forms->guardar($data['form_id']));
             }
         }
-        
         #GUARDA O UPDATE LOS DATOS DE LA TAREA INSTANCIADA
-        $post['_post_tarea_planificar'] = $this->map($data);
-        $rsp = $this->rest->callAPI('POST', REST_TST . "/tarea/planificar", $post);
+        $rsp = $this->guardarTareaPlanificada($data);
+        
         if ($rsp['status']) {
             $rsp['data'] = json_decode($rsp['data']);
             $data['tapl_id'] = $rsp['data']->respuesta->tapl_id;
@@ -237,6 +237,8 @@ class Tareas extends CI_Model
         * @return bool true or false
 	*/
     public function lanzarProceso($tarea){
+        log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea)');
+
         if(isset($tarea['proc_id']) && $tarea['proc_id'] == ""){
             log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | No hay proceso asociado >> $tarea["proc_id"] = '.$tarea['proc_id']);
             return; 
@@ -245,7 +247,9 @@ class Tareas extends CI_Model
         if(isset($tarea['case_id']) && $tarea['case_id'] != "0" && $tarea['case_id'] != "") return;
 
         #Validacion de Lanzar Proceso
-        if (isset($tarea['fecha']) && ($tarea['fecha'] != '3000-12-31+00:00') && isset($tarea['nombre']) && isset($tarea['user_id']) && isset($tarea['tapl_id'])) {
+        if (isset($tarea['fecha']) && ($tarea['fecha'] != '3000-12-31+00:00') && isset($tarea['nombre']) && isset($tarea['user_id']) && $tarea['user_id'] != "" && isset($tarea['tapl_id'])) {
+            log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | Validación Correcta, se lanza PROCESO asociado');
+
             $contract['nombre_proceso'] = $tarea['proc_id'];
             $contract['session'] = $this->session->has_userdata('bpm_token') ? $this->session->userdata('bpm_token') : '';
             $contract['emprId'] = empresa();
@@ -260,9 +264,13 @@ class Tareas extends CI_Model
 
     }
 
-
-    public function asignarOrigen($data)
-    {
+    /**
+        * Asgina el origen de la tarea planificada a la tabla correspondiente
+        * @param array datos tarea planificada
+        * @return array respuesta servicio
+	*/
+    public function asignarOrigen($data){
+        log_message("DEBUG",'#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | asignarOrigen($data)');
         if($data['orta_id'] != "0"){
             $post['_post_tarea_origen'] = $data;
             $url = REST_TST . '/tarea/origen';
@@ -292,10 +300,10 @@ class Tareas extends CI_Model
         $aux['hora_duracion'] = isset($data['duracion']) ? $data['duracion'] : '';
         $aux['empr_id'] = strval(empresa());
 
-        if($aux['fecha'] != '3000-12-31+00:00'){
+        if($aux['fecha'] != '3000-12-31'){
             $aux['fec_inicio'] = str_replace("+"," ",$aux['fecha']);
             $min = $this->timeToMinutes($data['duracion']);
-            $aux['fec_fin'] = date('Y-m-d+H:i', strtotime("+$min minute", strtotime( $aux['fec_inicio'])));
+            $aux['fec_fin'] = date('Y-m-d H:i', strtotime("+$min minute", strtotime( $aux['fec_inicio'])));
             // $aux['fec_inicio'] .='+00:00';
         }else{
             $aux['fec_inicio'] = $aux['fecha'].'+00:00';
@@ -342,37 +350,39 @@ class Tareas extends CI_Model
 
         return $data;
     }
+    /**
+        * Obtiene las tareas planificadas por origen y id
+        * @param array datos tareas planificada
+        * @return array respuesta del servicio
+	*/
+    public function obtenerPlanificadas($origen, $orta_id){
+        log_message("DEBUG",'#TRAZA | TRAZ-COMP-TAREASESTANDAR | Tareas | obtenerPlanificadas($origen, $orta_id)');
 
-    public function obtenerPlanificadas($origen, $orta_id)
-    {
         $url = REST_TST . "/tareas/planificar/$origen/$orta_id";
         $rsp = $this->rest->callApi('GET', $url);
         if ($rsp['status']) {
             $rsp['data'] = $this->mapRespuesta(json_decode($rsp['data'])->tareas->tarea);
         }
-         return $rsp;
+        return $rsp;
     }
-
-    public function mapRespuesta($data)
-    {
+    /**
+        * Mapea los recursos de las tareas planificadas
+        * @param array datos tareas planificada
+        * @return array tareas con los respectivos recursos formateados
+	*/
+    public function mapRespuesta($data){
+        log_message("DEBUG",'#TRAZA | TRAZ-COMP-TAREASESTANDAR | Tareas | mapRespuesta($data)');
         foreach ($data as $key => $o) {
-
             $rec = isset($o->recursos->recurso) ? $o->recursos->recurso : false;
             if (!$rec) {
                 continue;
             }
-
             unset($data[$key]->recursos);
-
             foreach ($rec as $ro) {
-
                 if ($ro->tipo == "TRABAJO") {
-
                     $data[$key]->equipos[] = array('recu_id' => $ro->recu_id, 'codigo' => $ro->codigo);
-
                 }
             }
-
         }
         return $data;
     }
@@ -470,80 +480,84 @@ class Tareas extends CI_Model
 			return $aux;
 		}
 
-/**
-		*Obtiene datos de clientes 
-		* @param empr_id
-		* @return lista de clientes por empresa
-		**/
-        public function obtenerClientes()
-        {
-            $empr_id = empresa();
+    /**
+    *Obtiene datos de clientes 
+    * @param empr_id
+    * @return lista de clientes por empresa
+    **/
+    public function obtenerClientes()
+    {
+        $empr_id = empresa();
 
-            $resource = "/clientes/porEmpresa/$empr_id/porEstado/ACTIVO";
-            $url = REST_CORE . $resource;
-            return wso2($url);                                
-        }
-   
-		/**
-		* Devuelve petr_id por hito_id
-		* @param int $hito_id
-		* @return int $petr_id
-		*/
-		function getPetrIdXHitoId($orta_id)
-		{     
-			log_message('INFO','#TRAZA|| >> ');
-			$aux = $this->rest->callAPI("GET",REST_TST."/petrid/hito/".$orta_id);
-			$aux =json_decode($aux["data"]);
-			return $aux->pedidoTrabajoId->petr_id;
-			
-		}
+        $resource = "/clientes/porEmpresa/$empr_id/porEstado/ACTIVO";
+        $url = REST_CORE . $resource;
+        return wso2($url);                                
+    }
 
-		/**
-		* Agrega a tareas planificadas nombre de usuarios asignados a cada una
-		* @param array tareas, array usuarios
-		* @return array tareas
-		*/
-		function marcarAsignados($tareas, $usuarios)
-		{
-
-			foreach ($tareas as $key => $tar) {
-
-				//guardo el nickname de usuario asignado
-				$nick = $tar->user_id;
-
-				foreach ($usuarios as $ind => $usr) {
-
-					if($usr->usernick == $nick){
-
-						$tar->nombreAsignado = $usr->first_name;
-						$tar->apellidoAsignado = $usr->last_name; break;
-					}else{
-
-						$tar->nombreAsignado = "";
-						$tar->apellidoAsignado = "";
-					}
-				}
-			}
-
-			return $tareas;
-		}
-
-
-        public function ActualizarFecha_inicio($data)
-        {
+    /**
+    * Devuelve petr_id por hito_id
+    * @param int $hito_id
+    * @return int $petr_id
+    */
+    function getPetrIdXHitoId($orta_id)
+    {     
+        log_message('INFO','#TRAZA|| >> ');
+        $aux = $this->rest->callAPI("GET",REST_TST."/petrid/hito/".$orta_id);
+        $aux =json_decode($aux["data"]);
+        return $aux->pedidoTrabajoId->petr_id;
         
-            $url = REST_TST . "/tarea/iniciar";
+    }
 
-            return wso2($url, 'PUT', $data);
+    /**
+    * Agrega a tareas planificadas nombre de usuarios asignados a cada una
+    * @param array tareas, array usuarios
+    * @return array tareas
+    */
+    function marcarAsignados($tareas, $usuarios)
+    {
+
+        foreach ($tareas as $key => $tar) {
+
+            //guardo el nickname de usuario asignado
+            $nick = $tar->user_id;
+
+            foreach ($usuarios as $ind => $usr) {
+
+                if($usr->usernick == $nick){
+
+                    $tar->nombreAsignado = $usr->first_name;
+                    $tar->apellidoAsignado = $usr->last_name; break;
+                }else{
+
+                    $tar->nombreAsignado = "";
+                    $tar->apellidoAsignado = "";
+                }
             }
+        }
+
+        return $tareas;
+    }
 
 
-        public function ActualizarFecha_fin($data)
-        {
-            
-            $url = REST_TST . "/tarea/finalizar";
+    public function ActualizarFecha_inicio($data){
+        $url = REST_TST . "/tarea/iniciar";
+        return wso2($url, 'PUT', $data);
+    }
+
+    public function ActualizarFecha_fin($data){
+        $url = REST_TST . "/tarea/finalizar";
+        return wso2($url, 'PUT', $data);
+    }
     
-            return wso2($url, 'PUT', $data);
-            }
-
+    /**
+    * GUARDA O UPDATE LOS DATOS DE LA TAREA INSTANCIADA
+    * @param array datos de la tarea
+    * @return array respuesta del servicio
+    */
+    function guardarTareaPlanificada($data){
+        log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | Tareas | guardarTareaPlanificada($data)');
+        $post['_post_tarea_planificar'] = $this->map($data);
+        $rsp = $this->rest->callAPI('POST', REST_TST . "/tarea/planificar", $post);
+        return $rsp;
+    }
 }
