@@ -179,7 +179,7 @@ $('#sector').on('change', function() {
             $('select#equipo').empty();
             if(res.status){
                 res.data.forEach(function( e, i){
-                    $('select#equipo').append(`<option value='${e.codigo}'>${e.codigo} - ${e.descripcion}</option>`)
+                    $('select#equipo').append(`<option value='${e.equi_id}'>${e.codigo} - ${e.descripcion}</option>`)
                 });
             }
             //hecho();
@@ -206,6 +206,7 @@ function agregarFiltro(){
     equipo = $("#equipo option:selected").text();
     sector = $("#sector option:selected").text();
     $("#seccionFiltros").append(`<button class='btn btn-link btn-sm' onclick='eliminarFiltro(this)'><span data-toggle='tooltip' title='FILTRO' class='badge bg-gray estado' data-json='${JSON.stringify(datos)}'><i class="fa fa-times"></i> ${equipo} | ${sector}</span></button>`)
+    calendarRefetchEvents();
 }
 function eliminarFiltro(tag){
     $(tag).remove();

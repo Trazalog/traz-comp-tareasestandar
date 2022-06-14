@@ -287,7 +287,7 @@ class Tareas extends CI_Model
         log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | Tareas | map($data)');
         $aux = array();
         $aux['nombre'] = $data['nombre'];
-        $aux['fecha'] = (isset($data['fecha']) && $data['fecha'] != "0031-01-01+00:00") ? $data['fecha'] : '3000-12-31';
+        $aux['fecha'] = (isset($data['fecha']) && $data['fecha'] != "0031-01-01+00:00") ? date('Y-m-d',strtotime($data['fecha'])) : '3000-12-31';
         $aux['info_id'] = strval(isset($data['info_id']) ? $data['info_id'] : '');
         $aux['tare_id'] = strval(isset($data['tare_id']) ? $data['tare_id'] : '');
         $aux['case_id'] = strval(isset($data['case_id']) && $data['case_id'] != "" ? $data['case_id'] : '');
@@ -301,10 +301,9 @@ class Tareas extends CI_Model
         $aux['empr_id'] = strval(empresa());
 
         if($aux['fecha'] != '3000-12-31'){
-            $aux['fec_inicio'] = str_replace("+"," ",$aux['fecha']);
+            $aux['fec_inicio'] = str_replace("+"," ",$data['fecha']);
             $min = $this->timeToMinutes($data['duracion']);
             $aux['fec_fin'] = date('Y-m-d H:i', strtotime("+$min minute", strtotime( $aux['fec_inicio'])));
-            // $aux['fec_inicio'] .='+00:00';
         }else{
             $aux['fec_inicio'] = $aux['fecha'].'+00:00';
             $aux['fec_fin'] = $aux['fecha'].'+00:00';
@@ -320,11 +319,15 @@ class Tareas extends CI_Model
         $rsp = $this->rest->callApi('DELETE', $url, $delete);
         return $rsp;
     }
-
-    public function asignarRecursos($tapl_id, $equipos)
-    {
+    /**
+        * Guarda los recursos asignados a la tarea con un box request
+        * @param array recursos asignados y tapl_id
+        * @return array respuesta servicio
+	*/
+    public function asignarRecursos($tapl_id, $equipos){
         $rb[] = $this->eliminarRecursos($tapl_id);
-
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | asignarRecursos($tapl_id, $equipos)');
+        
         $rec = '_post_tarea_recursos';
         foreach ($equipos as $o) {
             $data[$rec . '_batch_req'][$rec][] = array(
@@ -332,16 +335,18 @@ class Tareas extends CI_Model
                 'recu_id' => $o['recu_id'],
             );
         }
-
         $rb[] = $data;
-
         $rsp = requestBox(REST_TST.'/', $rb);
 
         return $rsp;
     }
-
-    public function eliminarRecursos($tapl_id)
-    {
+    /**
+        * Genera el array para el request-box con el tapl_id para eliminar los recursos
+        * @param array tapl_id
+        * @return array tapl_id
+	*/
+    public function eliminarRecursos($tapl_id){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | eliminarRecursos($tapl_id)');
         $rec = '_delete_tarea_recursos';
 
         $data[$rec] = array(

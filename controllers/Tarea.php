@@ -241,8 +241,13 @@ public function guardarPlantilla($id = false){
         $res = $this->Tareas->eliminarTareaPlantilla($data);
         echo json_encode($res);
     }
-
+    /**
+	* Busca los equipos asociados a un sector
+	* @param integer sectId
+	* @return array respuesta del servicio
+	*/
     public function obtenerEquiposXSector($sectId){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | obtenerEquiposXSector($sectId)');
         $this->load->model(TST . 'Equipos');
         $rsp = $this->Equipos->obtener($sectId);
         echo json_encode($rsp);
