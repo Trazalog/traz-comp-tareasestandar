@@ -2,25 +2,25 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
-                <label>Nombre:</label>
+                <label>Nombre<?php echo hreq() ?>:</label>
                 <input id="nombre" name="nombre" class="form-control" type="text" <?php echo req() ?>>
             </div>
         </div>
         <div class="col-md-12">
             <div class="form-group">
-                <label>Descripción:</label>
+                <label>Descripción<?php echo hreq() ?>:</label>
                 <textarea id="descripcion" name="descripcion" class="form-control" type="text" <?php echo req() ?>></textarea>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label>Duración Standar:</label>
-                <input id="duracion" name="duracion" class="form-control" type="text" <?php echo req() ?>>
+                <label>Duración Standard<?php echo hreq() ?>:</label>
+                <input id="duracion" name="duracion" class="form-control" <?php echo req() ?>>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label>Formulario Asociado:</label>
+                <label>Formulario Asociado<?php echo hreq() ?>:</label>
                 <?php
                     echo selectFromFont('form_id','Seleccionar Formulario', REST_FRM.'/formularios/'.empresa(),['value'=>'form_id', 'descripcion'=>'nombre'], true);
                 ?>
@@ -47,4 +47,9 @@
 
 <script>
 initForm();
+$("#duracion").inputmask({ 
+    regex: "[0-9]*",
+    mask: "99:99",
+    inputFormat: "HH:MM"
+});
 </script>

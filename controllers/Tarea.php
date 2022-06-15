@@ -14,8 +14,7 @@ class Tarea extends CI_Controller
 		* @param 
 		* @return
 		*/
-    public function planificar($origen, $orta_id)
-    {
+    public function planificar($origen, $orta_id){
 				// (AGREGADO DE MERGE DE CHECHO) extraer el info_id que viene concatenado con orta_id separado por un 0
 					$aux = $orta_id;
 					$auxorta_id="";
@@ -73,92 +72,80 @@ class Tarea extends CI_Controller
         $this->load->view('tareas/planificacion', $data);
     }
 
-    public function obtener()
-    {
+    public function obtener(){
         $data = $this->Tareas->obtener();
         echo json_encode($data);
     }
-		/**
-		* Guarda asignacion de usuario a Tarea, edita (ver otro uso)
-		* @param
-		* @return 
-		*/
-    public function guardarPlanificada()
-    {
+    /**
+    * Guarda asignacion de usuario a Tarea, edita (ver otro uso)
+    * @param
+    * @return 
+    */
+    public function guardarPlanificada(){
+        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | guardarPlanificada()");
         $data = $this->input->post();
         $res = $this->Tareas->guardarPlanificada($data);
         echo json_encode($res);
     }
 
     /**
-		* eliminar Planificada 
-		* @param $id
-		* @return Array respuesta del servicio
-		*/
-    public function eliminarPlanificada($id)
-    {
-
+		* eliminar tarea planificada y el case lanzado si posee proceso y case
+		* @param $id de la tarea
+		* @return array respuesta del servicio
+    */
+    public function eliminarPlanificada($id){
+        log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | eliminarPlanificada");
         $data = $this->Tareas->obtenerTareaPlanificada($id);
-  
-      
+        $processId = $data->proc_id;
+        $case_id = $data->case_id;
 
-      $processId = $data->proc_id;
+        if(isset($processId) && isset($case_id)){
+            $rspBPM = $this->bpm->eliminarCaso($processId, $case_id);
+            if (!$rspBPM['status']) {
+                log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso  >> Error al Eliminar Case_id');
+                $rsp['case']['status'] = $rspBPM['status'];
+                $rsp['case']['msj'] = "Se produjo un error al eliminar el CASE asociado a la tarea planificada";
+                $rsp['case']['data'] = $rspBPM['data'];
+            } else {
+                log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso >> Se Elimino Caso y Pedido de trabajo Correctamente');
+                $rsp['case']['status'] = $rspBPM['status'];
+                $rsp['case']['msj'] = "Se elimino case y pedido de trabajo correctamente";
+                $rsp['case']['data'] = $rspBPM['data'];
+            }
+        }
 
-       $case_id = $data->case_id;
-
-
-           if(isset($processId) && isset($case_id)){
-
-                $rsp2 = $this->bpm->eliminarCaso($processId, $case_id);
-
-                    if (!$rsp2) {
-        
-                    log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso  >> Error al Eliminar Case_id');
-        
-                    echo json_encode($rsp2);
-        
-                } else {
-                    log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso >> Se Elimino Caso y Pedido de trabajo Correctamente');
-        
-                    echo json_encode($rsp2);
-
-                }
-
-           }
-
-
-      $rsp = $this->Tareas->eliminarPlanificada($id);
-
-        if (!$rsp['status']) {
-            return $rsp;
-            log_message("ERROR", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | eliminar Planificada " . json_encode($rsp));    
-        } 
-        else{
-            return $rsp;
+        $resp = $this->Tareas->eliminarPlanificada($id);
+        if (!$resp['status']) {
+            log_message("ERROR", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | eliminar Planificada " . json_encode($rsp));
+            $rsp['tareaPlanificada']['status'] = $resp['status'];
+            $rsp['tareaPlanificada']['msj'] = "Se produjo un error al eliminar la tarea planificada";
+            $rsp['tareaPlanificada']['data'] = $resp['data'];
+        }else{
             log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | eliminar Planificada " . json_encode($rsp));
-            
-            }    
+            $rsp['tareaPlanificada']['status'] = $resp['status'];
+            $rsp['tareaPlanificada']['msj'] = "Se elimino la tarea planificada correctamente";
+            $rsp['tareaPlanificada']['data'] = $resp['data'];
+
+        }
+        echo json_encode($rsp);    
     }
-		/**
-		* Obtien usuarios locales segun empresa (group de BPM)
-		* @param
-		* @return arrary con listado de usuarios
-		*/
-    public function obtenerUsuarios()
-    {
+    /**
+    * Obtien usuarios locales segun empresa (group de BPM)
+    * @param
+    * @return arrary con listado de usuarios
+    */
+    public function obtenerUsuarios(){
         log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | obtenerUsuarios() ");
         
         $usuarios = $this->Tareas->obtenerUsuarios();
         return $usuarios;
     }
 
-    public function crear()
-    {
+    public function crear(){
         $this->load->view('crear');
     }
 
-    public function index()
-    {
+    public function index(){
         $data['tareas'] = $this->Tareas->obtener()['data'];
         $data['plantillas'] = $this->Tareas->obtenerPlantillas()['data'];
         $this->load->view('tareas/dash', $data);
@@ -166,21 +153,23 @@ class Tarea extends CI_Controller
 
     }
 
-    public function tabla()
-    {
+    public function tabla(){
         $data['tareas'] = $this->Tareas->obtener()['data'];
         $this->load->view('tareas/tabla', $data);
     }
+    /**
+	* Recibe los datos de la tarea estadar, si recibe un id edita la tarea de lo contrario la guarda
+	* @param array datos tarea standard
+	* @return array respuesta del servicio
+	*/
+    public function guardar($id = false){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | guardar()');
 
-    public function guardar($id = false)
-    {
         $data = $this->input->post('data');
         if ($data) {
-          if(!isset($data['rece_id']))
-{
-     $data['rece_id'] ='';
-
-}
+          if(!isset($data['rece_id'])){
+                $data['rece_id'] ='';
+            }
             if ($id) {
                 $rsp = $this->Tareas->editar($id, $data);
             } else {
@@ -194,13 +183,11 @@ class Tarea extends CI_Controller
 
     }
 
-    public function eliminar($id)
-    {
+    public function eliminar($id){
         $rsp = $this->Tareas->eliminar($id);
         echo json_encode($rsp);
     }
-    public function guardarSubtarea()
-    {
+    public function guardarSubtarea(){
         $post = $this->input->post('data');
         if ($post) {
             $rsp = $this->Tareas->guardarSubtarea($post);
@@ -210,72 +197,64 @@ class Tarea extends CI_Controller
         }
     }
 
-    public function tablaSubtareas($id)
-    {
+public function tablaSubtareas($id){
         $data['tare_id'] = $id;
         $data['subtareas'] = $this->Tareas->obtenerSubtareas($id)['data'];
         $this->load->view('tareas/tabla_subtareas', $data);
     }
 
-    public function eliminarSubtarea($id)
-    {
+public function eliminarSubtarea($id){
         $rsp = $this->Tareas->eliminarSubtarea($id);
         echo json_encode($rsp);
     }
 
-    public function guardarPlantilla($id = false)
-    {
+public function guardarPlantilla($id = false){
         $data = $this->input->post('data');
         $rsp = $this->Tareas->guardarPlantilla($data);
         echo json_encode($rsp);
     }
 
-    public function eliminarPlantilla($id)
-    {
+    public function eliminarPlantilla($id){
         $rsp = $this->Tareas->eliminarPlantilla($id);
         echo json_encode($rsp);
     }
 
-    public function tablaPlantillas()
-    {
+    public function tablaPlantillas(){
         $data['plantillas'] = $this->Tareas->obtenerPlantillas()['data'];
         $this->load->view('tareas/tabla_plantillas', $data);
     }
 
-    public function tablaTareasPlantilla($id)
-    {
+    public function tablaTareasPlantilla($id){
         $data['id'] = $id;
         $data['tareas_plantilla'] = $this->Tareas->obtenerTareasPlantilla($id)['data'];
         $this->load->view('tareas/tabla_tareas_plantilla', $data);
     }
 
-    public function asociarTareaPlantilla()
-    {
+    public function asociarTareaPlantilla(){
         $data = $this->input->post();
         $res = $this->Tareas->asociarTareaPlantilla($data);
         echo json_encode($res);
     }
 
-    public function eliminarTareaPlantilla()
-    {
+    public function eliminarTareaPlantilla(){
         $data = $this->input->post();
         $res = $this->Tareas->eliminarTareaPlantilla($data);
         echo json_encode($res);
     }
-
-    public function obtenerEquiposXSector($sectId)
-    {
+    /**
+	* Busca los equipos asociados a un sector
+	* @param integer sectId
+	* @return array respuesta del servicio
+	*/
+    public function obtenerEquiposXSector($sectId){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | obtenerEquiposXSector($sectId)');
         $this->load->model(TST . 'Equipos');
         $rsp = $this->Equipos->obtener($sectId);
         echo json_encode($rsp);
     }
 
-    public function iniciarTareaPlanificada($fec_inicio,$case_id)
-    {
+    public function iniciarTareaPlanificada($fec_inicio,$case_id){
         $fecha = str_replace("%20", " ", $fec_inicio);
-
-
-
         $data['_put_inicioTarea'] = array(
            
             "fec_inicio" => $fecha,
@@ -283,29 +262,36 @@ class Tarea extends CI_Controller
            
 
         );
-
-
         $rsp = $this->Tareas->ActualizarFecha_inicio($data);
         echo json_encode($rsp);
     }
 
-    public function terminarTareaPlanificada($fec_fin,$case_id)
-    {
+    public function terminarTareaPlanificada($fec_fin,$case_id){
         $fecha = str_replace("%20", " ", $fec_fin);
-
-
-
         $data['_put_inicioTarea'] = array(
-           
             "fec_fin" => $fecha,
             "case_id" => $case_id,
-           
-
         );
-
-
         $rsp = $this->Tareas->ActualizarFecha_fin($data);
         echo json_encode($rsp);
+    }
+    /**
+    * Planifica la tarea seleccionada en la pantalla
+    * @param array datos de la tarea seleccioanda
+    * @return respeusta del servicio
+    */
+    public function guardarTareaPlanificada(){
+        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | guardarTareaPlanificada()");
+        $data = $this->input->post();
+        $res = $this->Tareas->guardarTareaPlanificada($data);
+        if($res['status']) $data['tapl_id'] = json_decode($res['data'])->respuesta->tapl_id;
+        $res['datosTarea'] = $data;
+
+        /*Asigno el origen de la tarea planificada */
+        $data['origen']['tapl_id'] = $data['tapl_id'];
+        $res['rspTareaOrigen'] = $this->Tareas->asignarOrigen($data['origen']);
+
+        echo json_encode($res);
     }
 
 }

@@ -21,6 +21,9 @@
     /*-moz-box-shadow: 6px 4px 5px 1px #555, 0 1px 0 #ccc inset, 0 -1px 0 #ccc inset;*/
     /*-box-shadow: 6px 4px 5px 1px #555, 0 1px 0 #ccc inset, 0 -1px 0 #ccc inset;*/
 }
+.btnAccionPlantilla{
+    cursor: pointer;
+}
 </style>
 <div class="box" id="pnl-tareas">
     <input id="origen" class="hidden data-json" data-json='<?php echo json_encode($origen) ?>'>
