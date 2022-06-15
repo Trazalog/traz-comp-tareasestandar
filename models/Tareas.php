@@ -247,7 +247,7 @@ class Tareas extends CI_Model
         if(isset($tarea['case_id']) && $tarea['case_id'] != "0" && $tarea['case_id'] != "") return;
 
         #Validacion de Lanzar Proceso
-        if (isset($tarea['fecha']) && ($tarea['fecha'] != '3000-12-31+00:00') && isset($tarea['nombre']) && isset($tarea['user_id']) && $tarea['user_id'] != "" && isset($tarea['tapl_id'])) {
+        if (isset($tarea['fecha']) && ($tarea['fecha'] != '3000-12-31') && isset($tarea['nombre']) && isset($tarea['user_id']) && $tarea['user_id'] != "" && isset($tarea['tapl_id'])) {
             log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | Validación Correcta, se lanza PROCESO asociado');
 
             $contract['nombre_proceso'] = $tarea['proc_id'];
@@ -259,7 +259,9 @@ class Tareas extends CI_Model
             $res = wso2(REST_API_BPM, 'POST', $contract);
             return $res['data'];
         }else{
-            log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | Validacion de proceso fallida');
+            $resp['msg'] = $tarea['fecha'] == '3000-12-31' ? ' No se seteo fecha para la tarea!' : '';
+            $resp['msg'] = !isset($tarea['user_id']) || $tarea['user_id'] == "" ? ' No se le asigno la tarea a ningun usuario!' : '';        
+            log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | Validacion de proceso fallida >> ' . json_encode($resp['msg']));
         }
 
     }
@@ -287,7 +289,7 @@ class Tareas extends CI_Model
         log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | Tareas | map($data)');
         $aux = array();
         $aux['nombre'] = $data['nombre'];
-        $aux['fecha'] = (isset($data['fecha']) && $data['fecha'] != "0031-01-01+00:00") ? date('Y-m-d',strtotime($data['fecha'])) : '3000-12-31';
+        $aux['fecha'] = (isset($data['fecha'])) ? date('Y-m-d',strtotime($data['fecha'])) : '3000-12-31';
         $aux['info_id'] = strval(isset($data['info_id']) ? $data['info_id'] : '');
         $aux['tare_id'] = strval(isset($data['tare_id']) ? $data['tare_id'] : '');
         $aux['case_id'] = strval(isset($data['case_id']) && $data['case_id'] != "" ? $data['case_id'] : '');
@@ -301,12 +303,12 @@ class Tareas extends CI_Model
         $aux['empr_id'] = strval(empresa());
 
         if($aux['fecha'] != '3000-12-31'){
-            $aux['fec_inicio'] = str_replace("+"," ",$data['fecha']);
+            $aux['fec_inicio'] = preg_match('/\s/',$data['fecha']) ? $data['fecha'] : date('Y-m-d H:i',strtotime(str_replace("+"," ",$data['fec_inicio'])));
             $min = $this->timeToMinutes($data['duracion']);
             $aux['fec_fin'] = date('Y-m-d H:i', strtotime("+$min minute", strtotime( $aux['fec_inicio'])));
         }else{
-            $aux['fec_inicio'] = $aux['fecha'].'+00:00';
-            $aux['fec_fin'] = $aux['fecha'].'+00:00';
+            $aux['fec_inicio'] = $aux['fecha'].' 00:00';
+            $aux['fec_fin'] = $aux['fecha'].' 00:00';
         }   
 
         return $aux;

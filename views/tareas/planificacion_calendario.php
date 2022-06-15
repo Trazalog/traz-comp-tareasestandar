@@ -131,7 +131,7 @@ function guardarTarea(id) {
             s_tarea = false;
             wbox();
             wc();
-            calendarRefetchEvents();
+            calendar.refetchEvents();
         }
     });
 }
@@ -206,10 +206,13 @@ function agregarFiltro(){
     equipo = $("#equipo option:selected").text();
     sector = $("#sector option:selected").text();
     $("#seccionFiltros").append(`<button class='btn btn-link btn-sm' onclick='eliminarFiltro(this)'><span data-toggle='tooltip' title='FILTRO' class='badge bg-gray estado' data-json='${JSON.stringify(datos)}'><i class="fa fa-times"></i> ${equipo} | ${sector}</span></button>`)
-    calendarRefetchEvents();
+    calendar.refetchEvents();
+
 }
+//Elimino y vuelvo a traer los eventos si el filtro eliminado
 function eliminarFiltro(tag){
     $(tag).remove();
+    calendar.refetchEvents();
 }
 //Guarda la tarea seleccionada para planificarla
 function guardarTareaPlanificada(id) {
@@ -237,7 +240,7 @@ function guardarTareaPlanificada(id) {
             s_tarea = false;
             wbox();
             wc();
-            calendarRefetchEvents();
+            calendar.refetchEvents();
         }
     });
 }

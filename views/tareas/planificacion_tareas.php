@@ -133,27 +133,22 @@ $('#tareas-calendario > tbody > tr').each(function() {
     estado_tarea = data.estado
     switch (estado_tarea) {
         case 'creada':
-            console.log('estado: ' + estado_tarea);
             $(this).find('.btn-estado').append(bolita(estado_tarea, 'purple', 'Estado: '+ estado_tarea));
             break;
 
         case 'solicitado':
-            console.log('estado: ' + estado_tarea);
             $(this).find('.btn-estado').append(bolita(estado_tarea, 'orange', 'Estado: '+ estado_tarea));
             break;
             
         case 'aprobado':
-            console.log('estado: ' + estado_tarea);
             $(this).find('.btn-estado').append(bolita(estado_tarea, 'orange', 'Estado: '+ estado_tarea));
             break;
 
         case 'rechazado':
-            console.log('estado: ' + estado_tarea);
             $(this).find('.btn-estado').append(bolita(estado_tarea, 'red', 'Estado: '+ estado_tarea));
             break;
 
         default:
-        console.log('estado: ' + estado_tarea);
         $(this).find('.btn-estado').append(bolita(estado_tarea, 'gray', 'Estado'));
             break;
     }         
@@ -249,7 +244,7 @@ var et = function eliminarTarea(e) {
             error();
         },
         complete: function() {
-            calendarRefetchEvents();
+            calendar.refetchEvents();
         }
     });
 }
