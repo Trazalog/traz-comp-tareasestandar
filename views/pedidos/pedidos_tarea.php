@@ -56,6 +56,10 @@
             <!-- /.tab-pane -->
         </div>
         <!-- /.tab-content -->
+        <!-- Modal footer -->
+        <div class="modal-footer">
+            <button type="button" class="btn" data-dismiss="modal">Cerrar</button>
+        </div>
     </div>
 
 </div>
