@@ -42,11 +42,11 @@ class Reportes extends CI_Controller
 
     $usuario = $data['usuario'] ? $data['usuario'] : '';
     $cliente = $data['cliente'] ? $data['cliente'] : '';
-    $desde = $data['datepickerDesde'] ? date("d-m-Y", strtotime($data['datepickerDesde'])) : '';
-    $hasta = $data['datepickerHasta'] ? date("d-m-Y", strtotime($data['datepickerHasta'])) : '';
+    $desde = $data['datepickerDesde'] ? date("Y-m-d", strtotime($data['datepickerDesde'])) : '';
+    $hasta = $data['datepickerHasta'] ? date("Y-m-d", strtotime($data['datepickerHasta'])) : '';
 
-    $desde = ($desde) ? date("d-m-Y", strtotime($desde)) : '';
-    $hasta = ($hasta) ? date("d-m-Y", strtotime($hasta)) : '';
+    // $desde = ($desde) ? date("d-m-Y", strtotime($desde)) : '';
+    // $hasta = ($hasta) ? date("d-m-Y", strtotime($hasta)) : '';
     
     log_message('DEBUG', '#TRAZA | #TRAZ-COMP TAREASESTANDAR | #REPORTES | indicadores() | #DESDE: >>' . $desde . '#HASTA: >>' . $hasta);
 
