@@ -144,7 +144,7 @@ use \koolreport\widgets\google\ColumnChart;
                 "showHeader" => true,
 
                 "columns" => array(
-                  "user_id" => array(
+                  "nombre_usuario" => array(
                     "label" => "Usuario"
                   ),
                   "petr_id" => array(
