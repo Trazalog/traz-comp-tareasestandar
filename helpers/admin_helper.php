@@ -30,7 +30,7 @@ if (!function_exists('iconos')) {
 
             foreach ($items as $key => $o) {
 
-                $html.= "<button class='btn btn-link' onclick='".$o['accion']."'><i class='text-primary fa ".$o['icon']."'></i></button>";
+                $html.= "<button class='btn btn-link' onclick='".$o['accion']."' title='".$o['title']."'><i class='text-primary fa ".$o['icon']."'></i></button>";
               
             }
         }

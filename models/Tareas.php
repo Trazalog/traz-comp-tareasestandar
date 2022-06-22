@@ -49,9 +49,9 @@ class Tareas extends CI_Model
     public function mapTarea($data){
         log_message('DEBUG', '#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | mapTarea()');
 
-        if(!isset($data['form_id'])) $data['form_id'] = "0";
+        if(!isset($data['form_id'])) $data['form_id'] = "";
         if(!isset($data['rece_id'])) $data['rece_id'] = "";
-        if(!isset($data['proc_id'])) $data['proc_id'] = "0";
+        if(!isset($data['proc_id'])) $data['proc_id'] = "";
         return $data;
     }
 
