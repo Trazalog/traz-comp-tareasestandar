@@ -8,8 +8,8 @@
         </div>
         <div class="col-md-12">
             <div class="form-group">
-                <label>Descripción<?php echo hreq() ?>:</label>
-                <textarea id="descripcion" name="descripcion" class="form-control" type="text" <?php echo req() ?>></textarea>
+                <label>Descripción:</label>
+                <textarea id="descripcion" name="descripcion" class="form-control" type="text"></textarea>
             </div>
         </div>
         <div class="col-md-6">
@@ -20,9 +20,9 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label>Formulario Asociado<?php echo hreq() ?>:</label>
+                <label>Formulario Asociado:</label>
                 <?php
-                    echo selectFromFont('form_id','Seleccionar Formulario', REST_FRM.'/formularios/'.empresa(),['value'=>'form_id', 'descripcion'=>'nombre'], true);
+                    echo selectFromFont('form_id','Seleccionar Formulario', REST_FRM.'/formularios/'.empresa(),['value'=>'form_id', 'descripcion'=>'nombre'], false);
                 ?>
             </div>
         </div>
@@ -38,7 +38,7 @@
             <div class="form-group">
                 <label>Proceso Asociado:</label>
                 <?php
-                    echo selectFromCore('proc_id','Seleccionar Proceso', 'procesos', true);
+                    echo selectFromCore('proc_id','Seleccionar Proceso', 'procesos', false);
                 ?>
             </div>
         </div>
