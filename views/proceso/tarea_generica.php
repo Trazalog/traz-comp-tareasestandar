@@ -1,4 +1,5 @@
 <input class="hidden" type="text" id="ortaId" value="<?php echo $orta_id?>">
+<input class="hidden" type="text" id="estadoTarea" value="<?php echo $estado?>">
 
 <br><br>
 <div class="box-header with-border">
@@ -38,6 +39,19 @@
 
 
 <script>
+$(document).ready(function () {
+    if($('#estadoTarea').val() != 'creada'){
+        $("#btnIniciar_tarea").show();
+        $("#btnIniciar_tarea").prop('disabled',true);
+        $("#btnHecho").prop('disabled', false);
+        $("#listadoSubtareas").show();
+        $("#formularioTarea").show();
+    }else{
+        $('#view').css('pointer-events', 'none');
+        $('#view').append('<div class="overlay"></div>');
+        habilitarInicioTareaEstandar();
+    }
+});
 function cerrarTarea() {
     var id = $('#ortaId').val();
     var status = false;

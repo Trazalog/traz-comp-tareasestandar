@@ -545,13 +545,23 @@ class Tareas extends CI_Model
         return $tareas;
     }
 
-
+    /**
+	* Actualiza los datos pasados desde el controlador para la tarea planificada
+	* @param array $data fec_inicio, estado y case_id
+	* @return array respuesta del servicio
+	*/
     public function ActualizarFecha_inicio($data){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | ActualizarFecha_inicio($data)');
         $url = REST_TST . "/tarea/iniciar";
         return wso2($url, 'PUT', $data);
     }
-
+    /**
+	* Actualiza los datos pasados desde el controlador para la tarea planificada
+	* @param array $data fec_fin, estado y case_id
+	* @return array respuesta del servicio
+	*/
     public function ActualizarFecha_fin($data){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | ActualizarFecha_fin($data)');
         $url = REST_TST . "/tarea/finalizar";
         return wso2($url, 'PUT', $data);
     }
