@@ -252,24 +252,33 @@ public function guardarPlantilla($id = false){
         $rsp = $this->Equipos->obtener($sectId);
         echo json_encode($rsp);
     }
-
+    /**
+	* Actualiza la fecha de inicio de la tarea y su estado a iniciada
+	* @param datetime $fec_inicio; integer $case_id
+	* @return array respuesta del servicio
+	*/
     public function iniciarTareaPlanificada($fec_inicio,$case_id){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | iniciarTareaPlanificada($fec_inicio,$case_id)');
         $fecha = str_replace("%20", " ", $fec_inicio);
         $data['_put_inicioTarea'] = array(
-           
             "fec_inicio" => $fecha,
-            "case_id" => $case_id,
-           
-
+            "estado" => 'iniciada',
+            "case_id" => $case_id, 
         );
         $rsp = $this->Tareas->ActualizarFecha_inicio($data);
         echo json_encode($rsp);
     }
-
+    /**
+	* Actualiza la fecha fin de la tarea y su estado a finalizada
+	* @param datetime $fec_fin; integer $case_id
+	* @return array respuesta del servicio
+	*/
     public function terminarTareaPlanificada($fec_fin,$case_id){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | terminarTareaPlanificada($fec_fin,$case_id)');
         $fecha = str_replace("%20", " ", $fec_fin);
         $data['_put_inicioTarea'] = array(
             "fec_fin" => $fecha,
+            "estado" => 'finalizada',
             "case_id" => $case_id,
         );
         $rsp = $this->Tareas->ActualizarFecha_fin($data);
