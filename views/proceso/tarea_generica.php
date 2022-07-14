@@ -9,18 +9,21 @@
     <table class="table table-hover table-striped">
         <tbody>
             <?php
-            foreach ($subtareas->subtarea as $o) {
+            foreach ($subtareas->subtarea as $i => $subt) {
                 echo "<tr>";
                 echo "<td><div class='checkbox'>
                                 <label>
                                     <input type='checkbox' name='terminado[]' class='flat-red i-check' value='true'>
-                                    $o->descripcion
+                                    $subt->descripcion
                                 </label>
                             </div>
                      </td>";
  
-                echo  "<td width='5%'><button class='btn btn-link'><i class='fa fa-paperclip text-primary'></i></button></td>";
+                echo "<td width='5%'><button class='btn btn-link' data-toggle='collapse' data-target='#{$i}' aria-expanded='false' aria-controls='{$i}'><i class='fa fa-file-text text-primary'></i></button></td>";
                 echo "</tr>";
+                echo "<tr class='collapse animated fadeInLeft' id='{$i}'><td>";
+                echo "<div class='card card-body'><div class='frm-new' data-form='{$subt->form_id}'></div></div>";
+                echo "</td></tr>";
             }
         ?>
         </tbody>
@@ -39,6 +42,10 @@
 
 
 <script>
+//Detecto e inicio los formularios dinamicos
+detectarForm();
+initForm();
+
 $(document).ready(function () {
     if($('#estadoTarea').val() != 'creada'){
         $("#btnIniciar_tarea").show();

@@ -14,15 +14,21 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Descripcion<?php echo hreq() ?>:</label>
-                                <input id="descripcion" name="descripcion" class="form-control" type="text">
+                                <label>Nombre<?php echo hreq() ?>:</label>
+                                <input name="nombre" class="form-control" type="text">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Descripción:</label>
+                                <input name="descripcion" class="form-control" type="text">
                             </div>
                         </div>
                         <div class="col-md-9">
                             <div class="form-group">
                                 <label>Formulario Asociado:</label>
                                 <select id="form_id" name="form_id" class="form-control">
-                                    <option value="0" selected> - Seleccionar Item -</option>
+                                    <option selected disabled> - Seleccionar Item -</option>
                                 </select>
                             </div>
                         </div>
@@ -53,7 +59,7 @@
 function guardarSubtarea() {
     var data = getForm('#frm-subtarea');
     if(!data.descripcion){
-        alert('Por favor agregar una descripción para la subtarea');
+        notificar('Error','Por favor agregar una descripción para la subtarea','warning');
         return;
     }
     data.tare_id = tare_id;
