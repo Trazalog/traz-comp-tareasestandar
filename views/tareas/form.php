@@ -47,7 +47,7 @@
 
 <script>
 initForm();
-$("#duracion").inputmask({ 
+$("input[name='duracion']").inputmask({ 
     regex: "[0-9]*",
     mask: "99:99",
     inputFormat: "HH:MM"

@@ -1,6 +1,6 @@
 <input class="hidden" type="text" id="ortaId" value="<?php echo $orta_id?>">
 <input class="hidden" type="text" id="estadoTarea" value="<?php echo $estado?>">
-
+<input class="hidden" type="text" id="tipoTarea" value="planificada">
 <br><br>
 <div class="box-header with-border">
     <div class="box-title">Lista de subtareas</div>
@@ -13,7 +13,7 @@
                 echo "<tr>";
                 echo "<td><div class='checkbox'>
                                 <label>
-                                    <input type='checkbox' name='terminado[]' class='flat-red i-check' value='true'>
+                                    <input type='checkbox' name='terminado[]' class='flat-red i-check' value=''>
                                     $subt->descripcion
                                 </label>
                             </div>
@@ -62,27 +62,41 @@ $(document).ready(function () {
 function cerrarTarea() {
     var id = $('#ortaId').val();
     var status = false;
-    wo();
-    $.ajax({
-        type: 'GET',
-        dataType: 'JSON',
-        url: '<?php echo base_url(PRD) ?>general/etapa/validarFormularioCalidad/' + id,
-        success: function(res) {
-            status = res.status;
-            if (!res.status) {
-                alert('Para cerrar la tarea el formulario de calidad debe estar aprobado');
+    if(!validarTareasFinalizadas()) return;
+    if($('#tipoTarea').val() == 'planificada'){
+     closeTask();
+    }else{    
+        wo();
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            url: '<?php echo base_url(PRD) ?>general/etapa/validarFormularioCalidad/' + id,
+            success: function(res) {
+                status = res.status;
+                if (!res.status) {
+                    alert('Para cerrar la tarea el formulario de calidad debe estar aprobado');
+                    wc();
+                } else {
+                    closeTask();
+                }
+            },
+            error: function(res) {
+                error();
                 wc();
-            } else {
-                closeTask();
             }
-        },
-        error: function(res) {
-            error();
-            wc();
+        });
+    }
+}
+function validarTareasFinalizadas() {
+    var flag = true;
+    $('input[name="terminado[]"]').each(function(i, obj) {
+        if(!$(obj).is(':checked')){
+            error('Error!','No se marcaron como finalizadas todas las subtareas!');
+            flag = false;
         }
     });
+    return flag;
 }
-
 function closeTask() {
     wo();
     $.ajax({
@@ -90,11 +104,8 @@ function closeTask() {
         dataType: 'JSON',
         url: '<?php echo base_url(BPM)?>Proceso/cerrarTarea/' + $('#taskId').val(),
         success: function(res) {
-            if ($('#miniView').length == 1) {
-                closeView();
-            } else {
-                linkTo('<?php echo BPM ?>Proceso');
-            }
+            fun = () => {linkTo('<?php echo BPM ?>Proceso/');}
+            confRefresh(fun);
         },
         error: function(res) {
             error();

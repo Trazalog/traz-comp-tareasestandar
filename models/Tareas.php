@@ -66,7 +66,7 @@ class Tareas extends CI_Model
 		$data['descripcion'] =  $datos['descripcion'];
 		$data['duracion'] =  $datos['duracion'];
 		$data['tare_id'] =  $datos['tare_id'];
-		$data['form_id'] =  $datos['form_id'];
+		$data['form_id'] =  isset($datos['form_id']) ? $datos['form_id'] : '';
 
         $post['post_subtarea'] = $data;
         $rsp = $this->rest->callAPI('POST', REST_TST . "/subtareas", $post);
