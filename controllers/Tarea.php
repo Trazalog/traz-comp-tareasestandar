@@ -187,6 +187,11 @@ class Tarea extends CI_Controller
         $rsp = $this->Tareas->eliminar($id);
         echo json_encode($rsp);
     }
+    /**
+	* Guarda el formulario de la subtarea
+	* @param array datos de la subtarea
+	* @return view con la subtarea cargada
+	*/
     public function guardarSubtarea(){
         $post = $this->input->post('data');
         if ($post) {
@@ -196,8 +201,13 @@ class Tarea extends CI_Controller
             $this->load->view(TST . '/tareas/form');
         }
     }
-
-public function tablaSubtareas($id){
+    /**
+	* Invoca un servicio para obtener las subtareas asociadas a un tare_id
+	* @param integer $tare_id
+	* @return view con las subtareas asociadas
+	*/
+    public function tablaSubtareas($id){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREAESTANDAR | Tarea | tablaSubtareas($id)');
         $data['tare_id'] = $id;
         $data['subtareas'] = $this->Tareas->obtenerSubtareas($id)['data'];
         $this->load->view('tareas/tabla_subtareas', $data);

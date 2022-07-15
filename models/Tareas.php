@@ -54,9 +54,20 @@ class Tareas extends CI_Model
         if(!isset($data['proc_id'])) $data['proc_id'] = "";
         return $data;
     }
+    /**
+	* Invoca un servicio para guardar los datos de la subtarea
+	* @param array datos subtarea
+	* @return array datos formateados
+	*/
+    public function guardarSubtarea($datos){
+        log_message("DEBUG",'#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | guardarSubtarea($data)');
 
-    public function guardarSubtarea($data)
-    {
+        $data['nombre'] = $datos['nombre'];
+		$data['descripcion'] =  $datos['descripcion'];
+		$data['duracion'] =  $datos['duracion'];
+		$data['tare_id'] =  $datos['tare_id'];
+		$data['form_id'] =  isset($datos['form_id']) ? $datos['form_id'] : '';
+
         $post['post_subtarea'] = $data;
         $rsp = $this->rest->callAPI('POST', REST_TST . "/subtareas", $post);
         return $rsp;
@@ -127,9 +138,13 @@ class Tareas extends CI_Model
         $rsp = $this->rest->callAPI('DELETE', REST_TST . "/plantillas", $data);
         return $rsp;
     }
-
-    public function obtenerSubtareas($id)
-    {
+    /**
+	* Obtiene las subtareas asociadas a un tare_id
+	* @param integer $tare_id
+	* @return array subtareas asociadas
+	*/
+    public function obtenerSubtareas($id){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | obtenerSubtareas($id)');
         $rsp = $this->rest->callAPI('GET', REST_TST . "/subtareas/$id");
         if ($rsp['status']) {
             $aux = json_decode($rsp['data']);
