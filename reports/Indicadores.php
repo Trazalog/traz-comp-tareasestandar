@@ -8,7 +8,7 @@ use \koolreport\processes\Sort;
 use \koolreport\processes\Limit;
 // use \koolreport\processes\RemoveColumn;
 use \koolreport\processes\OnlyColumn;
-
+use  \koolreport\processes\CopyColumn;
 //Define the class
 class Indicadores extends \koolreport\KoolReport
 {
@@ -48,6 +48,9 @@ class Indicadores extends \koolreport\KoolReport
   {
     log_message('DEBUG', '#TRAZA| #PRODUCCION.PHP|#TAREA|#SETUP| #KPIBASICO');
     $this->src("apiarray")
+      ->pipe(new CopyColumn([
+        "fec_inicio_2" => "fec_inicio"
+      ]))
       ->pipe($this->dataStore("data_kpi_basico_table"));
 
     $this->src("apiarray")

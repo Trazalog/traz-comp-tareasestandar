@@ -110,27 +110,16 @@ use \koolreport\widgets\google\ColumnChart;
     "dataStore" => $this->dataStore('data_kpi_basico_table'),
     "columns"=>array(
       "category",
-
         "cant_inicio"=>array("label" => "tareas planificadas",
         "type"=>"number",
-        "prefix"=>""),
-        
-
+        "prefix"=>""
+      ),
         "cant_fin"=>array("label" => "tareas finalizadas",
         "type"=>"number",
-        "prefix"=>""),
-
-        
-        // "petr_id"=>array("label" => "N° Pedido",
-        // "type"=>"number",
-        // "prefix"=>"N°"),
-
+        "prefix"=>""
+      ),
     )
-));
-
-
-
-
+    ));
               Table::create(array(
               "dataStore" => $this->dataStore('data_kpi_basico_table'),
                 "themeBase" => "bs4",
@@ -142,53 +131,54 @@ use \koolreport\widgets\google\ColumnChart;
                   )
                 ), // Para desactivar encabezado reemplazar "headers" por "showHeader"=>false
                 "showHeader" => true,
-
                 "columns" => array(
                   "nombre_usuario" => array(
-                    "label" => "Usuario"
+                    "label" => "Usuario",
+                    "type"=>"string"
                   ),
                   "petr_id" => array(
-                    "label" => "N° Pedido"
+                    "label" => "N° Pedido",
+                    "type" => "number"
                   ),
                   "nombre_cliente" => array(
-                    "label" => "Cliente"
+                    "label" => "Cliente",
+                    "type"=> "string"
                   ),
-                  array(
+                  "fec_inicio" => array(
                     "label" => "Fecha Inicio",
-                    "value" => function($row) {
-                      $aux = explode("T",$row["fec_inicio"]);
-                      $row["fec_inicio"] = date("d-m-Y",strtotime($aux[0]));
-                      return $row["fec_inicio"];
-                    },
-                    "type" => "date"
+                    "type" => "datetime"
                   ),
-                  array(
+                  "fec_fin" => array(
                     "label" => "Fecha Fin",
-                    "value" => function($row) {
-                      $aux = explode("T",$row["fec_fin"]);
-                      $row["fec_fin"] = date("d-m-Y",strtotime($aux[0]));
-
-                      if($row["fec_fin"] == "31-12-3000"){
-                        return "-";
-
-                      } else {
-                        return $row["fec_fin"];
-                      }
-                     
-                    },
-                    "type" => "date"
+                    "type" => "datetime"
                   ),
-                  
+                  // "fec_inicio" => array(
+                  //   "label" => "Fecha Inicio",
+                  //   "type" => "datetime",
+                  //   "format" => "Y-m-d H:i:s",
+                  //   "displayFormat"=>"d-m-Y H:i:s",
+                  //   "data-order" => "fec_inicio_2",
+                  // ),
+                  // array(
+                  //   "label" => "Fecha Fin",
+                  //   "value" => function($row) {
+                  //     $aux = date("d-m-Y",strtotime($row['fec_fin']));
+                  //     if($aux == "31-12-3000"){
+                  //       return "-";
+                  //     } else {
+                  //       return date("d-m-Y H:i:s",strtotime($row['fec_fin']));
+                  //     }
+                  //   },
+                  //   "type" => "datetime"
+                  // ),
                   "cant_inicio" => array(
                     "label" => "Planificadas",
-                  
-                    
+                    "type" => "number"
                   ),
                   "cant_fin" => array(
                     "label" => "Finalizadas",
-                    
+                    "type" => "number"
                   ),
-                
                 ),
                 "cssClass" => array(
                   "table" => "table-scroll table-responsive dataTables_wrapper form-inline dt-bootstrap dataTable table table-bordered table-striped table-hover display",
@@ -372,7 +362,6 @@ function  MostrarFiltro(){
         dataType: "JSON",
         url: "<?php echo base_url(TST) ?>Reportes/obtenerClientes",
         success: function(rsp) {
-          console.log(rsp);
           var opcClientes = '<option value="" disabled selected>- Seleccionar -</option>';
 
           rsp.data.forEach(element => {
