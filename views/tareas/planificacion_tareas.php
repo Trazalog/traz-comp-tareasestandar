@@ -120,7 +120,7 @@ var accion =
     <button class="btn btn-sm btn-link" title="Rec. Materiales" onclick="s_tarea=this; verDetallePedido();"><i class="fa fa-check-square-o"></i></button>
     <button class="btn btn-sm btn-link" title="Formulario Tarea" onclick="showForm(this)"><i class="fa fa-file-text"></i></button>
     </accion>
-    <button class="btn btn-link btn-xs" onclick="conf(et,this)"><i class='fa fa-times text-danger'></i></button>`;
+    <button title="Eliminar tarea" class="btn btn-link btn-xs" onclick="conf(et,this)"><i class='fa fa-trash text-danger'></i></button>`;
 
 
 // Agrega las acciones a la Tabla  planificadas
