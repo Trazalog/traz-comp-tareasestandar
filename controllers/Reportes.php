@@ -17,25 +17,19 @@ class Reportes extends CI_Controller
   /**
 		*Obtiene datos de Usuarios segun empresa 
 		**/
-  public function obtenerUsuarios()
-  {
-      log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | obtenerUsuarios() ");
+  public function obtenerFiltros(){
+    log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | obtenerFiltros() ");
       
-      $usuarios = $this->Tareas->obtenerUsuarios();
-      echo json_encode($usuarios);
+    $usuarios = $this->Tareas->obtenerUsuarios();
+    $tiposTrabajos = $this->Opcionesfiltros->obtenerTiposTrabajos();
+    echo json_encode($usuarios);
   }
   
   /**
-    *Obtiene datos de Clientes segun empresa 
-  **/
-  public function obtenerClientes()
-  {
-      log_message("DEBUG", "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | obtenerClientes() ");
-      
-      $clientes = $this->Tareas->obtenerClientes();
-      echo json_encode($clientes);
-  }
-  
+	* Obtiene los filtros y renderiza el listado
+	* @param array filtros
+	* @return array respuesta del servicio
+	*/
   public function indicadores(){
 
     $data = $this->input->post('data');
@@ -58,18 +52,4 @@ class Reportes extends CI_Controller
     $reporte->run()->render();
   }
 
-  public function salidas(){
-    log_message('DEBUG', '#TRAZA | #TRAZ-COMP-TAREASESTANDAR | #REPORTES | salidas() | #INGRESO');
-    $data = $this->input->post('data');
-    $json = $this->Opcionesfiltros->getSalidas($data);
-    $reporte = new Salidas($json);
-    $reporte->run()->render();
-  }
-
-  public function filtroSalidas(){
-    log_message('DEBUG', '#TRAZA | #TRAZ-COMP-TAREASESTANDAR | #REPORTES | filtroSalidas() | #INGRESO');
-    $rsp['clientes'] = $this->Opcionesfiltros->getClientes();
-    $rsp['transportista'] = $this->Opcionesfiltros->getTransportistas();
-    echo json_encode($rsp);
-  }
 }

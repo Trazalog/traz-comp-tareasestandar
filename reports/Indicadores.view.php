@@ -59,14 +59,19 @@ use \koolreport\widgets\google\ColumnChart;
                 <!-- _____ BLOQUE MAS FILTROS _____ -->
                 <div class="row" id="masFiltros" data="false" hidden>
                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="form-group col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                      <label>Usuario:</label>
-                      <select style="width:100%" class="form-control select2" id="usuarios" name="usuario">
+                    <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-3">
+                      <label>Tipo de trabajo:</label>
+                      <select style="width:100%" class="form-control select2" id="tipo_trabajo" name="tipo_trabajo">
                       </select>
                     </div>
-                    <div class="form-group col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                      <label>Cliente:</label>
-                      <select style="width:100%" class="form-control select2" id="clientes" name="cliente">
+                    <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-3">
+                      <label>Estado:</label>
+                      <select style="width:100%" class="form-control select2" id="estado" name="estado">
+                      </select>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-3">
+                      <label>Asignado a:</label>
+                      <select style="width:100%" class="form-control select2" id="usuarios" name="usuario">
                       </select>
                     </div>
                   </div>
@@ -132,53 +137,38 @@ use \koolreport\widgets\google\ColumnChart;
                 ), // Para desactivar encabezado reemplazar "headers" por "showHeader"=>false
                 "showHeader" => true,
                 "columns" => array(
-                  "nombre_usuario" => array(
-                    "label" => "Usuario",
+                  "fec_alta" => array(
+                    "label" => "Fecha",
+                    "type" => "date"
+                  ),
+                  "tipo_trabajo" => array(
+                    "label" => "Tipo de trabajo",
                     "type"=>"string"
                   ),
-                  "petr_id" => array(
-                    "label" => "N° Pedido",
-                    "type" => "number"
+                  "orden_trabajo" => array(
+                    "label" => "Orden de trabajo",
+                    "type"=>"string"
                   ),
-                  "nombre_cliente" => array(
-                    "label" => "Cliente",
-                    "type"=> "string"
+                  "cod_hito" => array(
+                    "label" => "Hito",
+                    "type"=>"string"
                   ),
-                  "fec_inicio" => array(
-                    "label" => "Fecha Inicio",
-                    "type" => "datetime"
+                  "nombre_usuario" => array(
+                    "label" => "Asignado a",
+                    "type"=>"string"
                   ),
-                  "fec_fin" => array(
-                    "label" => "Fecha Fin",
-                    "type" => "datetime"
+                  "fec_asignacion" => array(
+                    "label" => "Fecha de asignación",
+                    "type" => "date"
                   ),
-                  // "fec_inicio" => array(
-                  //   "label" => "Fecha Inicio",
-                  //   "type" => "datetime",
-                  //   "format" => "Y-m-d H:i:s",
-                  //   "displayFormat"=>"d-m-Y H:i:s",
-                  //   "data-order" => "fec_inicio_2",
-                  // ),
-                  // array(
-                  //   "label" => "Fecha Fin",
-                  //   "value" => function($row) {
-                  //     $aux = date("d-m-Y",strtotime($row['fec_fin']));
-                  //     if($aux == "31-12-3000"){
-                  //       return "-";
-                  //     } else {
-                  //       return date("d-m-Y H:i:s",strtotime($row['fec_fin']));
-                  //     }
-                  //   },
-                  //   "type" => "datetime"
-                  // ),
-                  "cant_inicio" => array(
-                    "label" => "Planificadas",
-                    "type" => "number"
-                  ),
-                  "cant_fin" => array(
-                    "label" => "Finalizadas",
-                    "type" => "number"
-                  ),
+                  array(
+                    "label" => "Estado",
+                    "value" => function($row) {
+                      $row["estado"] = estado($row["estado"],'green');
+                      return $row["estado"];
+                    },
+                    "type" => "string"
+                  )
                 ),
                 "cssClass" => array(
                   "table" => "table-scroll table-responsive dataTables_wrapper form-inline dt-bootstrap dataTable table table-bordered table-striped table-hover display",
@@ -334,11 +324,11 @@ function  MostrarFiltro(){
       });
     }
 
-    function selectUsuario() {
+    function filtrosIndicadoresTareas() {
       $.ajax({
         type: "GET",
         dataType: "JSON",
-        url: "<?php echo base_url(TST) ?>Reportes/obtenerUsuarios",
+        url: "<?php echo base_url(TST) ?>Reportes/obtenerFiltros",
         success: function(rsp) {    
           var opcUsuarios = '<option value="" disabled selected>- Seleccionar -</option>';
 
@@ -356,27 +346,27 @@ function  MostrarFiltro(){
       })
     }
 
-    function selectCliente() {
-      $.ajax({
-        type: "GET",
-        dataType: "JSON",
-        url: "<?php echo base_url(TST) ?>Reportes/obtenerClientes",
-        success: function(rsp) {
-          var opcClientes = '<option value="" disabled selected>- Seleccionar -</option>';
+    // function selectCliente() {
+    //   $.ajax({
+    //     type: "GET",
+    //     dataType: "JSON",
+    //     url: "<?php echo base_url(TST) ?>Reportes/obtenerClientes",
+    //     success: function(rsp) {
+    //       var opcClientes = '<option value="" disabled selected>- Seleccionar -</option>';
 
-          rsp.data.forEach(element => {
-            opcClientes += "<option value=" + element.clie_id + ">" + element.nombre + "</option>";
-          });
-          $('#clientes').html(opcClientes);
-        },
-        error: function(rsp) {
-          alert('Error tremendo');
-        },
-        complete: function() {
-          wc();
-        }
-      })
-    }
+    //       rsp.data.forEach(element => {
+    //         opcClientes += "<option value=" + element.clie_id + ">" + element.nombre + "</option>";
+    //       });
+    //       $('#clientes').html(opcClientes);
+    //     },
+    //     error: function(rsp) {
+    //       alert('Error tremendo');
+    //     },
+    //     complete: function() {
+    //       wc();
+    //     }
+    //   })
+    // }
 
   //Funcionalidades botones para grupar filas en la tabla
   $(document).on( 'click', '#btnUsuario',function (e) {
