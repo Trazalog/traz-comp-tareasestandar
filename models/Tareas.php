@@ -316,7 +316,8 @@ class Tareas extends CI_Model
         $aux['descripcion'] = strval(isset($data['descripcion']) ? $data['descripcion'] : '');
         $aux['hora_duracion'] = isset($data['duracion']) ? $data['duracion'] : '';
         $aux['empr_id'] = strval(empresa());
-
+        $aux['usuario_app'] = userNick();
+        
         if($aux['fecha'] != '3000-12-31'){
             $aux['fec_inicio'] = preg_match('/\s/',$data['fecha']) ? $data['fecha'] : date('Y-m-d H:i',strtotime(str_replace("+"," ",$data['fec_inicio'])));
             $min = $this->timeToMinutes($data['duracion']);

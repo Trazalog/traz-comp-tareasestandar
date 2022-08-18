@@ -48,9 +48,9 @@ class Indicadores extends \koolreport\KoolReport
   {
     log_message('DEBUG', '#TRAZA| #PRODUCCION.PHP|#TAREA|#SETUP| #KPIBASICO');
     $this->src("apiarray")
-      ->pipe(new CopyColumn([
-        "fec_inicio_2" => "fec_inicio"
-      ]))
+      // ->pipe(new CopyColumn([
+      //   "fec_inicio_2" => "fec_inicio"
+      // ]))
       ->pipe($this->dataStore("data_kpi_basico_table"));
 
     $this->src("apiarray")

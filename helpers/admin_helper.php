@@ -125,3 +125,27 @@ if (!function_exists('selectBusquedaAvanzada')) {
         return $html;
     }
 }
+
+if (!function_exists('estado')) {
+	function estado($estado){
+        switch (strtoupper($estado)) {
+            //Estado Generales
+            case 'CREADA':
+                    return bolita('Creada', 'yellow');
+                    break;
+            case 'INICIADA':
+                    return bolita('En Curso', 'green');
+                    break;
+            case 'FINALIZADA':
+                    return bolita('Finalizado', 'red');
+                    break;
+            case 'PLANIFICADA':
+                return bolita('Planificado', 'blue');
+                break;
+            //Estado por Defecto
+            default:
+                return bolita('S/E', '');
+                break;
+        }
+	}
+}
