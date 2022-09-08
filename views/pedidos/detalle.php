@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-xs-6">
             <div class="form-group" style="margin-top: 8px;">
-                <label>Artículos:</label>
+                <label>Artículos<?php hreq() ?>:</label>
                 <?php  echo selectBusquedaAvanzada('articulos', 'arti_id', $articulos, 'arti_id', 'barcode', array('descripcion', 'Unidad Medida:' => 'unidad_medida')) ?>
             </div>
         </div>
@@ -10,7 +10,7 @@
             <div class="form-group">
                 <div class="form-group-input">
                     <div class="input-group margin">
-                        <label>Cantidad:</label>
+                        <label>Cantidad<?php hreq() ?>:</label>
                         <input type="text" class="form-control" name="cantidad" placeholder="Cantidad">
                         <div class="input-group-btn">
                             <button style="margin-top: 25px;" type="button" class="btn btn-success"
@@ -25,7 +25,7 @@
 
 <table class="table table-striped table-hover" id="detalle_pedido">
     <thead>
-        <th>Pedido Artículos</th>
+        <th>Artículos Pedidos</th>
         <th width="10%">Cantidad</th>
         <th width="5%">Acciones</th>
     </thead>

@@ -117,10 +117,16 @@ var eliminarTarea = function(e) {
 
 function guardarTarea(id = false) {
     if (id) {
-        if(!frm_validar('#frm-tarea-e')) return;
+        if(!frm_validar('#frm-tarea-e')) {
+            notificar('Cuidado!','Falta completar campos obligatorios', 'warning');
+            return;
+        }
         var data = getForm('#frm-tarea-e');
     } else {
-        if(!frm_validar('#frm-tarea')) return;
+        if(!frm_validar('#frm-tarea')) {
+            notificar('Cuidado!','Falta completar campos obligatorios', 'warning');
+            return;
+        }
         var data = getForm('#frm-tarea');
     }
     wo();
@@ -138,10 +144,10 @@ function guardarTarea(id = false) {
                 reload('#frm-tarea');
                 frmReset('#frm-tarea-e');
                 reload('#tareas');
-                alert('Hecho');
+                id ? hecho('','Se editó la tarea estandar exitosamente!') : notificar('','Se guardo la tarea estandar exitosamente!');
                 actualizarTareasSelect();
             }else{
-                falla();
+                error();
             }
         },
         error: function(result) {

@@ -12,23 +12,36 @@
             <div class="modal-body">
                 <form id="frm-subtarea">
                     <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Nombre<?php echo hreq() ?>:</label>
+                                <input name="nombre" class="form-control" type="text" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Duración Standard:</label>
+                                <input name="duracion" class="form-control" type="text">
+                            </div>
+                        </div>
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Descripcion<?php echo hreq() ?>:</label>
-                                <input id="descripcion" name="descripcion" class="form-control" type="text">
+                                <label>Descripción:</label>
+                                <textarea name="descripcion" class="form-control"></textarea>
                             </div>
                         </div>
                         <div class="col-md-9">
                             <div class="form-group">
                                 <label>Formulario Asociado:</label>
-                                <select id="form_id" name="form_id" class="form-control">
-                                    <option value="0" selected> - Seleccionar Item -</option>
-                                </select>
+                                <?php
+                                    echo selectFromFont('form_id','Seleccionar Formulario', REST_FRM.'/formularios/'.empresa(),['value'=>'form_id', 'descripcion'=>'nombre'], false);
+                                ?>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <button type="button" class="btn btn-primary mr-25" onclick="guardarSubtarea()"><i
-                                    class="fa fa-plus mr-2"></i>Agregar</button>
+                            <button type="button" class="btn btn-primary mr-25" onclick="guardarSubtarea()">
+                                <i class="fa fa-plus mr-2"></i>Agregar
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -52,8 +65,8 @@
 
 function guardarSubtarea() {
     var data = getForm('#frm-subtarea');
-    if(!data.descripcion){
-        alert('Por favor agregar una descripción para la subtarea');
+    if(!data.nombre){
+        notificar('Error','Por favor complete los campos obligatorios','warning');
         return;
     }
     data.tare_id = tare_id;
@@ -65,12 +78,17 @@ function guardarSubtarea() {
             data
         },
         success: function(result) {
-            $('#frm-subtarea')[0].reset();
-            reload('#subtareas', tare_id);
-            alert('Hecho');
+            rsp = JSON.parse(result);
+            if(rsp.status){
+                $('#frm-subtarea')[0].reset();
+                reload('#subtareas', tare_id);
+                hecho();
+            }else{
+                error('Error!','Se produjo un error al guardar la subtarea.');
+            }
         },
         error: function(result) {
-            alert('Error')
+            error('Error','Se produjo un error al guardar la subtarea.');
         },
         complete:function(){
             wc();

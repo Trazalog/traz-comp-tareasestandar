@@ -15,7 +15,7 @@
                         <div class="form-group">
                             <label>Sector:</label>
                             <select name="sector" id="sector" class="form-control">
-                                <option value="0">- Seleccionar -</option>
+                                <option value="" disabled selected>- Seleccionar -</option>
                                 <?php
                                     foreach ($sectores as $o) {
                                         echo "<option value='$o->sect_id' data-json='".json_encode($o->equipos)."'>$o->descripcion</option>";
@@ -27,9 +27,19 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Equipo:</label>
-                            <select name="equipo" id="equipo" class="form-control">
-                                <option value="0">- Seleccionar -</option>
-                            </select>
+                            <div class="input-group">
+                                <select name="equipo" id="equipo" class="form-control">
+                                    <option value="" disabled selected>- Seleccionar -</option>
+                                </select>
+                                <span style="background-color: #646c6f;cursor: pointer;color: white;" id="add_filtro" class="input-group-addon" onclick="agregarFiltro()" title="Filtrar"><i class="fa fa-tags"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="seccionFiltros">
+
                         </div>
                     </div>
                 </div>
@@ -84,19 +94,15 @@ function clickCalendario(info) {
             //Actualizar Vista
             foco();
             selectCalendario = false;
-
             $('#mdl-hora').modal('show');
         }
     } else {
-
-    Swal.fire({
-        type: 'error',
-        title: 'Error...',
-        text: 'No se puede seleccionar fechas anteriores a la actual!',
-        target: document.getElementById('box-calendario'),
-        
-        })
-    
+        Swal.fire({
+            type: 'error',
+            title: 'Error...',
+            text: 'No se puede seleccionar fechas anteriores a la actual!',
+            target: document.getElementById('box-calendario'),
+        });
     }
 }
 
@@ -105,10 +111,8 @@ function guardarTodasTareas() {
         guardarTarea('#' + this.id);
     })
 }
-
+//Guarda la tarea seleccionada para planificarla, lanzar proceso asociado, realizar el pedido de materiales y asignar los recursos seleccionados
 function guardarTarea(id) {
-//alert('guardar terea');
-debugger;
     var tarea = getJson2(id);
     tarea.origen = getJson2($('#origen'));
     wbox('#bolsa-tareas');
@@ -127,12 +131,11 @@ debugger;
             s_tarea = false;
             wbox();
             wc();
-            calendarRefetchEvents();
+            calendar.refetchEvents();
         }
     });
-
 }
-
+//Muestra la instacia del formulario dinamico asociada a la TAREA STANDAR
 function showForm(e) {
     var data = getJson2(e);
     $mdl = $('#mdl-generico');
@@ -143,7 +146,7 @@ function showForm(e) {
         Swal.fire({
             type: 'info',
             title: 'Info',
-            text: 'Tarea sin formulario asociado!'
+            text: 'Aún no se completó formulario asociado!'
                         
             })
         return;
@@ -167,6 +170,7 @@ function showForm(e) {
 }
 
 $('#sector').on('change', function() {
+    wo();
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
@@ -175,8 +179,7 @@ $('#sector').on('change', function() {
             $('select#equipo').empty();
             if(res.status){
                 res.data.forEach(function( e, i){
-                    console.log(e);
-                    $('select#equipo').append(`<option value='${e.codigo}'>${e.codigo} - ${e.descripcion}</option>`)
+                    $('select#equipo').append(`<option value='${e.equi_id}'>${e.codigo} - ${e.descripcion}</option>`)
                 });
             }
             //hecho();
@@ -185,10 +188,60 @@ $('#sector').on('change', function() {
             error();
         },
         complete: function() {
-
+            wc();
         }
     });
 })
+//Seccion filtros en el calendario
+function agregarFiltro(){
+    id_sector = $("#sector").val();
+    id_equipo = $("#equipo").val();
+    if(!_isset($("#sector").val())){
+        error('Error!','No se seleccionó un sector.'); 
+        return;
+    }
+    datos = {};
+    datos.sector = id_sector;
+    datos.equipo = id_equipo;
+    equipo = $("#equipo option:selected").text();
+    sector = $("#sector option:selected").text();
+    $("#seccionFiltros").append(`<button class='btn btn-link btn-sm' onclick='eliminarFiltro(this)'><span data-toggle='tooltip' title='FILTRO' class='badge bg-gray estado' data-json='${JSON.stringify(datos)}'><i class="fa fa-times"></i> ${equipo} | ${sector}</span></button>`)
+    calendar.refetchEvents();
 
+}
+//Elimino y vuelvo a traer los eventos si el filtro eliminado
+function eliminarFiltro(tag){
+    $(tag).remove();
+    calendar.refetchEvents();
+}
+//Guarda la tarea seleccionada para planificarla
+function guardarTareaPlanificada(id) {
+    var tarea = getJson2(id);
+    tarea.origen = getJson2($('#origen'));
+    wbox('#bolsa-tareas');
 
+    $.ajax({
+        type: 'POST',
+        dataType: 'JSON',
+        url: '<?php echo TST ?>Tarea/guardarTareaPlanificada',
+        data: tarea,
+        success: function(res) {
+            if(res.status){
+                hecho('Hecho!','Se planificó la tarea correctamente!');
+                setJson(id, res.datosTarea);
+            }else{
+                error();
+            }
+        },
+        error: function(res) {
+            error();
+        },
+        complete: function() {
+            s_tarea = false;
+            wbox();
+            wc();
+            calendar.refetchEvents();
+        }
+    });
+}
 </script>

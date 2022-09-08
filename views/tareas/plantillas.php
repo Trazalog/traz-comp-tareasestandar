@@ -90,21 +90,17 @@ function actualizarTareasSelect() {
         dataType: 'JSON',
         url: '<?php echo base_url(TST) ?>Tarea/obtener',
         success: function(res) {
-            console.log(res);
             var html  = '<option value="" disabled selected>- Seleccionar -</option>';
             if(res.status && res.data){
                 res.data.forEach(function(e){
                     html =  html + `<option value="${e.tare_id}">${e.nombre}</option>`;
                 });
             }
-            console.log(html);
             $('select#tareas').html(html);
 
             $('#tareas_plantillas tbody tr').each(function() {
-                
                 $('select#tareas').find("[value='"+this.id+"']").hide();
-
-            })
+            });
         },
         error: function(res) {
             error();
