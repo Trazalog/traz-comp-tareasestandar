@@ -32,28 +32,57 @@
 
 <script>
 $('table#usuarios > tbody').find('.data-json').on('click', function() {
-    var user = getJson(this);
-    Swal.fire({
-    title: 'Desea Asignarle la Tarea a : ' + user.usernick ,
-    text: "",
-    type: 'question',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'SI, Asignar!',
-    cancelButtonText: 'No, Cancelar!'
-    }).then((result) => {
-        if (result.value) {                        
-            setAttr(s_tarea, 'user_id', user.usernick);//cambiando 3ºparametro  tomo un item distinto del obj user (id o nickuser)
-            $(s_tarea).find('span').remove();
-            $(s_tarea).append(bolita(user.first_name + ' ' + user.last_name,'orange'));
-            guardarTarea(s_tarea);
-
-            hecho('Hecho!','Usuario asignado a la tarea correctamente.');
-            $('#mdl-usuarios').modal('hide');
-        } else if (result.dismiss) {
-            error('Cancelado','---');
+    validarEstadoProceso().then((rsp) => {
+        if(rsp.status){
+            var user = getJson(this);
+            Swal.fire({
+            title: 'Desea asignar la tarea a : ' + user.usernick ,
+            text: "",
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Asignar',
+            cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.value) {                        
+                    setAttr(s_tarea, 'user_id', user.usernick);//cambiando 3ºparametro  tomo un item distinto del obj user (id o nickuser)
+                    $(s_tarea).find('span').remove();
+                    $(s_tarea).append(bolita(user.first_name + ' ' + user.last_name,'orange'));
+                    guardarTarea(s_tarea);
+        
+                    hecho('Hecho!','Usuario asignado a la tarea correctamente.');
+                    $('#mdl-usuarios').modal('hide');
+                } else if (result.dismiss) {
+                    error('Cancelado','---');
+                }
+            });
+        }else{
+            notificar('Nota', rsp.msj, 'warning');
         }
+    }).catch((error) => {
+        error('Error', error.msj);
     });
 });
+//Se verifica el paso del proceso, en el que se encuentra antes de poder asignar un usuario a la tarea
+async function validarEstadoProceso(){
+    data = {};
+    data.case_id = case_id_pedido_trabajo;
+    data.proc_id = proc_id_pedido_trabajo;
+    var validacion = new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: '<?php echo TST ?>Tarea/validarEstadoProceso',
+            data: data,
+            dataType: "JSON",
+            success: (rsp) => {
+                resolve(rsp);
+            },
+            error: (rsp) => {
+                reject(rsp);
+            }
+        });
+    });
+    return await validacion;
+}
 </script>
