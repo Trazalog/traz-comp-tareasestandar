@@ -33,31 +33,33 @@
 <script>
 $('table#usuarios > tbody').find('.data-json').on('click', function() {
     validarEstadoProceso().then((rsp) => {
-        debugger;
-        return;
-        var user = getJson(this);
-        Swal.fire({
-        title: 'Desea asignar la tarea a : ' + user.usernick ,
-        text: "",
-        type: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Asignar',
-        cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.value) {                        
-                setAttr(s_tarea, 'user_id', user.usernick);//cambiando 3ºparametro  tomo un item distinto del obj user (id o nickuser)
-                $(s_tarea).find('span').remove();
-                $(s_tarea).append(bolita(user.first_name + ' ' + user.last_name,'orange'));
-                guardarTarea(s_tarea);
-    
-                hecho('Hecho!','Usuario asignado a la tarea correctamente.');
-                $('#mdl-usuarios').modal('hide');
-            } else if (result.dismiss) {
-                error('Cancelado','---');
-            }
-        });
+        if(rsp.status){
+            var user = getJson(this);
+            Swal.fire({
+            title: 'Desea asignar la tarea a : ' + user.usernick ,
+            text: "",
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Asignar',
+            cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.value) {                        
+                    setAttr(s_tarea, 'user_id', user.usernick);//cambiando 3ºparametro  tomo un item distinto del obj user (id o nickuser)
+                    $(s_tarea).find('span').remove();
+                    $(s_tarea).append(bolita(user.first_name + ' ' + user.last_name,'orange'));
+                    guardarTarea(s_tarea);
+        
+                    hecho('Hecho!','Usuario asignado a la tarea correctamente.');
+                    $('#mdl-usuarios').modal('hide');
+                } else if (result.dismiss) {
+                    error('Cancelado','---');
+                }
+            });
+        }else{
+            notificar('Nota', rsp.msj, 'warning');
+        }
     }).catch((error) => {
         error('Error', error.msj);
     });

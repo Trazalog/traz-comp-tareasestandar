@@ -322,18 +322,19 @@ public function guardarPlantilla($id = false){
         $case_id = $this->input->post('case_id');
         $proc_id = $this->input->post('proc_id');
         $proceso = $this->Pedidotrabajos->procesos($proc_id)->proceso;
-        if($proceso->lanzar_bpm && $proceso->planificar_tareas){
+        if($proceso->lanzar_bpm != "false" && $proceso->planificar_tareas != 'false'){
             $taskActual = $this->bpm->ObtenerTaskidXNombre($proceso->nombre_bpm,$case_id, TAREA_IT);
             $taskHistorico = $this->bpm->ObtenerActividadesArchivadas($proceso->nombre_bpm,$case_id);
-            while ($taskHistorico[$i]['displayName'] != TAREA_IT && $i < count($taskHistorico)) {
-                ++$i;
+            $i = 0;
+            while (($taskHistorico[$i]['displayName'] != TAREA_IT) && $i < count($taskHistorico)) {
+                $i++;
             }
             if(!empty($taskActual) || $i < count($taskHistorico)){
                 $rsp['status'] = true;
                 $rsp['msj'] = 'Todo correcto';
             }else{
                 $rsp['status'] = false;
-                $rsp['msj'] = "El case especificado no se encuentra en el paso de la TAREA IT";
+                $rsp['msj'] = "El case especificado no alcanzó o finalizó la tarea IT";
             }
         }else{
             $rsp['status'] = true;
