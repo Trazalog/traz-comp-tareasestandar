@@ -309,5 +309,37 @@ public function guardarPlantilla($id = false){
 
         echo json_encode($res);
     }
-
+    /**
+	* Valída para el pedido de trabajo enviado, si posee un proceso asociado, si este proceso
+    * posee permiso para planificar tareas y este se encuentra parado o ya se realizo
+    * la tarea IT "Ejecuta el Trabajo - Tools Tareas"
+	* @param array 
+	* @return array respuesta del servicio
+	*/
+    public function validarEstadoProceso(){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | validarEstadoProceso()');
+        $this->load->model(BPM.'Pedidotrabajos');
+        $case_id = $this->input->post('case_id');
+        $proc_id = $this->input->post('proc_id');
+        $proceso = $this->Pedidotrabajos->procesos($proc_id)->proceso;
+        if($proceso->lanzar_bpm != "false" && $proceso->planificar_tareas != 'false'){
+            $taskActual = $this->bpm->ObtenerTaskidXNombre($proceso->nombre_bpm,$case_id, TAREA_IT);
+            $taskHistorico = $this->bpm->ObtenerActividadesArchivadas($proceso->nombre_bpm,$case_id);
+            $i = 0;
+            while (($taskHistorico[$i]['displayName'] != TAREA_IT) && $i < count($taskHistorico)) {
+                $i++;
+            }
+            if(!empty($taskActual) || $i < count($taskHistorico)){
+                $rsp['status'] = true;
+                $rsp['msj'] = 'Todo correcto';
+            }else{
+                $rsp['status'] = false;
+                $rsp['msj'] = "El case especificado no alcanzó o finalizó la tarea IT";
+            }
+        }else{
+            $rsp['status'] = true;
+            $rsp['msj'] = 'El proceso del pedido de trabajo no posee tarea IT para planificar tareas';
+        }
+        echo json_encode($rsp);
+    }
 }
