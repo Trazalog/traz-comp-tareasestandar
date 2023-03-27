@@ -60,28 +60,35 @@ $('table#usuarios > tbody').find('.data-json').on('click', function() {
         }else{
             notificar('Nota', rsp.msj, 'warning');
         }
-    }).catch((error) => {
-        error('Error', error.msj);
+    }).catch((err) => {
+        console.log(err);
+        error();
     });
 });
 //Se verifica el paso del proceso, en el que se encuentra antes de poder asignar un usuario a la tarea
+//Si las variables case_id_pedido_trabajo y proc_id_pedido_trabajo estan vacias significa que se esta programando la tarea desde Produccion de Lotes
 async function validarEstadoProceso(){
     data = {};
-    data.case_id = case_id_pedido_trabajo;
-    data.proc_id = proc_id_pedido_trabajo;
+    data.case_id = typeof(case_id_pedido_trabajo) !== "undefined" ? case_id_pedido_trabajo : '';
+    data.proc_id = typeof(proc_id_pedido_trabajo) !== "undefined" ? proc_id_pedido_trabajo : '';
     var validacion = new Promise((resolve, reject) => {
-        $.ajax({
-            type: "POST",
-            url: '<?php echo TST ?>Tarea/validarEstadoProceso',
-            data: data,
-            dataType: "JSON",
-            success: (rsp) => {
+        if(data.case_id != '' && data.proc_id != ''){
+
+            $.ajax({
+                type: "POST",
+                url: '<?php echo TST ?>Tarea/validarEstadoProceso',
+                data: data,
+                dataType: "JSON",
+                success: (rsp) => {
                 resolve(rsp);
             },
             error: (rsp) => {
                 reject(rsp);
             }
         });
+        }else{
+            resolve({'status': true, 'msj': 'Se realizó la planificacion desde producción de lotes'});
+        }
     });
     return await validacion;
 }
