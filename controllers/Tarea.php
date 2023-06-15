@@ -15,6 +15,7 @@ class Tarea extends CI_Controller
 		* @return
 		*/
     public function planificar($origen, $orta_id){
+        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | planificar()");
         // extraer el info_id que viene concatenado con orta_id separado por un 0
         $aux = $orta_id;
         $auxorta_id="";
@@ -64,7 +65,7 @@ class Tarea extends CI_Controller
 
         $tareas = $this->Tareas->obtenerPlanificadas($origen, $orta_id)['data'];
         $usuarios = $data['usuarios'];
-        $data['tareas_planificadas'] = $this->Tareas->marcarAsignados($tareas, $usuarios);
+        $data['tareas_planificadas'] = $this->Tareas->marcarAsignados($tareas, $usuarios);        
         $this->load->view('tareas/planificacion', $data);
     }
 
