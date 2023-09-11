@@ -21,6 +21,9 @@
     /*-moz-box-shadow: 6px 4px 5px 1px #555, 0 1px 0 #ccc inset, 0 -1px 0 #ccc inset;*/
     /*-box-shadow: 6px 4px 5px 1px #555, 0 1px 0 #ccc inset, 0 -1px 0 #ccc inset;*/
 }
+.btnAccionPlantilla{
+    cursor: pointer;
+}
 </style>
 <div class="box" id="pnl-tareas">
     <input id="origen" class="hidden data-json" data-json='<?php echo json_encode($origen) ?>'>
@@ -29,7 +32,7 @@
             <li class="active"><a href="#tab_11" data-toggle="tab" aria-expanded="true" onclick="copiarTareas()"><i
                         class="fa fa-arrow-circle-right mr-2"></i>Calendario</a></li>
             <li class=""><a href="#tab_22" data-toggle="tab" aria-expanded="false" onclick="copiarTareas(true)"><i
-                        class="fa fa-arrow-circle-right mr-2"></i>Planifiación Tareas</a></li>
+                        class="fa fa-arrow-circle-right mr-2"></i>Planificación Tareas</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="tab_11">

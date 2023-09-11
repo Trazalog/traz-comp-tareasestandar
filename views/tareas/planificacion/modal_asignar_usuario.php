@@ -13,10 +13,8 @@
                     <tbody>
                         <?php 
                             foreach ($usuarios as $o) {
-
                                 echo "<tr id='$o->usernick' class='data-json' data-json='".json_encode($o)."'>";
-                                // echo "<td class='text-center'><img width='30px' height='30px' src='$o->img' class='img-circle' alt='User Image'></td>";
-																echo "<td class='text-center'><img width='30px' height='30px' src='lib/dist/img/user2-160x160.jpg' class='img-circle' alt='User Image'></td>";
+                                echo "<td class='text-center'><img width='30px' height='30px' src='lib/dist/img/user2-160x160.jpg' class='img-circle' alt='User Image'></td>";
                                 echo "<td><h5>$o->first_name $o->last_name</h5></td>";
                                 echo "</tr>";
                             }
@@ -34,14 +32,64 @@
 
 <script>
 $('table#usuarios > tbody').find('.data-json').on('click', function() {
-	debugger;
-
-    var user = getJson(this);
-    setAttr(s_tarea, 'user_id', user.usernick);//cambiando 3ºparametro  tomo un item distinto del obj user (id o nickuser)
-    $(s_tarea).find('span').remove();
-    $(s_tarea).append(bolita(user.first_name.charAt(0).toUpperCase() + user.last_name.charAt(0).toUpperCase(),
-        'orange'));
-    guardarTarea(s_tarea);
-    $('#mdl-usuarios').modal('hide');
+    validarEstadoProceso().then((rsp) => {
+        if(rsp.status){
+            var user = getJson(this);
+            Swal.fire({
+            title: 'Desea asignar la tarea a : ' + user.usernick ,
+            text: "",
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Asignar',
+            cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.value) {                        
+                    setAttr(s_tarea, 'user_id', user.usernick);//cambiando 3ºparametro  tomo un item distinto del obj user (id o nickuser)
+                    $(s_tarea).find('span').remove();
+                    $(s_tarea).append(bolita(user.first_name + ' ' + user.last_name,'orange'));
+                    guardarTarea(s_tarea);
+        
+                    hecho('Hecho!','Usuario asignado a la tarea correctamente.');
+                    $('#mdl-usuarios').modal('hide');
+                } else if (result.dismiss) {
+                    error('Cancelado','---');
+                }
+            });
+        }else{
+            notificar('Nota', rsp.msj, 'warning');
+        }
+    }).catch((err) => {
+        console.log(err);
+        error();
+    });
 });
+//Se verifica el paso del proceso, en el que se encuentra antes de poder asignar un usuario a la tarea
+//Si las variables case_id_pedido_trabajo y proc_id_pedido_trabajo estan vacias significa que se esta programando la tarea desde Produccion de Lotes
+async function validarEstadoProceso(){
+    data = {};
+    data.case_id = typeof(case_id_pedido_trabajo) !== "undefined" ? case_id_pedido_trabajo : '';
+    data.proc_id = typeof(proc_id_pedido_trabajo) !== "undefined" ? proc_id_pedido_trabajo : '';
+    var validacion = new Promise((resolve, reject) => {
+        if(data.case_id != '' && data.proc_id != ''){
+
+            $.ajax({
+                type: "POST",
+                url: '<?php echo TST ?>Tarea/validarEstadoProceso',
+                data: data,
+                dataType: "JSON",
+                success: (rsp) => {
+                resolve(rsp);
+            },
+            error: (rsp) => {
+                reject(rsp);
+            }
+        });
+        }else{
+            resolve({'status': true, 'msj': 'Se realizó la planificacion desde producción de lotes'});
+        }
+    });
+    return await validacion;
+}
 </script>

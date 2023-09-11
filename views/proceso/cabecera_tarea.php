@@ -21,7 +21,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Estadp:</label>
+                        <label>Estado:</label>
                         <input class="form-control" type="text" value="<?php echo ucfirst($tarea->estado) ?>" readonly>
                     </div>
                 </div>

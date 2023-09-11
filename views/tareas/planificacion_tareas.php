@@ -8,7 +8,7 @@
                     <input type="text" class="form-control" id="nueva-tarea" placeholder="Ingrese Nueva Tarea">
                     <div class="input-group-btn">
                         <button style="margin-top: 25px;" type="button" class="btn btn-success"
-                            onclick="agregarTarea({nombre:$('#nueva-tarea').val(), proc_id: '<?php echo TAREAS_DEFAULT_PROC ?>'}); $('#nueva-tarea').val('')"><i
+                            onclick="agregarTareaPlanificada({nombre:$('#nueva-tarea').val(), proc_id: '<?php echo TAREAS_DEFAULT_PROC ?>'}); $('#nueva-tarea').val('')"><i
                                 class="fa fa-plus"></i></button>
                     </div>
                 </div>
@@ -56,16 +56,16 @@
                     <table class="table table-striped table-hover table-fixed" id="tareas">
                         <thead>
                             <th>Lista de Tareas</th>
-                            <th width="10%">Duración</th>
-                            <th width="5%"></th>
+                            <th width="20%">Duración</th>
+                            <th width="10%"></th>
                         </thead>
                         <tbody>
                             <?php
-                            foreach ($tareas as $o) {
+                               foreach ($tareas as $o) {
                                 echo "<tr id='$o->tare_id' class='data-json' data-json='".json_encode($o)."' title='".$o->descripcion."'>";
                                 echo "<td><a href='#' onclick='obtenerSubtareas($o->tare_id)'>$o->nombre</a></td>";
                                 echo "<td>".bolita($o->duracion)."</td>";
-                                echo "<td><i class='fa fa-plus text-primary' onclick='agregarTarea(".(json_encode($o)).")'></i></td>";
+                                echo "<td><i class='fa fa-plus text-primary btnAccionPlantilla' onclick='agregarTareaPlanificada(".(json_encode($o)).")'></i></td>";
                                 echo "</tr>";
                             }
                         ?>
@@ -87,15 +87,7 @@
     </div>
 	<!-- / Seleccionar Plantilla -->
 </div>
-
-
 <script>
-function planificarTareas() {
-    $('#tareas-planificadas > tbody').find('tr').each(function() {
-        console.log(getJson(this));
-    })
-}
-
 function obtenerSubtareas(tarea) {
     if (tarea) {
         $.ajax({
@@ -120,38 +112,63 @@ function obtenerSubtareas(tarea) {
 // Acciones de la tabla Tareas Planificadas
 var accion =
     `<accion style="display:none">
-    <button class="btn btn-link btn-xs btn-planificar" onclick="planificar(this)"><i class="fa fa-calendar text-success mr-1"></i></button>
-    <button class="btn btn-link btn-xs btn-asignar" onclick="s_tarea = this;$('#mdl-usuarios').modal('show')"><i class="fa fa-user text-success mr-1"></i></button>
-    <button class="btn btn-xs btn-link" title="Rec.Trabajo" onclick="s_tarea=this; editarEquipos(); $('#mdl-pere').modal('show')"><i class="fa fa-cogs"></i></button>
-    <button class="btn btn-xs btn-link" title="Rec. Materiales" onclick="s_tarea=this; verDetallePedido();"><i class="fa fa-check-square-o"></i></button>
-    <button class="btn btn-xs btn-link" title="Formulario Tarea" onclick="showForm(this)"><i class="fa fa-file-text"></i></button>
+    <button class="btn btn-link btn-sm btn-estado"><i class=""></i></button>
+    <button class="btn btn-link btn-sm btn-planificado"><i class=""></i></button>
+    <button class="btn btn-link btn-sm btn-planificar" onclick="planificar(this)"><i class="fa fa-calendar text-success mr-1"></i></button>
+    <button class="btn btn-link btn-sm btn-asignar" title="Asignar Usuario" onclick="s_tarea = this;$('#mdl-usuarios').modal('show')"><i class="fa fa-user text-success mr-1"></i></button>
+    <button class="btn btn-sm btn-link" title="Rec.Trabajo" onclick="s_tarea=this; editarEquipos(); $('#mdl-pere').modal('show')"><i class="fa fa-cogs"></i></button>
+    <button class="btn btn-sm btn-link" title="Rec. Materiales" onclick="s_tarea=this; verDetallePedido();"><i class="fa fa-check-square-o"></i></button>
+    <button class="btn btn-sm btn-link" title="Formulario Tarea" onclick="showForm(this)"><i class="fa fa-file-text"></i></button>
     </accion>
-    <button class="btn btn-link btn-xs" onclick="conf(et,this)"><i class='fa fa-times text-danger'></i></button>`;
+    <button title="Eliminar tarea" class="btn btn-link btn-xs" onclick="conf(et,this)"><i class='fa fa-trash text-danger'></i></button>`;
 
 
-// Agrega las acciones a la Tabla  pLanificadas
-		$('#tareas-calendario').find('.acciones').html(accion);
+// Agrega las acciones a la Tabla  planificadas
+$('#tareas-calendario').find('.acciones').html(accion);
 
 // Recorre toda la Tabla Tareas Planificadas Marcando los usuarios asignados
-		$('#tareas-calendario > tbody > tr').each(function() {
+$('#tareas-calendario > tbody > tr').each(function() {
     var data = getJson(this);
-    if (data.hasOwnProperty('fecha') && data.fecha != '3000-12-31+00:00' && data.fecha != '0031-01-01+00:00') {
-        $(this).find('.btn-planificar').append(bolita(dateFormatPG(data.fecha), 'blue'));
-    }
-    console.log('ban');
-    console.log(data);
-    var user = getJson($('tr#' +$.escapeSelector(data.user_id)));
-    console.log('usuario: ' + user);
-		console.log(user);
-    if (user) {
 
-        $(this).find('.btn-asignar').append(bolita(user.first_name.charAt(0).toUpperCase() + user.last_name.charAt(0)
-            .toUpperCase(),
-            'orange'));
+    estado_tarea = data.estado
+    switch (estado_tarea) {
+        case 'creada':
+            $(this).find('.btn-estado').append(bolita(estado_tarea, 'purple', 'Estado: '+ estado_tarea));
+            break;
+
+        case 'solicitado':
+            $(this).find('.btn-estado').append(bolita(estado_tarea, 'orange', 'Estado: '+ estado_tarea));
+            break;
+            
+        case 'aprobado':
+            $(this).find('.btn-estado').append(bolita(estado_tarea, 'orange', 'Estado: '+ estado_tarea));
+            break;
+
+        case 'rechazado':
+            $(this).find('.btn-estado').append(bolita(estado_tarea, 'red', 'Estado: '+ estado_tarea));
+            break;
+
+        default:
+        $(this).find('.btn-estado').append(bolita(estado_tarea, 'gray', 'Estado'));
+            break;
+    }         
+
+    if ( data.fecha >= '31-12-2100') {
+        $(this).find('.btn-planificado').append(bolita('Sin Planificar', 'gray', 'Estado: Sin Planificar'));
+    } else if (data.hasOwnProperty('fecha') && data.fecha != '31-12-3000') {
+        $(this).find('.btn-planificar').append(bolita(dateFormatPG(data.fec_inicio), 'blue' , 'Estado: Planificado'));
+        $(this).find('.btn-planificado').append(bolita('Planificado', 'purple', 'Estado: Planificado'));
+        $('.btn-estado').hide();
+    }
+    var user = getJson($('tr#' +$.escapeSelector(data.user_id)));
+    if (user) {
+        // $(this).find('.btn-asignar').append(bolita(user.first_name.charAt(0).toUpperCase() + user.last_name.charAt(0)
+        //     .toUpperCase(),
+        //     'orange'));
+        $(this).find('.btn-asignar').append(bolita(user.first_name+ ' ' + user.last_name,'orange',''));
     }
 });
 $('accion').show();
-
 
 function agregarTarea(tarea) {
     if (tarea.nombre) {
@@ -206,21 +223,28 @@ $('#plantilla').change(function() {
 var et = function eliminarTarea(e) {
     var data = getJson2(e);
     const id = data.tapl_id;
-    if(!data.tapl_id) { alert('Error al eliminar Tarea'); return;}
+
+    if(!data.tapl_id) { error('Error','La tarea seleccionada no posee ID'); return;}
     $(e).closest('tr').remove();
+
     if ($(e).find('tbody').find('tr').length == 0) $(e).find('tfoot').show();
     $.ajax({
         type: 'DELETE',
         dataType: 'JSON',
-        url: '<?php echo TST ?>Tarea/eliminarPlanificada/' + id,
+        data: {id},
+        url: '<?php echo TST ?>Tarea/eliminarPlanificada/'+ id,
         success: function(res) {
-            if (!res.status) falla();
+            if (res.tareaPlanificada.status) {
+                hecho("Hecho!", res.tareaPlanificada.msj);
+            }else{
+                error("Error!",res.tareaPlanificada.msj);
+            }
         },
         error: function(res) {
             error();
         },
         complete: function() {
-            calendarRefetchEvents();
+            calendar.refetchEvents();
         }
     });
 }
@@ -228,5 +252,20 @@ var et = function eliminarTarea(e) {
 function nextVal() {
     return Date.now();
 }
-
+function agregarTareaPlanificada(tarea) {
+    if (tarea.nombre) {
+        wo();
+        tarea.tare_id = (tarea.tare_id?tarea.tare_id:'');
+        const t = '#tareas-planificadas';
+        const id = nextVal();
+        $(t).append(
+            `<tr id="${id}" class="tarea data-json" data-json='${JSON.stringify(tarea)}'>
+            <td><h5>${tarea.nombre}</h5></td>
+            <td class="text-right">${accion}</td>
+            </tr>`
+        );
+        $(t).find('tfoot').hide();
+        guardarTareaPlanificada($('#' + id));
+    }
+}
 </script>

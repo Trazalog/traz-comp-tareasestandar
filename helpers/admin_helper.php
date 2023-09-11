@@ -30,7 +30,7 @@ if (!function_exists('iconos')) {
 
             foreach ($items as $key => $o) {
 
-                $html.= "<button class='btn btn-link' onclick='".$o['accion']."'><i class='text-primary fa ".$o['icon']."'></i></button>";
+                $html.= "<button class='btn btn-link' onclick='".$o['accion']."' title='".$o['title']."'><i class='text-primary fa ".$o['icon']."'></i></button>";
               
             }
         }
@@ -124,4 +124,28 @@ if (!function_exists('selectBusquedaAvanzada')) {
         $html .= "<script>$('#$id').select2({matcher: matchCustom,templateResult: formatCustom}).on('change', function() { selectEvent(this);})</script>";
         return $html;
     }
+}
+
+if (!function_exists('estado')) {
+	function estado($estado){
+        switch (strtoupper($estado)) {
+            //Estado Generales
+            case 'CREADA':
+                    return bolita('Creada', 'yellow');
+                    break;
+            case 'INICIADA':
+                    return bolita('En Curso', 'green');
+                    break;
+            case 'FINALIZADA':
+                    return bolita('Finalizado', 'red');
+                    break;
+            case 'PLANIFICADA':
+                return bolita('Planificado', 'blue');
+                break;
+            //Estado por Defecto
+            default:
+                return bolita('S/E', '');
+                break;
+        }
+	}
 }

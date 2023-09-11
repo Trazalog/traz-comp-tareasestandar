@@ -48,7 +48,7 @@ class Tsttareas extends CI_Model
 
                 $origen->texto = "Origen: Producción de Lotes";
                 $id->texto = "Batch:  $data->orta_id";
-                $nro->texto = "Nro Lote: ".($lote) ? $lote->lote : "";
+                $nro->texto = "Nro Lote: ".(!empty($lote->lote)) ? $lote->lote : "";
 
                 break;
             case 'ETAP':
