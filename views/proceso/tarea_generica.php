@@ -57,7 +57,8 @@ $(document).ready(function () {
         $("#formularioTarea").show();
     }else{
         $('#view').css('pointer-events', 'none');
-        $('#view').append('<div class="overlay"></div>');
+        // overlay-inicio: bloquea la vista hasta "Inicializar tarea" (no es un "Cargando...")
+        $('#view').append('<div class="overlay overlay-inicio"></div>');
         habilitarInicioTareaEstandar();
     }
 });
