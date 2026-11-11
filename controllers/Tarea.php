@@ -277,8 +277,7 @@ public function guardarPlantilla($id = false){
 	*/
     public function iniciarTareaPlanificada($fec_inicio,$case_id){
         log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | iniciarTareaPlanificada($fec_inicio,$case_id)');
-        // La hora real es la del servidor al momento del clic: la que manda la pantalla no es confiable
-        $fecha = date('Y-m-d H:i:s');
+        $fecha = str_replace("%20", " ", $fec_inicio);
         $data['_put_inicioTarea'] = array(
             "fec_inicio" => $fecha,
             "estado" => 'iniciada',
@@ -294,8 +293,7 @@ public function guardarPlantilla($id = false){
 	*/
     public function terminarTareaPlanificada($fec_fin,$case_id){
         log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | terminarTareaPlanificada($fec_fin,$case_id)');
-        // La hora real es la del servidor al momento del clic: la que manda la pantalla no es confiable
-        $fecha = date('Y-m-d H:i:s');
+        $fecha = str_replace("%20", " ", $fec_fin);
         $data['_put_inicioTarea'] = array(
             "fec_fin" => $fecha,
             "estado" => 'finalizada',
