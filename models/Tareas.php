@@ -333,6 +333,7 @@ class Tareas extends CI_Model
     public function eliminarPlanificada($id)
     {
         $delete['delete_tarea_planificar']['tapl_id'] = $id;
+        $delete['delete_tarea_planificar']['empr_id'] = empresa();
         $url = REST_TST . '/tarea/planificar';
         $rsp = $this->rest->callApi('DELETE', $url, $delete);
         return $rsp;
@@ -381,7 +382,7 @@ class Tareas extends CI_Model
     public function obtenerPlanificadas($origen, $orta_id){
         log_message("DEBUG",'#TRAZA | TRAZ-COMP-TAREASESTANDAR | Tareas | obtenerPlanificadas($origen, $orta_id)');
 
-        $url = REST_TST . "/tareas/planificar/$origen/$orta_id";
+        $url = REST_TST . "/tareas/planificar/$origen/$orta_id?empr_id=" . empresa();
         $rsp = $this->rest->callApi('GET', $url);
         if ($rsp['status']) {
             $rsp['data'] = $this->mapRespuesta(json_decode($rsp['data'])->tareas->tarea);
@@ -412,7 +413,7 @@ class Tareas extends CI_Model
 
     public function obtenerXCaseId($caseId)
     {
-        $url = REST_TST."/tareas/planificadas/case/$caseId";
+        $url = REST_TST."/tareas/planificadas/case/$caseId?empr_id=" . empresa();
         return wso2($url);
     }
 
