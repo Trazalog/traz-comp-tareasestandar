@@ -16,39 +16,45 @@ class Tarea extends CI_Controller
 		*/
     public function planificar($origen, $orta_id){
         log_message('DEBUG', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | planificar()");
-        // extraer el info_id que viene concatenado con orta_id separado por un 0
-        $aux = $orta_id;
-        $auxorta_id="";
-        $auxinfo_id="";
-        $petr_id="";
-        $o = 1;
-        $cont = strlen($aux);
-        for($i=0; $i<$cont; $i++)
-        {
-                if($aux[$i]!=0 && $o!=0)
-                {
-                    $auxorta_id = $auxorta_id.$aux[$i];
-                }else{
-                        $o = 0;
-                    $auxinfo_id = $auxinfo_id.$aux[$i+1];
-                }
-        }
-        $contcero=0;
-        for($i=0; $i<$cont; $i++)
-        {
-                if($aux[$i]==0)
-                {  
-                        if($contcero == 2)
-                        {
-                                $petr_id = $petr_id.$aux[$i];
-                        }else{
-                                $contcero++;
-                        }
-                }
-        }
+        // En un pedido de trabajo orta_id es el hito y llega tal cual. Antes se cortaba en el primer 0
+        // y el hito 60 abría la planificación del 6 (H-115). Los demás orígenes (lotes) siguen con el
+        // corte: sus tareas ya guardadas tienen el número cortado y dejarían de verse
+        $auxinfo_id = "";
+        if ($origen != 'PETR') {
+            // extraer el info_id que viene concatenado con orta_id separado por un 0
+            $aux = $orta_id;
+            $auxorta_id="";
+            $auxinfo_id="";
+            $petr_id="";
+            $o = 1;
+            $cont = strlen($aux);
+            for($i=0; $i<$cont; $i++)
+            {
+                    if($aux[$i]!=0 && $o!=0)
+                    {
+                        $auxorta_id = $auxorta_id.$aux[$i];
+                    }else{
+                            $o = 0;
+                        $auxinfo_id = $auxinfo_id.$aux[$i+1];
+                    }
+            }
+            $contcero=0;
+            for($i=0; $i<$cont; $i++)
+            {
+                    if($aux[$i]==0)
+                    {  
+                            if($contcero == 2)
+                            {
+                                    $petr_id = $petr_id.$aux[$i];
+                            }else{
+                                    $contcero++;
+                            }
+                    }
+            }
 
-        $orta_id = $auxorta_id;
-        // fin extraccion
+            $orta_id = $auxorta_id;
+            // fin extraccion
+        }
 
         $data['origen'] = array('orta_id' => $orta_id, 'origen' => $origen);
         $data['tareas'] = $this->Tareas->obtener()['data'];
@@ -168,6 +174,10 @@ class Tarea extends CI_Controller
           if(!isset($data['rece_id'])){
                 $data['rece_id'] ='';
             }
+            // Sin proceso elegido, la tarea lanza el proceso por defecto (TST001 - Tarea Planificada)
+            if (empty($data['proc_id']) && defined('TAREAS_DEFAULT_PROC')) {
+                $data['proc_id'] = TAREAS_DEFAULT_PROC;
+            }
             if ($id) {
                 $rsp = $this->Tareas->editar($id, $data);
             } else {
@@ -267,7 +277,8 @@ public function guardarPlantilla($id = false){
 	*/
     public function iniciarTareaPlanificada($fec_inicio,$case_id){
         log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | iniciarTareaPlanificada($fec_inicio,$case_id)');
-        $fecha = str_replace("%20", " ", $fec_inicio);
+        // La hora real es la del servidor al momento del clic: la que manda la pantalla no es confiable
+        $fecha = date('Y-m-d H:i:s');
         $data['_put_inicioTarea'] = array(
             "fec_inicio" => $fecha,
             "estado" => 'iniciada',
@@ -283,7 +294,8 @@ public function guardarPlantilla($id = false){
 	*/
     public function terminarTareaPlanificada($fec_fin,$case_id){
         log_message('DEBUG','#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | terminarTareaPlanificada($fec_fin,$case_id)');
-        $fecha = str_replace("%20", " ", $fec_fin);
+        // La hora real es la del servidor al momento del clic: la que manda la pantalla no es confiable
+        $fecha = date('Y-m-d H:i:s');
         $data['_put_inicioTarea'] = array(
             "fec_fin" => $fecha,
             "estado" => 'finalizada',

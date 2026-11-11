@@ -99,6 +99,12 @@ function validarTareasFinalizadas() {
 }
 function closeTask() {
     wo();
+    // Registra la hora real de fin antes de cerrar la tarea en Bonita (la hora la pone el servidor)
+    $.ajax({
+        type: 'POST',
+        async: false,
+        url: '<?php echo base_url(TST)?>Tarea/terminarTareaPlanificada/0/' + task.caseId
+    });
     $.ajax({
         type: 'POST',
         dataType: 'JSON',

@@ -38,7 +38,22 @@
             <div class="form-group">
                 <label>Proceso Asociado:</label>
                 <?php
-                    echo selectFromCore('proc_id','Seleccionar Proceso', 'procesos', false);
+                    // Por defecto, el proceso de tarea planificada; además la lista general y la de la empresa
+                    $procDefault = defined('TAREAS_DEFAULT_PROC') ? TAREAS_DEFAULT_PROC : '';
+                    $procesos = $procDefault ? array($procDefault => "Tarea Planificada ($procDefault)") : array();
+                    foreach (array(REST_CORE."/tablas/procesos", REST_CORE."/tabla/procesos/empresa/".empresa()) as $urlProc) {
+                        $rspProc = wso2($urlProc);
+                        if (!empty($rspProc['data'])) {
+                            foreach ($rspProc['data'] as $o) {
+                                if (!isset($procesos[$o->valor])) $procesos[$o->valor] = $o->descripcion;
+                            }
+                        }
+                    }
+                    echo "<select id='proc_id' name='proc_id' class='form-control frm-select' style='width: 100%;'><option value='' disabled> - Seleccionar Proceso - </option>";
+                    foreach ($procesos as $valor => $descripcion) {
+                        echo "<option value='$valor'".($valor === $procDefault ? ' selected' : '').">$descripcion</option>";
+                    }
+                    echo "</select>";
                 ?>
             </div>
         </div>
