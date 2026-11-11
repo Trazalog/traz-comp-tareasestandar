@@ -32,6 +32,26 @@
                     </div>
                 </div>
 
+<?php if (isset($pedido)) { ?>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Pedido de Trabajo:</label>
+                        <input class="form-control" type="text" value="<?php echo $pedido ? $pedido->cod_proyecto : '' ?>" readonly>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Cliente:</label>
+                        <input class="form-control" type="text" value="<?php echo $pedido ? $pedido->nom_cliente : '' ?>" readonly>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Estado del Pedido:</label>
+                        <input class="form-control" type="text" value="<?php echo $pedido ? $pedido->estado : '' ?>" readonly>
+                    </div>
+                </div>
+<?php } else { ?>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Etapa:</label>
@@ -62,6 +82,7 @@
                         <input class="form-control" type="text" value="<?php echo $etapa->estado ?>" readonly>
                     </div>
                 </div>
+<?php } ?>
             </div>
         </form>
     </div>
