@@ -47,7 +47,9 @@ detectarForm();
 initForm();
 
 $(document).ready(function () {
-    if($('#estadoTarea').val() != 'creada'){
+    // Recien iniciada o finalizada la tarea se habilita su vista. Una tarea asignada queda
+    // "planificada" y todavia hay que inicializarla (registra la hora real de inicio).
+    if(['creada', 'planificada'].indexOf($('#estadoTarea').val()) === -1){
         $("#btnIniciar_tarea").show();
         $("#btnIniciar_tarea").prop('disabled',true);
         $("#btnHecho").prop('disabled', false);
