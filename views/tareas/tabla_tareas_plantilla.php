@@ -33,6 +33,8 @@
         data: {plan_id, tare_id},
         success: function(res) {
             $(e).closest('tr').remove();
+            // La tarea desasociada se vuelve a ofrecer en el selector
+            if (typeof actualizarTareasSelect === 'function') actualizarTareasSelect();
             hecho();
         },
         error: function(res) {

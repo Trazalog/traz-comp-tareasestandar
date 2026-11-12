@@ -9,7 +9,7 @@ var plan_id;
 function editarPlantilla(e) {
     var data = getJson($(e).closest('.data-json'));
     plan_id = data.plan_id;
-    $('#nombre').val(data.nombre);
+    $('#frm-plantilla [name="nombre"]').val(data.nombre);
     $('#nueva_plantilla').modal('show');
 }
 
@@ -98,8 +98,9 @@ function actualizarTareasSelect() {
             }
             $('select#tareas').html(html);
 
-            $('#tareas_plantillas tbody tr').each(function() {
-                $('select#tareas').find("[value='"+this.id+"']").hide();
+            // Las tareas que ya están en la plantilla no se ofrecen (se sacan del selector, no solo se ocultan)
+            $('#tareas_plantillas tbody tr.data-json').each(function() {
+                $('select#tareas').find("option[value='"+this.id+"']").remove();
             });
         },
         error: function(res) {
@@ -129,6 +130,7 @@ function asociarTareaPlantilla() {
         },
         success: function(res) {
             reload('#tareas_plantillas');
+            $('select#tareas').find("option[value='" + tare_id + "']").remove();
             $('select#tareas').val('');
             hecho();
         },

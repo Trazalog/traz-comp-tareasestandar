@@ -92,6 +92,13 @@ function agregarSubtareas(e) {
 function editarTarea(e) {
     var data = getJson($(e).closest('tr'));
     tare_id = data.tare_id;
+    // Si la tarea tiene un proceso que el selector no ofrece (ej. TST001 cargado por otra vía), se agrega
+    // la opción para no borrarle el proceso al guardar la edición.
+    var selProc = $('#frm-tarea-e [name="proc_id"]');
+    selProc.find('option.proc-extra').remove();
+    if (data.proc_id && selProc.find('option').filter(function() { return this.value == data.proc_id; }).length == 0) {
+        selProc.append($('<option>', { value: data.proc_id, text: data.proc_id, 'class': 'proc-extra' }));
+    }
     fillForm(data, '#frm-tarea-e');
     $('#editar').modal('show');
 }
@@ -115,6 +122,17 @@ var eliminarTarea = function(e) {
     });
 }
 
+/**
+ * Duración estándar válida: HH:MM, minutos de 00 a 59 y mayor a 00:00.
+ * Las horas van de 00 a 99 (lo que permite la máscara del campo).
+ */
+function duracionValida(valor) {
+    var m = /^(\d{2}):(\d{2})$/.exec((valor || '').trim());
+    if (!m) return false;
+    var horas = parseInt(m[1], 10), minutos = parseInt(m[2], 10);
+    return minutos <= 59 && (horas > 0 || minutos > 0);
+}
+
 function guardarTarea(id = false) {
     if (id) {
         if(!frm_validar('#frm-tarea-e')) {
@@ -128,6 +146,10 @@ function guardarTarea(id = false) {
             return;
         }
         var data = getForm('#frm-tarea');
+    }
+    if (!duracionValida(data.duracion)) {
+        notificar('Cuidado!', 'La duración tiene que ser HH:MM, con minutos de 00 a 59 y mayor a 00:00', 'warning');
+        return;
     }
     wo();
     $.ajax({
@@ -146,6 +168,8 @@ function guardarTarea(id = false) {
                 reload('#tareas');
                 id ? hecho('','Se editó la tarea estandar exitosamente!') : notificar('','Se guardo la tarea estandar exitosamente!');
                 actualizarTareasSelect();
+            }else if (result.msj) {
+                notificar('Cuidado!', result.msj, 'warning');
             }else{
                 error();
             }
