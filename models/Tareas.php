@@ -174,6 +174,7 @@ class Tareas extends CI_Model
         
         $data =  $this->mapTarea($data);
         $data['tare_id'] = $id;
+        $data['empr_id'] = empresa();
         $put['put_tarea'] = $data;
         $rsp = $this->rest->callAPI('PUT', $this->recurso, $put);
         return $rsp;
