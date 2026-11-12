@@ -230,8 +230,10 @@ class Tareas extends CI_Model
                 $this->asignarRecursos($data['tapl_id'], $data['equipos']);
             }
 						//TODO: LA TAREA TIENE NOMBRE DISTINTO VINIENDO DESDE LA VISTA, EN BPM ES DISPLAYNAME CON EL QUE BUSCAMOS COINCIDENCIA
-						// si hay usuario, lo asigno a tarea
-						//if (isset($data['user_id']) && $data['user_id'] != "") {
+						// si hay usuario y la tarea ya tiene caso en Bonita, lo asigno a la tarea.
+						// Sin caso (tarea sin responsable o sin fecha) no hay nada que asignar: buscar
+						// actividades con el caso vacio trae las de otros casos del proceso.
+						if (!empty($data['user_id']) && !empty($data['case_id']) && $data['case_id'] != "0") {
 
 								$actividad = $this->bpm->ObtenerActividades(BPM_PROCESS_ID_TAREA_GENERICA, $data['case_id']);
 								$nombre = $actividad[0]['displayName'];
@@ -239,8 +241,12 @@ class Tareas extends CI_Model
 
 								// con nickname local, traigo id de usuario en bpm para asignar l tarea
 								$usrBpm = $this->bpm->getUser($data['user_id']);
-								$resp_asign = $this->bpm->setUsuario($task, $usrBpm['data']['id']);
-						//}
+								if ($task && $usrBpm['status']) {
+									$resp_asign = $this->bpm->setUsuario($task, $usrBpm['data']['id']);
+								} else {
+									log_message('ERROR', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | guardarPlanificada() >> No se pudo asignar la tarea en BPM | case_id: {$data['case_id']} | user_id: {$data['user_id']}");
+								}
+						}
         }
 
         unset($data['origen']);
@@ -275,7 +281,7 @@ class Tareas extends CI_Model
             return $res['data'];
         }else{
             $resp['msg'] = $tarea['fecha'] == '3000-12-31' ? ' No se seteo fecha para la tarea!' : '';
-            $resp['msg'] = !isset($tarea['user_id']) || $tarea['user_id'] == "" ? ' No se le asigno la tarea a ningun usuario!' : '';        
+            $resp['msg'] .= !isset($tarea['user_id']) || $tarea['user_id'] == "" ? ' No se le asigno la tarea a ningun usuario!' : '';        
             log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | Validacion de proceso fallida >> ' . json_encode($resp['msg']));
         }
 
