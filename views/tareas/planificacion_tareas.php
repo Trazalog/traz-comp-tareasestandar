@@ -231,7 +231,8 @@ var et = function eliminarTarea(e) {
     $(e).closest('tr').remove();
     if (filaId) $('#tareas-calendario, #tareas-planificadas').find('tr[id="' + filaId + '"]').remove(); // el id es numérico: no sirve '#id'
     $('#tareas-calendario, #tareas-planificadas').each(function() {
-        if ($(this).find('tbody').find('tr').length == 0) $(this).find('tfoot').show();
+        // Las filas nuevas se agregan con append() a la tabla, fuera del tbody: se cuentan por clase
+        if ($(this).find('tr.data-json').length == 0) $(this).find('tfoot').show();
     });
     $.ajax({
         type: 'DELETE',

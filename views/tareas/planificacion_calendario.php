@@ -75,6 +75,15 @@ $this->load->view('tareas/planificacion/mdl_hora');
                             }
                             ?>
                         </tbody>
+                        <!-- Mismo pie que #tareas-planificadas: las pestañas se copian la tabla entera y sin
+                             esto el "No hay Tareas Planificadas" desaparecía al volver a Planificación Tareas -->
+                        <tfoot style="<?php echo ($tareas_planificadas && $origen['orta_id']) ? 'display:none;' : '' ?>">
+                            <tr>
+                                <td colspan="2" class="text-center">
+                                    <h4>No hay Tareas Planificadas</h4>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
