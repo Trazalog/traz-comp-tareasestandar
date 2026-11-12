@@ -225,9 +225,14 @@ var et = function eliminarTarea(e) {
     const id = data.tapl_id;
 
     if(!data.tapl_id) { error('Error','La tarea seleccionada no posee ID'); return;}
+    // La fila está copiada en las dos pestañas (Calendario y Planificación Tareas): se borra de
+    // ambas y, si la tabla queda vacía, vuelve el "No hay Tareas Planificadas".
+    const filaId = $(e).closest('tr').attr('id');
     $(e).closest('tr').remove();
-
-    if ($(e).find('tbody').find('tr').length == 0) $(e).find('tfoot').show();
+    if (filaId) $('#tareas-calendario, #tareas-planificadas').find('tr[id="' + filaId + '"]').remove(); // el id es numérico: no sirve '#id'
+    $('#tareas-calendario, #tareas-planificadas').each(function() {
+        if ($(this).find('tbody').find('tr').length == 0) $(this).find('tfoot').show();
+    });
     $.ajax({
         type: 'DELETE',
         dataType: 'JSON',
