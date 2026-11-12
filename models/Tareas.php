@@ -242,7 +242,13 @@ class Tareas extends CI_Model
 								// con nickname local, traigo id de usuario en bpm para asignar l tarea
 								$usrBpm = $this->bpm->getUser($data['user_id']);
 								if ($task && $usrBpm['status']) {
+									// Bonita no deja asignar una tarea que ya tiene responsable ("it has already been
+									// assigned"): para reasignar, primero se libera y después se asigna al nuevo.
+									$this->bpm->setUsuario($task, '');
 									$resp_asign = $this->bpm->setUsuario($task, $usrBpm['data']['id']);
+									if (!$resp_asign['status']) {
+										log_message('ERROR', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | guardarPlanificada() >> Bonita no asigno la tarea $task a {$data['user_id']}");
+									}
 								} else {
 									log_message('ERROR', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | guardarPlanificada() >> No se pudo asignar la tarea en BPM | case_id: {$data['case_id']} | user_id: {$data['user_id']}");
 								}
