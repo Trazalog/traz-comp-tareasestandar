@@ -47,7 +47,9 @@ detectarForm();
 initForm();
 
 $(document).ready(function () {
-    if($('#estadoTarea').val() != 'creada'){
+    // Recien iniciada o finalizada la tarea se habilita su vista. Una tarea asignada queda
+    // "planificada" y todavia hay que inicializarla (registra la hora real de inicio).
+    if(['creada', 'planificada'].indexOf($('#estadoTarea').val()) === -1){
         $("#btnIniciar_tarea").show();
         $("#btnIniciar_tarea").prop('disabled',true);
         $("#btnHecho").prop('disabled', false);
@@ -55,7 +57,8 @@ $(document).ready(function () {
         $("#formularioTarea").show();
     }else{
         $('#view').css('pointer-events', 'none');
-        $('#view').append('<div class="overlay"></div>');
+        // overlay-inicio: bloquea la vista hasta "Inicializar tarea" (no es un "Cargando...")
+        $('#view').append('<div class="overlay overlay-inicio"></div>');
         habilitarInicioTareaEstandar();
     }
 });
@@ -99,6 +102,12 @@ function validarTareasFinalizadas() {
 }
 function closeTask() {
     wo();
+    // Registra la hora real de fin antes de cerrar la tarea en Bonita (la hora la pone el servidor)
+    $.ajax({
+        type: 'POST',
+        async: false,
+        url: '<?php echo base_url(TST)?>Tarea/terminarTareaPlanificada/0/' + task.caseId
+    });
     $.ajax({
         type: 'POST',
         dataType: 'JSON',

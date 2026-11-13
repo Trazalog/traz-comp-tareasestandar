@@ -36,11 +36,13 @@ class Tsttareas extends CI_Model
         //Display del Origen en bandeja
         switch ($data->origen) {
             case 'PETR':
-                $pedido = $this->getPedidoTrabajo($data->orta_id);
+                // En una tarea de pedido de trabajo, orta_id es el hito, no el pedido
+                $petr_id = $this->Tareas->getPetrIdXHitoId($data->orta_id);
+                $pedido = $petr_id ? $this->getPedidoTrabajo($petr_id) : null;
                 
                 $origen->texto = "Origen: Pedido de trabajo";
-                $id->texto = "Id Ped.Trabajo: $data->orta_id";
-                $nro->texto = "Nro Pedido: ".($pedido) ? $pedido->cod_proyecto : "";
+                $id->texto = "Id Ped.Trabajo: " . ($petr_id ? $petr_id : $data->orta_id);
+                $nro->texto = "Nro Pedido: " . ($pedido ? $pedido->cod_proyecto : "");
 
                 break;
             case 'BATCH':
@@ -48,7 +50,7 @@ class Tsttareas extends CI_Model
 
                 $origen->texto = "Origen: Producción de Lotes";
                 $id->texto = "Batch:  $data->orta_id";
-                $nro->texto = "Nro Lote: ".(!empty($lote->lote)) ? $lote->lote : "";
+                $nro->texto = "Nro Lote: " . (!empty($lote->lote) ? $lote->lote : "");
 
                 break;
             case 'ETAP':
@@ -102,7 +104,12 @@ class Tsttareas extends CI_Model
         $this->load->model(TST.'/Tareas');
         $this->load->model(PRD.'general/Etapas');
         $data['tarea'] = $this->Tareas->obtenerXCaseId($tarea->caseId)['data'][0];
-        $data['etapa'] = $this->Etapas->buscar($data['tarea']->orta_id)->etapa;
+        if ($data['tarea']->origen == 'PETR') {
+            $petr_id = $this->Tareas->getPetrIdXHitoId($data['tarea']->orta_id);
+            $data['pedido'] = $petr_id ? $this->getPedidoTrabajo($petr_id) : null;
+        } else {
+            $data['etapa'] = $this->Etapas->buscar($data['tarea']->orta_id)->etapa;
+        }
         return $this->load->view(TST.'proceso/cabecera_tarea', $data, true);
     }
 
@@ -120,7 +127,10 @@ class Tsttareas extends CI_Model
 
         log_message('DEBUG', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tsttareas | getPedidoTrabajo()  resp: >> " . json_encode($resp));
 
-        return $resp->pedidos_info->pedido_info;
+        $pedido = isset($resp->pedidos_info->pedido_info) ? $resp->pedidos_info->pedido_info : null;
+
+        // El servicio devuelve una lista aunque busque un solo pedido
+        return is_array($pedido) ? (isset($pedido[0]) ? $pedido[0] : null) : $pedido;
     }
 
     /**
