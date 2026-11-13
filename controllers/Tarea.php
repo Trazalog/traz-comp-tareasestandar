@@ -138,6 +138,11 @@ class Tarea extends CI_Controller
 
         $data = $this->input->post('data');
         if ($data) {
+            if (!$this->duracionValida(isset($data['duracion']) ? $data['duracion'] : '')) {
+                log_message('ERROR', '#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tarea | guardar() >> duración inválida: ' . json_encode(isset($data['duracion']) ? $data['duracion'] : null));
+                echo json_encode(array('status' => false, 'msj' => 'La duración tiene que ser HH:MM, con minutos de 00 a 59 y mayor a 00:00', 'data' => null));
+                return;
+            }
           if(!isset($data['rece_id'])){
                 $data['rece_id'] ='';
             }
@@ -156,6 +161,18 @@ class Tarea extends CI_Controller
             $this->load->view(TST.'tareas/form');
         }
 
+    }
+
+    /**
+	* Duración estándar válida: HH:MM, minutos de 00 a 59 y mayor a 00:00 (horas de 00 a 99, como la máscara del formulario)
+	* @param string $duracion
+	* @return bool
+	*/
+    private function duracionValida($duracion){
+        if (!preg_match('/^(\d{2}):(\d{2})$/', trim((string) $duracion), $m)) return false;
+        $horas = intval($m[1]);
+        $minutos = intval($m[2]);
+        return $minutos <= 59 && ($horas > 0 || $minutos > 0);
     }
 
     public function eliminar($id){

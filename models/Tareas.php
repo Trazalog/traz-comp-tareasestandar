@@ -174,6 +174,7 @@ class Tareas extends CI_Model
         
         $data =  $this->mapTarea($data);
         $data['tare_id'] = $id;
+        $data['empr_id'] = empresa();
         $put['put_tarea'] = $data;
         $rsp = $this->rest->callAPI('PUT', $this->recurso, $put);
         return $rsp;
@@ -266,6 +267,13 @@ class Tareas extends CI_Model
     public function lanzarProceso($tarea){
         log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea)');
 
+        // Sin proceso (tareas estándar viejas guardadas sin proceso): usa el proceso por defecto, TST001
+        // (decisión PM 2026-11-13). Así la tarea abre caso y llega a la bandeja del responsable.
+        // Solo pedidos de trabajo (PETR): los demás orígenes (lotes, etc.) siguen como estaban.
+        $origen = isset($tarea['origen']['origen']) ? $tarea['origen']['origen'] : '';
+        if ($origen == 'PETR' && (!isset($tarea['proc_id']) || trim($tarea['proc_id']) == "") && defined('TAREAS_DEFAULT_PROC')) {
+            $tarea['proc_id'] = TAREAS_DEFAULT_PROC;
+        }
         if(isset($tarea['proc_id']) && $tarea['proc_id'] == ""){
             log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | No hay proceso asociado >> $tarea["proc_id"] = '.$tarea['proc_id']);
             return; 
