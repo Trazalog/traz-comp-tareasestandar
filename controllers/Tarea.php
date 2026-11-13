@@ -16,39 +16,12 @@ class Tarea extends CI_Controller
 		*/
     public function planificar($origen, $orta_id){
         log_message('DEBUG', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | TAREA | planificar()");
-        // extraer el info_id que viene concatenado con orta_id separado por un 0
-        $aux = $orta_id;
-        $auxorta_id="";
-        $auxinfo_id="";
-        $petr_id="";
-        $o = 1;
-        $cont = strlen($aux);
-        for($i=0; $i<$cont; $i++)
-        {
-                if($aux[$i]!=0 && $o!=0)
-                {
-                    $auxorta_id = $auxorta_id.$aux[$i];
-                }else{
-                        $o = 0;
-                    $auxinfo_id = $auxinfo_id.$aux[$i+1];
-                }
-        }
-        $contcero=0;
-        for($i=0; $i<$cont; $i++)
-        {
-                if($aux[$i]==0)
-                {  
-                        if($contcero == 2)
-                        {
-                                $petr_id = $petr_id.$aux[$i];
-                        }else{
-                                $contcero++;
-                        }
-                }
-        }
-
-        $orta_id = $auxorta_id;
-        // fin extraccion
+        // orta_id llega tal cual (el hito en PETR, el lote en BATCH). Antes se cortaba en el primer 0,
+        // resto de un esquema viejo que pegaba ids separados por ceros: el hito 60 abría el 6 (H-115) y
+        // el lote 105 el 1 (H-123, #638). El PM decidió corregirlo igual (2026-11-13) aunque las tareas
+        // viejas de esos lotes, guardadas con el número cortado, dejen de verse en su lote.
+        $auxinfo_id = "";
+        $orta_id = preg_replace('/\D/', '', (string) $orta_id);
 
         $data['origen'] = array('orta_id' => $orta_id, 'origen' => $origen);
         $data['tareas'] = $this->Tareas->obtener()['data'];
@@ -167,6 +140,10 @@ class Tarea extends CI_Controller
         if ($data) {
           if(!isset($data['rece_id'])){
                 $data['rece_id'] ='';
+            }
+            // Sin proceso elegido, la tarea lanza el proceso por defecto (TST001 - Tarea Planificada)
+            if (empty($data['proc_id']) && defined('TAREAS_DEFAULT_PROC')) {
+                $data['proc_id'] = TAREAS_DEFAULT_PROC;
             }
             if ($id) {
                 $rsp = $this->Tareas->editar($id, $data);
