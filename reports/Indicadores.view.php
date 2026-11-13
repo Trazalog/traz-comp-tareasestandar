@@ -227,7 +227,7 @@ function  MostrarFiltro(){
           .column(6)
           .data()
           .filter( function (val, i) {
-              return (val.includes('Finalizada')) ? true : false;
+              return /finalizad[ao]/i.test(val); // estados de tarea: creada, planificada, iniciada, finalizada
           }, 0 );
         $('#cantidad_finalizadas').text(totalFinalizadas.length);
 
@@ -236,7 +236,7 @@ function  MostrarFiltro(){
           .column(6)
           .data()
           .filter( function (val, i) {
-              return (val.includes('En Curso')) ? true : false;
+              return /planificad[ao]/i.test(val);
           }, 0 );
         $('#cantidad_planificadas').text(totalPlanificadas.length);
       },

@@ -230,8 +230,10 @@ class Tareas extends CI_Model
                 $this->asignarRecursos($data['tapl_id'], $data['equipos']);
             }
 						//TODO: LA TAREA TIENE NOMBRE DISTINTO VINIENDO DESDE LA VISTA, EN BPM ES DISPLAYNAME CON EL QUE BUSCAMOS COINCIDENCIA
-						// si hay usuario, lo asigno a tarea
-						//if (isset($data['user_id']) && $data['user_id'] != "") {
+						// si hay usuario y la tarea ya tiene caso en Bonita, lo asigno a la tarea.
+						// Sin caso (tarea sin responsable o sin fecha) no hay nada que asignar: buscar
+						// actividades con el caso vacio trae las de otros casos del proceso.
+						if (!empty($data['user_id']) && !empty($data['case_id']) && $data['case_id'] != "0") {
 
 								$actividad = $this->bpm->ObtenerActividades(BPM_PROCESS_ID_TAREA_GENERICA, $data['case_id']);
 								$nombre = $actividad[0]['displayName'];
@@ -239,8 +241,18 @@ class Tareas extends CI_Model
 
 								// con nickname local, traigo id de usuario en bpm para asignar l tarea
 								$usrBpm = $this->bpm->getUser($data['user_id']);
-								$resp_asign = $this->bpm->setUsuario($task, $usrBpm['data']['id']);
-						//}
+								if ($task && $usrBpm['status']) {
+									// Bonita no deja asignar una tarea que ya tiene responsable ("it has already been
+									// assigned"): para reasignar, primero se libera y después se asigna al nuevo.
+									$this->bpm->setUsuario($task, '');
+									$resp_asign = $this->bpm->setUsuario($task, $usrBpm['data']['id']);
+									if (!$resp_asign['status']) {
+										log_message('ERROR', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | guardarPlanificada() >> Bonita no asigno la tarea $task a {$data['user_id']}");
+									}
+								} else {
+									log_message('ERROR', "#TRAZA | #TRAZ-COMP-TAREASESTANDAR | Tareas | guardarPlanificada() >> No se pudo asignar la tarea en BPM | case_id: {$data['case_id']} | user_id: {$data['user_id']}");
+								}
+						}
         }
 
         unset($data['origen']);
@@ -262,7 +274,7 @@ class Tareas extends CI_Model
         if(isset($tarea['case_id']) && $tarea['case_id'] != "0" && $tarea['case_id'] != "") return;
 
         #Validacion de Lanzar Proceso
-        if (isset($tarea['fecha']) && ($tarea['fecha'] != '3000-12-31') && isset($tarea['nombre']) && isset($tarea['user_id']) && $tarea['user_id'] != "" && isset($tarea['tapl_id'])) {
+        if (!$this->sinFecha($tarea) && isset($tarea['nombre']) && isset($tarea['user_id']) && $tarea['user_id'] != "" && isset($tarea['tapl_id'])) {
             log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | Validación Correcta, se lanza PROCESO asociado');
 
             $contract['nombre_proceso'] = $tarea['proc_id'];
@@ -274,8 +286,8 @@ class Tareas extends CI_Model
             $res = wso2(REST_API_BPM, 'POST', $contract);
             return $res['data'];
         }else{
-            $resp['msg'] = $tarea['fecha'] == '3000-12-31' ? ' No se seteo fecha para la tarea!' : '';
-            $resp['msg'] = !isset($tarea['user_id']) || $tarea['user_id'] == "" ? ' No se le asigno la tarea a ningun usuario!' : '';        
+            $resp['msg'] = $this->sinFecha($tarea) ? ' No se seteo fecha para la tarea!' : '';
+            $resp['msg'] .= !isset($tarea['user_id']) || $tarea['user_id'] == "" ? ' No se le asigno la tarea a ningun usuario!' : '';        
             log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | TAREAS | lanzarProceso($tarea) | Validacion de proceso fallida >> ' . json_encode($resp['msg']));
         }
 
@@ -300,11 +312,24 @@ class Tareas extends CI_Model
         * @param array datos tarea planificada
         * @return array datos formateados de la tarea planificada
 	*/
+    /**
+        * Una tarea "sin fecha" se guarda con 3000-12-31, pero la pantalla la puede devolver en otro
+        * formato (3000-12-31 00:00:00, 31-12-3000) o vacia. Cualquier fecha del año 2100 en adelante
+        * se toma como "sin fecha".
+        * @param array datos tarea planificada
+        * @return bool
+	*/
+    public function sinFecha($data){
+        if (!isset($data['fecha']) || trim($data['fecha']) == '') return true;
+        $ts = strtotime(str_replace('+', ' ', $data['fecha']));
+        return $ts === false || intval(date('Y', $ts)) >= 2100;
+    }
+
     public function map($data){
         log_message('DEBUG','#TRAZA | TRAZ-COMP-TAREASESTANDAR | Tareas | map($data)');
         $aux = array();
         $aux['nombre'] = $data['nombre'];
-        $aux['fecha'] = (isset($data['fecha'])) ? date('Y-m-d',strtotime($data['fecha'])) : '3000-12-31';
+        $aux['fecha'] = $this->sinFecha($data) ? '3000-12-31' : date('Y-m-d',strtotime($data['fecha']));
         $aux['info_id'] = strval(isset($data['info_id']) ? $data['info_id'] : '');
         $aux['tare_id'] = strval(isset($data['tare_id']) ? $data['tare_id'] : '');
         $aux['case_id'] = strval(isset($data['case_id']) && $data['case_id'] != "" ? $data['case_id'] : '');

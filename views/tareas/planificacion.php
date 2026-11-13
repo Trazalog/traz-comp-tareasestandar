@@ -49,7 +49,13 @@
 
 </div>
 <script>
+// Pestaña visible: copiar solo al cambiar de pestaña. Si se vuelve a pulsar la que ya está
+// activa, copiar desde la otra (que está desactualizada) borraba las tareas de la vista.
+var pestanaTareas = 'calendario';
 function copiarTareas(ban = false) {
+    var destino = ban ? 'planificacion' : 'calendario';
+    if (pestanaTareas === destino) return;
+    pestanaTareas = destino;
     if (ban) {
         $('#tareas-planificadas').html($('#tareas-calendario').html()).tableDnD();
         $('accion').hide();
